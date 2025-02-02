@@ -14,6 +14,9 @@
 
     <modules>
         <module>commons_JPA</module>
+        <module>commons_dispatcher</module>
+        <module>commons_rabbitMQ</module>
+        <module>commons_node</module>
     </modules>
 
     <properties>

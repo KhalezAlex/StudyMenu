@@ -1,0 +1,46 @@
+package org.klozevitz.services.implementations;
+
+import lombok.RequiredArgsConstructor;
+import org.klozevitz.TelegramView;
+import org.klozevitz.enitites.appUsers.AppUser;
+import org.klozevitz.repositories.appUsers.AppUserRepo;
+import org.klozevitz.services.interfaces.Activator;
+import org.klozevitz.services.interfaces.AnswerProducer;
+import org.klozevitz.utils.CryptoTool;
+import org.springframework.stereotype.Service;
+
+import static org.klozevitz.enitites.appUsers.enums.states.CompanyState.BASIC_STATE;
+
+@Service
+@RequiredArgsConstructor
+public class ActivatorService implements Activator {
+    private final AppUserRepo appUserRepo;
+    private final CryptoTool cryptoTool;
+    private final TelegramView telegramView;
+    private final AnswerProducer answerProducer;
+
+    @Override
+    public boolean activate(String cryptoUserId) {
+        var userId = cryptoTool.idOf(cryptoUserId);
+        var optionalUser = appUserRepo.findById(userId);
+
+        if (optionalUser.isEmpty()) {
+            return false;
+        }
+
+        var user = optionalUser.get();
+
+        user.getCompany().setState(BASIC_STATE);
+        appUserRepo.save(user);
+
+        produceNotificationMessageToCompanyAnswerQueue(user);
+
+        return true;
+    }
+
+    private void produceNotificationMessageToCompanyAnswerQueue(AppUser user) {
+        var telegramUserId = user.getTelegramUserId();
+        var answer = telegramView.emailConfirmationNotificationView(telegramUserId);
+        answerProducer.produceAnswer(answer);
+    }
+}

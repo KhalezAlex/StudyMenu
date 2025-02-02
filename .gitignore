@@ -1,0 +1,4 @@
+/company/dispatcher/src/main/resources/application.yaml
+/company/node/src/main/resources/application.yaml
+/company/mail_service/src/main/resources/application.yaml
+/company/activation_rest_service/src/main/resources/application.yaml

@@ -10,6 +10,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>company</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>dispatcher</module>
+        <module>node</module>
+        <module>telegram_view</module>
+        <module>common_utils</module>
+        <module>mail_service</module>
+        <module>activation_rest_service</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>

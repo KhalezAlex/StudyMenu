@@ -4,7 +4,6 @@ import javax.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.klozevitz.enitites.BaseEntity;
-import org.klozevitz.enitites.appUsers.enums.AppUserState;
 
 import java.time.LocalDateTime;
 
@@ -21,8 +20,7 @@ public class AppUser extends BaseEntity {
     @CreationTimestamp
     private LocalDateTime firstLoginDate;
     private String username;
-    @Enumerated(EnumType.STRING)
-    private AppUserState state;
+
     @OneToOne(cascade = CascadeType.ALL)
     private Admin admin;
     @OneToOne(cascade = CascadeType.ALL)
@@ -34,8 +32,8 @@ public class AppUser extends BaseEntity {
 
     public boolean isRegistered() {
         return admin != null ||
-                company != null ||
-                department != null ||
-                employee != null;
+                company.getState() != null ||
+                department.getState() != null ||
+                employee.getState() != null;
     }
 }

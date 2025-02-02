@@ -6,23 +6,44 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="company" />
+        <module name="telegram_view" />
+        <module name="common_utils" />
+        <module name="commons_dispatcher" />
+        <module name="employee" />
+        <module name="node" />
+        <module name="mail_service" />
         <module name="commons_JPA" />
         <module name="commons_rabbitMQ" />
         <module name="util" />
+        <module name="activation_rest_service" />
+        <module name="commons_node" />
         <module name="department" />
-        <module name="employee" />
+        <module name="dispatcher" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="commons_telegram" target="11" />
+      <module name="mailService" target="11" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="activation_rest_service" options="-parameters" />
+      <module name="common_utils" options="-parameters" />
       <module name="commons" options="-parameters" />
       <module name="commons_JPA" options="-parameters" />
+      <module name="commons_dispatcher" options="-parameters" />
+      <module name="commons_node" options="-parameters" />
       <module name="commons_rabbitMQ" options="-parameters" />
+      <module name="commons_telegram" options="-parameters" />
       <module name="company" options="-parameters" />
       <module name="department" options="-parameters" />
+      <module name="dispatcher" options="-parameters" />
       <module name="employee" options="-parameters" />
+      <module name="mailService" options="-parameters" />
+      <module name="mail_service" options="-parameters" />
+      <module name="node" options="-parameters" />
+      <module name="telegram_view" options="-parameters" />
       <module name="util" options="-parameters" />
     </option>
   </component>
