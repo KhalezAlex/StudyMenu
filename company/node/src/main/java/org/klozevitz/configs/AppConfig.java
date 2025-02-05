@@ -2,8 +2,6 @@ package org.klozevitz.configs;
 
 import org.klozevitz.MessageUtil;
 import org.klozevitz.TelegramView;
-import org.klozevitz.messageProcessors.CallbackQueryMessageProcessor;
-import org.klozevitz.services.implementations.messageProcessors.callbackQueryMessageProcessors.CallbackQueryMessageProcessorService;
 import org.klozevitz.utils.CryptoTool;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

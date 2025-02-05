@@ -3,6 +3,7 @@ package org.klozevitz.services.implementations;
 import lombok.RequiredArgsConstructor;
 import org.klozevitz.TelegramView;
 import org.klozevitz.enitites.appUsers.AppUser;
+import org.klozevitz.enitites.appUsers.enums.views.CompanyView;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.services.interfaces.Activator;
 import org.klozevitz.services.interfaces.AnswerProducer;
@@ -30,9 +31,6 @@ public class ActivatorService implements Activator {
 
         var user = optionalUser.get();
 
-        user.getCompany().setState(BASIC_STATE);
-        appUserRepo.save(user);
-
         produceNotificationMessageToCompanyAnswerQueue(user);
 
         return true;
@@ -41,6 +39,11 @@ public class ActivatorService implements Activator {
     private void produceNotificationMessageToCompanyAnswerQueue(AppUser user) {
         var telegramUserId = user.getTelegramUserId();
         var answer = telegramView.emailConfirmationNotificationView(telegramUserId);
+
+        user.getCompany().setState(BASIC_STATE);
+        user.getCompany().setCurrentView(CompanyView.EMAIL_CONFIRMATION_NOTIFICATION_VIEW);
+        appUserRepo.save(user);
+
         answerProducer.produceAnswer(answer);
     }
 }

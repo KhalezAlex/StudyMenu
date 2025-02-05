@@ -1,12 +1,10 @@
-package org.klozevitz.services.implementations.messageProcessors.callbackQueryMessageProcessors.byState;
+package org.klozevitz.services.implementations.updateProcessors.callbackQueryUpdateProcessors.byState;
 
 import lombok.RequiredArgsConstructor;
 import org.klozevitz.TelegramView;
 import org.klozevitz.enitites.appUsers.AppUser;
-import org.klozevitz.enitites.appUsers.enums.states.CompanyState;
-import org.klozevitz.enitites.appUsers.enums.views.CompanyView;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
-import org.klozevitz.services.interfaces.messageProcessors.callbackQueryMessageProcessors.UnregisteredStateCQMP;
+import org.klozevitz.services.interfaces.updateProcessors.callbackQueryUpdateProcessors.UnregisteredStateCQUP;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -16,7 +14,7 @@ import static org.klozevitz.enitites.appUsers.enums.views.CompanyView.EMAIL_REQU
 
 @Service
 @RequiredArgsConstructor
-public class UnregisteredStateCQMP_Service implements UnregisteredStateCQMP {
+public class UnregisteredStateCQUP_Service implements UnregisteredStateCQUP {
     private final TelegramView telegramView;
     private final AppUserRepo appUserRepo;
 

@@ -4,7 +4,7 @@ import org.klozevitz.enitites.appUsers.AppUser;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-public interface TextMessageProcessor {
+public interface TextUpdateProcessor {
     SendMessage processTextMessage(Update update, AppUser currentAppUser);
 
 }

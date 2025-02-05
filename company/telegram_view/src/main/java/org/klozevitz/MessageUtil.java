@@ -6,11 +6,10 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Log4j
 public class MessageUtil {
-    private final String BASIC_WRONG_STATUS_ERROR_MESSAGE = "По какой-то причине, ваш статус не позволяет \n" +
-            "пользоваться этой командой." +
-            "Пройдите регистрацию заново";
+    private final String BASIC_WRONG_STATUS_ERROR_MESSAGE = "По какой-то причине, ваш статус не позволяет" +
+            " пользоваться этой командой. Пройдите регистрацию заново";
 
-    public SendMessage addErrorMessage(SendMessage answer, String error) {
+    public SendMessage addServiceMessage(SendMessage answer, String error) {
         var message = String.format("%s\n\n%s", error, answer.getText());
         answer.setText(message);
         return answer;

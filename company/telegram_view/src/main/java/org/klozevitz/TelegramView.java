@@ -2,12 +2,15 @@ package org.klozevitz;
 
 import lombok.AllArgsConstructor;
 import org.klozevitz.enitites.appUsers.AppUser;
+import org.klozevitz.enitites.appUsers.Department;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 public class TelegramView {
@@ -29,10 +32,22 @@ public class TelegramView {
             "валидным адресом электронной почты!";
     private final String ALREADY_REGISTERED_EMAIL_NOTIFICATION_MESSAGE = "Адрес, который Вы ввели, " +
             "уже зарегистрирован в системе";
-    private final String PREVIOUS_VIEW_ERROR_MESSAGE = "Вы совершили действие, которое привело к остановке" +
-            "выполнения процесса. Вернемся к предыдущему экрану:";
-    private final String NULL_COMPANY_STATE_ERROR_NOTIFICATION_MESSAGE = "Произошла непредвиденная ошибка. " +
-            "Свяжитесь со специалистом технической поддержки для устранения ошибки.";
+    private final String PREVIOUS_VIEW_ERROR_MESSAGE = "<b>Вы совершили действие, которое привело к остановке " +
+            "выполнения процесса. Вернемся к предыдущему экрану:</b>";
+    private final String NULL_COMPANY_STATE_ERROR_NOTIFICATION_MESSAGE = "<b>Произошла непредвиденная ошибка. " +
+            "Свяжитесь со специалистом технической поддержки для устранения ошибки.</b>";
+    private final  String REGISTERED_WELCOME_MESSAGE = "Вы находитесь на главной странице чат-бота.";
+    private final String DEPARTMENTS_MANAGEMENT_VIEW_MESSAGE = "На этой странице Вы можете управлять " +
+            "Вашими заведениями. Как только Вы добавите первое заведение, оно появится в списке.";
+    private final String DEPARTMENT_TELEGRAM_USER_ID_REQUEST_MESSAGE = "Введите id пользователя telegram \n" +
+            "(требуется запросить у пользователя числовой идентификатор telegram user id - " +
+            "он это может сделать в официальном боте @getmyid_bot) \n\n" +
+            "В последствии, если будет введен неправильный id, компанию можно будет легко удалить.";
+    private final String DEPARTMENT_REGISTRATION_NOTIFICATION_MESSAGE = "Телеграм-id \"%d\", " +
+            "который будет отвечать за новое заведение, зарегистрирован. " +
+            "Вы можете отредактировать/удалить его в меню менеджмента заведений.";
+    private final String INVALID_DEPARTMENT_TELEGRAM_USER_ID_NOTIFICATION_MESSAGE = "Введенная строка не является корректным " +
+            "telegramUserId";
     private MessageUtil messageUtil;
 
     /**
@@ -42,27 +57,42 @@ public class TelegramView {
 
     public SendMessage previousView(Update update, AppUser appUser) {
         var answer = previousViewStrategy(update, appUser);
+        answer.enableHtml(true);
 
-        return messageUtil.addErrorMessage(answer, PREVIOUS_VIEW_ERROR_MESSAGE);
+        return messageUtil.addServiceMessage(answer, PREVIOUS_VIEW_ERROR_MESSAGE);
     }
 
-    private SendMessage previousViewStrategy(Update update, AppUser appUser) {
-        var view = appUser.getCompany().getCurrentView();
+    private SendMessage previousViewStrategy(Update update, AppUser currentAppUser) {
+        var currentView = currentAppUser.getCompany().getCurrentView();
+        var chatId = chatId(update);
 
-        switch (view) {
+        if (currentView == null) {
+            return unregisteredWelcomeView(update);
+        }
+
+        switch (currentView) {
+            case NULL_COMPANY_STATE_NOTIFICATION_VIEW:
+                return nullCompanyStateNotificationView(update);
             case UNREGISTERED_WELCOME_VIEW:
                 return unregisteredWelcomeView(update);
             case EMAIL_REQUEST_VIEW:
                 return emailRequestView(update);
             case EMAIL_CONFIRMATION_REQUEST_VIEW:
                 return emailConfirmationRequestView(update);
+            case REGISTERED_WELCOME_VIEW:
+                return registeredWelcomeView(update);
+            case EMAIL_CONFIRMATION_NOTIFICATION_VIEW:
+                return emailConfirmationNotificationView(chatId);
+            case DEPARTMENTS_MANAGEMENT_VIEW:
+                return departmentsManagementView(update, currentAppUser);
             default:
-                return null;
+                return previousView(update, currentAppUser);
         }
     }
 
     /**
-     * Первое приветственное сообщение
+     * Первое приветственное сообщение для незарегистрированных пользователей
+     * CompanyView.UNREGISTERED_WELCOME_VIEW
      * */
     public SendMessage unregisteredWelcomeView(Update update) {
         var chatId = chatId(update);
@@ -97,17 +127,26 @@ public class TelegramView {
     /**
      * Вьюхи, связанные с регистрацией
      * */
+
+
+    /**
+     * Вью запрашивает мейл у пользователя
+     * CompanyView.EMAIL_REQUEST_VIEW
+     * */
     public SendMessage emailRequestView(Update update) {
         var chatId = chatId(update);
 
         return textMessage(EMAIL_REQUEST_MESSAGE, chatId);
     }
 
+    /**
+     * Вью запрашивает подтверждение мейла пользователя
+     * CompanyView.EMAIL_CONFIRMATION_REQUEST_VIEW
+     * */
     public SendMessage emailConfirmationRequestView(Update update) {
         var answer = messageUtil.blankAnswer(update);
         var successNotificationViewAbortRegistrationKeyboardMarkup =
                 successNotificationViewAbortRegistrationKeyboardMarkup();
-
         answer.setText(EMAIL_CONFIRMATION_REQUEST_MESSAGE);
         answer.setReplyMarkup(successNotificationViewAbortRegistrationKeyboardMarkup);
 
@@ -124,41 +163,60 @@ public class TelegramView {
         return keyboard;
     }
 
+    /**
+     * Вью уведомляет пользователя о невозможности послать электронную почту
+     * и отправляет на вью UNREGISTERED_WELCOME_VIEW
+     * СВОЕГО ВЬЮ В CompanyView НЕТ
+     * */
     public SendMessage emailCanNotBeSentNotificationView(Update update) {
         var email = update.getMessage().getText();
         var errorMessage = String.format(EMAIL_CANNOT_BE_SENT_MESSAGE, email);
-
         var answer = unregisteredWelcomeView(update);
-        return messageUtil.addErrorMessage(answer, errorMessage);
+
+        return messageUtil.addServiceMessage(answer, errorMessage);
     }
 
+    /**
+     * Вью уведомляет о том, что был введеден некорректный мейл,
+     * и отправляет на вью EMAIL_REQUEST_VIEW
+     * СВОЕГО ВЬЮ В CompanyView НЕТ
+     * */
     public SendMessage wrongEmailNotificationView(Update update) {
         var answer = emailRequestView(update);
 
-        return messageUtil.addErrorMessage(answer, WRONG_EMAIL_NOTIFICATION_MESSAGE);
+        return messageUtil.addServiceMessage(answer, WRONG_EMAIL_NOTIFICATION_MESSAGE);
     }
 
+    /**
+     * Вью уведомляет о том, что был введеден уже зарегистрированный мейл,
+     * и отправляет на вью EMAIL_REQUEST_VIEW
+     * СВОЕГО ВЬЮ В CompanyView НЕТ
+     * */
     public SendMessage alreadyRegisteredEmailNotificationView(Update update) {
         var answer = emailRequestView(update);
 
-        return messageUtil.addErrorMessage(answer, ALREADY_REGISTERED_EMAIL_NOTIFICATION_MESSAGE);
+        return messageUtil.addServiceMessage(answer, ALREADY_REGISTERED_EMAIL_NOTIFICATION_MESSAGE);
     }
 
+    /**
+     * Вью уведомляет пользователя об успешном завершении регистрации
+     * CompanyView.EMAIL_CONFIRMATION_NOTIFICATION_VIEW
+     * */
     public SendMessage emailConfirmationNotificationView(long chatId) {
         var answer = messageUtil.blankAnswer(chatId);
-        var emailConfirmationNotificationViewWelcomeViewKeyboardMarkup =
-                emailConfirmationNotificationViewWelcomeViewKeyboardMarkup();
+        var emailConfirmationNotificationViewKeyboardMarkup =
+                emailConfirmationNotificationViewKeyboardMarkup();
 
         answer.setText(EMAIL_CONFIRMATION_NOTIFICATION_MESSAGE);
-        answer.setReplyMarkup(emailConfirmationNotificationViewWelcomeViewKeyboardMarkup);
+        answer.setReplyMarkup(emailConfirmationNotificationViewKeyboardMarkup);
 
         return answer;
     }
 
-    public InlineKeyboardMarkup emailConfirmationNotificationViewWelcomeViewKeyboardMarkup() {
+    private InlineKeyboardMarkup emailConfirmationNotificationViewKeyboardMarkup() {
         var keyboard = new InlineKeyboardMarkup();
         var row = List.of(
-                button("ОСНОВНОЙ ЭКРАН", "start")
+                button("ОСНОВНОЙ ЭКРАН", "/start")
         );
         var keyboardRows = List.of(row);
         keyboard.setKeyboard(keyboardRows);
@@ -170,15 +228,96 @@ public class TelegramView {
      * Вьюхи для зарегистрированных пользователей
      * */
 
+    /**
+     * Первое приветственное сообщение для незарегистрированных пользователей
+     * CompanyView.REGISTERED_WELCOME_VIEW
+     * */
     public SendMessage registeredWelcomeView(Update update) {
-        var message = "Ты зарегистрирован! следующим этапом пишем эту страницу!!!";
-        var chatId = chatId(update);
-        var answer = new SendMessage();
+        var answer = messageUtil.blankAnswer(update);
+        var registeredWelcomeViewKeyboardMarkup =
+                registeredWelcomeViewKeyboardMarkup();
 
-        answer.setText(message);
-        answer.setChatId(chatId);
+        answer.setText(REGISTERED_WELCOME_MESSAGE);
+        answer.setReplyMarkup(registeredWelcomeViewKeyboardMarkup);
 
         return answer;
+    }
+
+    private InlineKeyboardMarkup registeredWelcomeViewKeyboardMarkup() {
+        var keyboard = new InlineKeyboardMarkup();
+        var row = List.of(
+                button("УПРАВЛЕНИЕ\nЗАВЕДЕНИЯМИ", "/departments_management"),
+                button("УПРАВЛЕНИЕ\nПРОФИЛЕМ", "/profile_management")
+        );
+        var keyboardRows = List.of(row);
+        keyboard.setKeyboard(keyboardRows);
+        return keyboard;
+    }
+
+    /**
+     * Вью управления департаментами
+     * CompanyView.DEPARTMENTS_MANAGEMENT_VIEW
+     * */
+    public SendMessage departmentsManagementView(Update update, AppUser currentAppUser) {
+        var departments = currentAppUser.getCompany().getDepartments();
+        var answer = messageUtil.blankAnswer(update);
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+
+        answer.setText(DEPARTMENTS_MANAGEMENT_VIEW_MESSAGE);
+        inlineKeyboardMarkup.setKeyboard(new ArrayList<>());
+
+        if (!departments.isEmpty()) {
+            inlineKeyboardMarkup.getKeyboard().add(departmentsManagementViewKeyboardMarkUp(departments));
+        }
+
+        var row = List.of(
+                button("ДОБАВИТЬ ЗАВЕДЕНИЕ", "/add_department")
+        );
+
+        inlineKeyboardMarkup.getKeyboard().add(row);
+        answer.setReplyMarkup(inlineKeyboardMarkup);
+
+        return answer;
+    }
+
+    private List<InlineKeyboardButton> departmentsManagementViewKeyboardMarkUp(Set<Department> departments) {
+        return null;
+    }
+
+    /**
+     * Вью запроса telegramUserId для добавления департамента
+     * CompanyView.DEPARTMENT_TELEGRAM_USER_ID_REQUEST_VIEW
+     * */
+    public SendMessage departmentTelegramUserIdRequestView(Update update) {
+        var answer = messageUtil.blankAnswer(update);
+
+        answer.setText(DEPARTMENT_TELEGRAM_USER_ID_REQUEST_MESSAGE);
+
+        return answer;
+    }
+
+    /**
+     * Вью уведомляет об успешной регистрации департамента
+     * СВОЕГО ВЬЮ в CompanyView нет
+     * Возвращает меню управления департаментами
+     * CompanyView.DEPARTMENTS_MANAGEMENT_VIEW
+     * */
+    public SendMessage departmentRegistrationNotificationView(Update update, AppUser currentAppUser) {
+        var answer = departmentsManagementView(update, currentAppUser);
+
+        return  messageUtil.addServiceMessage(answer, DEPARTMENT_REGISTRATION_NOTIFICATION_MESSAGE);
+    }
+
+    /**
+     * Вью уведомляет об неверно введенном telegramUserId при регистрации департамента
+     * СВОЕГО ВЬЮ в CompanyView нет
+     * Возвращает меню управления департаментами
+     * CompanyView.DEPARTMENT_TELEGRAM_USER_ID_REQUEST_VIEW
+     * */
+    public SendMessage invalidDepartmentTelegramUserIdView(Update update) {
+        var answer = departmentTelegramUserIdRequestView(update);
+
+        return  messageUtil.addServiceMessage(answer, INVALID_DEPARTMENT_TELEGRAM_USER_ID_NOTIFICATION_MESSAGE);
     }
 
     /**
@@ -193,13 +332,17 @@ public class TelegramView {
 
     /**
      * Сообщение об ошибке в результате потери статуса
+     * ПО ИДЕЕ, ВООБЩЕ НИКОГДА НЕ ДОЛЖНО ВЫСКАКИВАТЬ- ЭТО ПРОВЕРКА СЛУЧАЙНЫХ СИТУАЦИЙ
+     * CompanyView.NULL_COMPANY_STATE_NOTIFICATION_VIEW
      * */
 
-    public SendMessage nullCompanyStateNotificationMessage(Update update) {
+    public SendMessage nullCompanyStateNotificationView(Update update) {
         var chatId = chatId(update);
 
         return textMessage(NULL_COMPANY_STATE_ERROR_NOTIFICATION_MESSAGE, chatId);
     }
+
+
 
     /**
      * UTILS

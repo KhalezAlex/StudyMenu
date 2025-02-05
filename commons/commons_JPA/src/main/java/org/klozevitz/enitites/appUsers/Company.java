@@ -26,6 +26,6 @@ public class Company extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "app_user_id")
     private AppUser appUser;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "company")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "company", fetch = FetchType.EAGER)
     private Set<Department> departments;
 }

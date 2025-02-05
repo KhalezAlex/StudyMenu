@@ -1,13 +1,12 @@
 package org.klozevitz.services.implementations;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.enitites.appUsers.Company;
 import org.klozevitz.enitites.appUsers.enums.states.CompanyState;
-import org.klozevitz.messageProcessors.CallbackQueryMessageProcessor;
-import org.klozevitz.messageProcessors.CommandMessageProcessor;
-import org.klozevitz.messageProcessors.TextMessageProcessor;
+import org.klozevitz.messageProcessors.CallbackQueryUpdateProcessor;
+import org.klozevitz.messageProcessors.CommandUpdateProcessor;
+import org.klozevitz.messageProcessors.TextUpdateProcessor;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.services.interfaces.AnswerProducer;
 import org.klozevitz.services.interfaces.Main;
@@ -29,18 +28,19 @@ public class MainService implements Main {
     @Autowired
     private AppUserRepo appUserRepo;
     @Autowired
-    private TextMessageProcessor textMessageProcessor;
+    private TextUpdateProcessor textUpdateProcessor;
     @Autowired
-    private CommandMessageProcessor commandMessageProcessor;
+    @Qualifier("commandUpdateProcessor")
+    private CommandUpdateProcessor commandUpdateProcessor;
     @Autowired
-    @Qualifier("callbackQueryMessageProcessor")
-    private CallbackQueryMessageProcessor callbackQueryMessageProcessor;
+    @Qualifier("callbackQueryUpdateProcessor")
+    private CallbackQueryUpdateProcessor callbackQueryUpdateProcessor;
 
     @Override
     public void processTextMessage(Update update) {
         var chatId = chatId(update);
         var appUser = findOrSaveAppUser(update);
-        var answer = textMessageProcessor.processTextMessage(update, appUser);
+        var answer = textUpdateProcessor.processTextMessage(update, appUser);
         sendAnswer(answer, chatId);
     }
 
@@ -48,7 +48,7 @@ public class MainService implements Main {
     public void processCommandMessage(Update update) {
         var chatId = chatId(update);
         var appUser = findOrSaveAppUser(update);
-        var answer = commandMessageProcessor.processCommandMessage(update, appUser);
+        var answer = commandUpdateProcessor.processCommandMessage(update, appUser);
         sendAnswer(answer, chatId);
     }
 
@@ -56,7 +56,7 @@ public class MainService implements Main {
     public void processCallbackQueryMessage(Update update) {
         var chatId = chatId(update);
         var appUser = findOrSaveAppUser(update);
-        var answer = callbackQueryMessageProcessor.processCallbackQueryMessage(update, appUser);
+        var answer = callbackQueryUpdateProcessor.processCallbackQueryMessage(update, appUser);
         sendAnswer(answer, chatId);
     }
 
@@ -94,6 +94,7 @@ public class MainService implements Main {
                         .build()
                 )
                 .build();
+
         var persistentAppUser = appUserRepo.save(transientApplicationUser);
         return appUserRepo.save(persistentAppUser);
     }
