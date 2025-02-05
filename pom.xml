@@ -16,6 +16,7 @@
         <module>util</module>
         <module>department/department_dispatcher</module>
         <module>department/department_telegram</module>
+        <module>department/department_node</module>
     </modules>
 
     <parent>

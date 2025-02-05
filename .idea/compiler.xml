@@ -14,6 +14,7 @@
         <module name="employee" />
         <module name="department_dispatcher" />
         <module name="department_telegram" />
+        <module name="department_node" />
         <module name="node" />
         <module name="mail_service" />
         <module name="commons_JPA" />
@@ -42,6 +43,7 @@
       <module name="company" options="-parameters" />
       <module name="department" options="-parameters" />
       <module name="department_dispatcher" options="-parameters" />
+      <module name="department_node" options="-parameters" />
       <module name="department_telegram" options="-parameters" />
       <module name="dispatcher" options="-parameters" />
       <module name="employee" options="-parameters" />
