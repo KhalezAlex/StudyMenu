@@ -9,6 +9,7 @@ import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.services.interfaces.updateProcessors.NullableStateUpdateProcessor;
 import org.klozevitz.services.interfaces.updateProcessors.commandUpdateProcessors.BasicStateCUP;
 import org.klozevitz.services.interfaces.updateProcessors.commandUpdateProcessors.UnregisteredStateCUP;
+import org.klozevitz.services.interfaces.updateProcessors.commandUpdateProcessors.WaitingForDepartmentTelegramUserIdStateCUP;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -26,6 +27,7 @@ public class CommandUpdateProcessorService implements CommandUpdateProcessor {
     private final NullableStateUpdateProcessor nullableStateUpdateProcessor;
     private final BasicStateCUP basicStateCUP;
     private final UnregisteredStateCUP unregisteredStateCUP;
+    private final WaitingForDepartmentTelegramUserIdStateCUP waitingForDepartmentTelegramUserIdStateCUP;
 
     @Override
     public SendMessage processCommandMessage(Update update, AppUser currentAppUser) {
@@ -44,6 +46,8 @@ public class CommandUpdateProcessorService implements CommandUpdateProcessor {
                 return emailConfirmationRequestView(update, currentAppUser);
             case BASIC_STATE:
                 return basicStateCUP.processCommandMessage(update, currentAppUser);
+            case WAITING_FOR_DEPARTMENT_TELEGRAM_USER_ID_STATE:
+                return waitingForDepartmentTelegramUserIdStateCUP.processCommandMessage(update, currentAppUser);
             default: {
                 log.error("Сообщение не попало ни в одну из веток состояний компании");
                 return telegramView.previousView(update, currentAppUser);

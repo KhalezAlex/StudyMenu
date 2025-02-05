@@ -88,6 +88,8 @@ public class TelegramView {
                 return departmentsManagementView(update, currentAppUser);
             case DEPARTMENT_TELEGRAM_USER_ID_REQUEST_VIEW:
                 return departmentTelegramUserIdRequestView(update);
+            case NEW_DEPARTMENT_REGISTRATION_NOTIFICATION_VIEW:
+                return newDepartmentRegistrationNotificationView(update, currentAppUser);
             default:
                 return previousView(update, currentAppUser);
         }
@@ -329,7 +331,7 @@ public class TelegramView {
      * Возвращает меню управления департаментами
      * CompanyView.DEPARTMENTS_MANAGEMENT_VIEW
      * */
-    public SendMessage departmentRegistrationNotificationView(Update update, AppUser currentAppUser) {
+    public SendMessage newDepartmentRegistrationNotificationView(Update update, AppUser currentAppUser) {
         var answer = departmentsManagementView(update, currentAppUser);
         var serviceMessage = String.format(
                 DEPARTMENT_REGISTRATION_NOTIFICATION_MESSAGE,
