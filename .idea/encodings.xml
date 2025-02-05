@@ -6,6 +6,7 @@
     <file url="file://$PROJECT_DIR$/commons/commons_node/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/commons/commons_rabbitMQ/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/commons/commons_rabbitMQ/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/commons/commons_telegram/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/commons/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/commons/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/company/activation_rest_service/src/main/java" charset="UTF-8" />
@@ -18,6 +19,7 @@
     <file url="file://$PROJECT_DIR$/company/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/company/telegram_view/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/department/department_dispatcher/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/department/department_telegram/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/department/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/employee/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />

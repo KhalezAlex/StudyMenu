@@ -15,6 +15,7 @@
         <module>employee</module>
         <module>util</module>
         <module>department/department_dispatcher</module>
+        <module>department/department_telegram</module>
     </modules>
 
     <parent>
