@@ -20,14 +20,18 @@ public class Department extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private DepartmentState state;
 
-    @OneToOne
-    @JoinColumn(name = "app_user_id")
+    @EqualsAndHashCode.Exclude
+    @OneToOne(mappedBy = "department", cascade = CascadeType.ALL)
+    @JoinColumn(name = "app_user_id", insertable = false)
     private AppUser appUser;
-    @ManyToOne
+    @EqualsAndHashCode.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
     private Company company;
+    @EqualsAndHashCode.Exclude
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "department")
     private Set<Employee> employees;
+    @EqualsAndHashCode.Exclude
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "department")
     private Set<Category> menu;
 }

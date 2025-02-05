@@ -13,7 +13,6 @@ import org.klozevitz.enitites.BaseEntity;
 @Entity
 @Table(name = "admin_t")
 public class Admin extends BaseEntity {
-    @OneToOne
-    @JoinColumn(name = "app_user_id")
+    @OneToOne(mappedBy = "admin")
     private AppUser appUser;
 }

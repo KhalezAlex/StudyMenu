@@ -11,6 +11,7 @@ public class MessageUtil {
 
     public SendMessage addServiceMessage(SendMessage answer, String error) {
         var message = String.format("%s\n\n%s", error, answer.getText());
+        answer.enableHtml(true);
         answer.setText(message);
         return answer;
     }

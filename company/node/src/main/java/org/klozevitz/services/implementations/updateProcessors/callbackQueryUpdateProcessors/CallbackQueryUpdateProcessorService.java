@@ -8,6 +8,7 @@ import org.klozevitz.messageProcessors.CallbackQueryUpdateProcessor;
 import org.klozevitz.services.interfaces.updateProcessors.callbackQueryUpdateProcessors.BasicStateCQUP;
 import org.klozevitz.services.interfaces.updateProcessors.NullableStateUpdateProcessor;
 import org.klozevitz.services.interfaces.updateProcessors.callbackQueryUpdateProcessors.UnregisteredStateCQUP;
+import org.klozevitz.services.interfaces.updateProcessors.callbackQueryUpdateProcessors.WaitingForDepartmentTelegramUserIdStateCQUP;
 import org.klozevitz.services.interfaces.updateProcessors.callbackQueryUpdateProcessors.WaitingForEmailStateCQUP;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -22,6 +23,7 @@ public class CallbackQueryUpdateProcessorService implements CallbackQueryUpdateP
     private final UnregisteredStateCQUP unregisteredStateCQUP;
     private final WaitingForEmailStateCQUP waitingForEmailStateCQUP;
     private final BasicStateCQUP basicStateCQUP;
+    private final WaitingForDepartmentTelegramUserIdStateCQUP waitingForDepartmentTelegramUserIdStateCQUP;
 
     @Override
     public SendMessage processCallbackQueryMessage(Update update, AppUser currentAppUser) {
@@ -38,6 +40,8 @@ public class CallbackQueryUpdateProcessorService implements CallbackQueryUpdateP
                 return waitingForEmailStateCQUP.processCallbackQueryMessage(update, currentAppUser);
             case BASIC_STATE:
                 return basicStateCQUP.processCallbackQueryMessage(update, currentAppUser);
+            case WAITING_FOR_DEPARTMENT_TELEGRAM_USER_ID_STATE:
+                return waitingForDepartmentTelegramUserIdStateCQUP.processCallbackQueryMessage(update, currentAppUser);
             default: {
                 log.error("Сообщение не попало ни в одну из веток состояний компании");
                 return telegramView.previousView(update, currentAppUser);

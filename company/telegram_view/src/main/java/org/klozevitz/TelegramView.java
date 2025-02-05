@@ -43,11 +43,13 @@ public class TelegramView {
             "(требуется запросить у пользователя числовой идентификатор telegram user id - " +
             "он это может сделать в официальном боте @getmyid_bot) \n\n" +
             "В последствии, если будет введен неправильный id, компанию можно будет легко удалить.";
-    private final String DEPARTMENT_REGISTRATION_NOTIFICATION_MESSAGE = "Телеграм-id \"%d\", " +
+    private final String DEPARTMENT_REGISTRATION_NOTIFICATION_MESSAGE = "<b>Телеграм-id \"%s\", " +
             "который будет отвечать за новое заведение, зарегистрирован. " +
-            "Вы можете отредактировать/удалить его в меню менеджмента заведений.";
-    private final String INVALID_DEPARTMENT_TELEGRAM_USER_ID_NOTIFICATION_MESSAGE = "Введенная строка не является корректным " +
-            "telegramUserId";
+            "Вы можете отредактировать/удалить его в меню менеджмента заведений.</b>";
+    private final String INVALID_DEPARTMENT_TELEGRAM_USER_ID_ERROR_MESSAGE = "Введенная строка не является " +
+            "корректным telegramUserId";
+    private final String ALREADY_REGISTERED_TELEGRAM_USER_ID_ERROR_MESSAGE = "<b>Введенный Телеграм-id уже " +
+            "зарегистрирован в системе</b>";
     private MessageUtil messageUtil;
 
     /**
@@ -57,7 +59,6 @@ public class TelegramView {
 
     public SendMessage previousView(Update update, AppUser appUser) {
         var answer = previousViewStrategy(update, appUser);
-        answer.enableHtml(true);
 
         return messageUtil.addServiceMessage(answer, PREVIOUS_VIEW_ERROR_MESSAGE);
     }
@@ -85,6 +86,8 @@ public class TelegramView {
                 return emailConfirmationNotificationView(chatId);
             case DEPARTMENTS_MANAGEMENT_VIEW:
                 return departmentsManagementView(update, currentAppUser);
+            case DEPARTMENT_TELEGRAM_USER_ID_REQUEST_VIEW:
+                return departmentTelegramUserIdRequestView(update);
             default:
                 return previousView(update, currentAppUser);
         }
@@ -261,27 +264,51 @@ public class TelegramView {
     public SendMessage departmentsManagementView(Update update, AppUser currentAppUser) {
         var departments = currentAppUser.getCompany().getDepartments();
         var answer = messageUtil.blankAnswer(update);
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        var departmentsManagementViewKeyboardMarkUp =
+                departmentsManagementViewKeyboardMarkUp(departments);
 
         answer.setText(DEPARTMENTS_MANAGEMENT_VIEW_MESSAGE);
-        inlineKeyboardMarkup.setKeyboard(new ArrayList<>());
-
-        if (!departments.isEmpty()) {
-            inlineKeyboardMarkup.getKeyboard().add(departmentsManagementViewKeyboardMarkUp(departments));
-        }
-
-        var row = List.of(
-                button("ДОБАВИТЬ ЗАВЕДЕНИЕ", "/add_department")
-        );
-
-        inlineKeyboardMarkup.getKeyboard().add(row);
-        answer.setReplyMarkup(inlineKeyboardMarkup);
+        answer.setReplyMarkup(departmentsManagementViewKeyboardMarkUp);
 
         return answer;
     }
 
-    private List<InlineKeyboardButton> departmentsManagementViewKeyboardMarkUp(Set<Department> departments) {
-        return null;
+    private InlineKeyboardMarkup departmentsManagementViewKeyboardMarkUp(Set<Department> departments) {
+        var departmentsManagementViewKeyboardMarkUp = new InlineKeyboardMarkup();
+        var addDepartmentRow = List.of(
+                button("ДОБАВИТЬ ЗАВЕДЕНИЕ", "/add_department"),
+                button("Выход", "/start")
+        );
+
+        List<List<InlineKeyboardButton>> departmentManagementViewKeyboardMarkupDepartmentsManagementTable;
+
+        if (!departments.isEmpty()) {
+            departmentManagementViewKeyboardMarkupDepartmentsManagementTable =
+                    departmentsManagementViewKeyboardMarkUpDepartmentsManagementTable(departments);
+            departmentManagementViewKeyboardMarkupDepartmentsManagementTable.add(addDepartmentRow);
+        } else {
+            departmentManagementViewKeyboardMarkupDepartmentsManagementTable =
+                    List.of(addDepartmentRow);
+        }
+
+        departmentsManagementViewKeyboardMarkUp.setKeyboard(departmentManagementViewKeyboardMarkupDepartmentsManagementTable);
+
+        return departmentsManagementViewKeyboardMarkUp;
+    }
+
+    private List<List<InlineKeyboardButton>> departmentsManagementViewKeyboardMarkUpDepartmentsManagementTable(Set<Department> departments) {
+        final List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+
+        departments.forEach(d -> {
+            var text = String.format("ЗАВЕДЕНИЕ %d", d.getId());
+            List<InlineKeyboardButton> row = List.of(
+                    button(text, "/asd"),
+                    button("X", "/asdasd")
+            );
+            rows.add(row);
+        });
+
+        return rows;
     }
 
     /**
@@ -304,21 +331,38 @@ public class TelegramView {
      * */
     public SendMessage departmentRegistrationNotificationView(Update update, AppUser currentAppUser) {
         var answer = departmentsManagementView(update, currentAppUser);
+        var serviceMessage = String.format(
+                DEPARTMENT_REGISTRATION_NOTIFICATION_MESSAGE,
+                update.getMessage().getText()
+        );
 
-        return  messageUtil.addServiceMessage(answer, DEPARTMENT_REGISTRATION_NOTIFICATION_MESSAGE);
+        return  messageUtil.addServiceMessage(answer, serviceMessage);
     }
 
     /**
-     * Вью уведомляет об неверно введенном telegramUserId при регистрации департамента
+     * Вью уведомляет о неверно введенном telegramUserId при регистрации департамента
      * СВОЕГО ВЬЮ в CompanyView нет
      * Возвращает меню управления департаментами
      * CompanyView.DEPARTMENT_TELEGRAM_USER_ID_REQUEST_VIEW
      * */
-    public SendMessage invalidDepartmentTelegramUserIdView(Update update) {
+    public SendMessage invalidDepartmentTelegramUserIdErrorView(Update update) {
         var answer = departmentTelegramUserIdRequestView(update);
 
-        return  messageUtil.addServiceMessage(answer, INVALID_DEPARTMENT_TELEGRAM_USER_ID_NOTIFICATION_MESSAGE);
+        return  messageUtil.addServiceMessage(answer, INVALID_DEPARTMENT_TELEGRAM_USER_ID_ERROR_MESSAGE);
     }
+
+    /**
+     * Вью уведомляет о том, что введенный при регистрации департамента telegramUserId уже есть в системе
+     * СВОЕГО ВЬЮ в CompanyView нет
+     * Возвращает меню управления департаментами
+     * CompanyView.DEPARTMENTS_MANAGEMENT_VIEW
+     * */
+    public SendMessage alreadyRegisteredTelegramUserIdErrorView(Update update, AppUser currentAppUser) {
+        var answer = departmentsManagementView(update, currentAppUser);
+
+        return messageUtil.addServiceMessage(answer, ALREADY_REGISTERED_TELEGRAM_USER_ID_ERROR_MESSAGE);
+    }
+
 
     /**
      * Базовое текстовое сообщение
