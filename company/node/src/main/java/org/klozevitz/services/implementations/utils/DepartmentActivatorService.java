@@ -69,7 +69,7 @@ public class DepartmentActivatorService implements DepartmentActivator {
         currentAppUser.getCompany().setState(CompanyState.BASIC_STATE);
         appUserRepo.save(currentAppUser);
 
-        return telegramView.departmentRegistrationNotificationView(update, currentAppUser);
+        return telegramView.newDepartmentRegistrationNotificationView(update, currentAppUser);
     }
 
     private boolean telegramUserIdValidation(String departmentTelegramUserId) {
