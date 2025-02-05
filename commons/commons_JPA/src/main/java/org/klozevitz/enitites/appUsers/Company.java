@@ -6,6 +6,7 @@ import org.klozevitz.enitites.BaseEntity;
 import org.klozevitz.enitites.appUsers.enums.states.CompanyState;
 import org.klozevitz.enitites.appUsers.enums.views.CompanyView;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -23,9 +24,12 @@ public class Company extends BaseEntity {
     private CompanyState state;
     @Enumerated(EnumType.STRING)
     private CompanyView currentView;
-    @OneToOne
-    @JoinColumn(name = "app_user_id")
+
+    @EqualsAndHashCode.Exclude
+    @OneToOne(mappedBy = "company", cascade = CascadeType.ALL)
+    @JoinColumn(name = "app_user_id", insertable = false)
     private AppUser appUser;
+    @EqualsAndHashCode.Exclude
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "company", fetch = FetchType.EAGER)
-    private Set<Department> departments;
+    private Set<Department> departments = new HashSet<>();
 }

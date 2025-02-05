@@ -17,8 +17,7 @@ public class Employee extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private EmployeeState state;
 
-    @OneToOne
-    @JoinColumn(name = "app_user_id")
+    @OneToOne(mappedBy = "employee")
     private AppUser appUser;
     @ManyToOne
     @JoinColumn(name = "department_id")

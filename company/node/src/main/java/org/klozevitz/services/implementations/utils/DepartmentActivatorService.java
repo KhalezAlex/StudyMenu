@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.klozevitz.TelegramView;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.enitites.appUsers.Department;
+import org.klozevitz.enitites.appUsers.enums.states.CompanyState;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.services.interfaces.utils.DepartmentActivator;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,6 @@ import java.util.regex.Pattern;
 
 import static org.klozevitz.enitites.appUsers.enums.states.DepartmentState.BASIC_STATE;
 import static org.klozevitz.enitites.appUsers.enums.views.CompanyView.DEPARTMENTS_MANAGEMENT_VIEW;
-import static org.klozevitz.enitites.appUsers.enums.views.CompanyView.DEPARTMENT_TELEGRAM_USER_ID_REQUEST_VIEW;
 
 @Service
 @RequiredArgsConstructor
@@ -30,29 +30,12 @@ public class DepartmentActivatorService implements DepartmentActivator {
 
         if (isTgUserIdValid) {
             var success = addDepartment(currentAppUser, Long.parseLong(departmentTelegramUserId));
-            if (success) {
-                return departmentRegistrationNotificationView(update, currentAppUser);
-            } else {
-                // тут может быть null из-за невозможности сохранить департамент
-                return null;
-            }
+
+            return success ?
+                    departmentRegistrationNotificationView(update, currentAppUser) :
+                    alreadyRegisteredTelegramUserIdErrorView(update, currentAppUser);
         }
-        return invalidDepartmentTelegramUserIdView(update);
-    }
-
-    private SendMessage departmentRegistrationNotificationView(Update update, AppUser currentAppUser) {
-        currentAppUser.getCompany().setCurrentView(DEPARTMENTS_MANAGEMENT_VIEW);
-        appUserRepo.save(currentAppUser);
-
-        return telegramView.departmentRegistrationNotificationView(update, currentAppUser);
-    }
-
-    private boolean telegramUserIdValidation(String departmentTelegramUserId) {
-        var regexp = "\\b\\d{8,9}\\b";
-        var pattern = Pattern.compile(regexp);
-        var matcher = pattern.matcher(departmentTelegramUserId);
-
-        return matcher.matches();
+        return invalidDepartmentTelegramUserIdErrorView(update);
     }
 
     private boolean addDepartment(AppUser currentAppUser, long telegramUserId) {
@@ -66,7 +49,6 @@ public class DepartmentActivatorService implements DepartmentActivator {
                                 .build()
                 )
                 .build();
-        transientDepartmentAppUser.getDepartment().setAppUser(transientDepartmentAppUser);
 
         try {
             var persistentDepartmentAppUser = appUserRepo.save(transientDepartmentAppUser);
@@ -82,7 +64,31 @@ public class DepartmentActivatorService implements DepartmentActivator {
         }
     }
 
-    private SendMessage invalidDepartmentTelegramUserIdView(Update update) {
-        return telegramView.invalidDepartmentTelegramUserIdView(update);
+    private SendMessage departmentRegistrationNotificationView(Update update, AppUser currentAppUser) {
+        currentAppUser.getCompany().setCurrentView(DEPARTMENTS_MANAGEMENT_VIEW);
+        currentAppUser.getCompany().setState(CompanyState.BASIC_STATE);
+        appUserRepo.save(currentAppUser);
+
+        return telegramView.departmentRegistrationNotificationView(update, currentAppUser);
+    }
+
+    private boolean telegramUserIdValidation(String departmentTelegramUserId) {
+        var regexp = "\\b\\d{8,9}\\b";
+        var pattern = Pattern.compile(regexp);
+        var matcher = pattern.matcher(departmentTelegramUserId);
+
+        return matcher.matches();
+    }
+
+
+    private SendMessage invalidDepartmentTelegramUserIdErrorView(Update update) {
+        return telegramView.invalidDepartmentTelegramUserIdErrorView(update);
+    }
+
+    private SendMessage alreadyRegisteredTelegramUserIdErrorView(Update update, AppUser currentAppUser) {
+        currentAppUser.getCompany().setCurrentView(DEPARTMENTS_MANAGEMENT_VIEW);
+        appUserRepo.save(currentAppUser);
+
+        return telegramView.alreadyRegisteredTelegramUserIdErrorView(update, currentAppUser);
     }
 }
