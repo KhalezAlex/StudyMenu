@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j;
 import org.klozevitz.TelegramView;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.messageProcessors.CallbackQueryUpdateProcessor;
+import org.klozevitz.services.interfaces.updateProcessors.WrongAppUserRoleUpdateProcessor;
 import org.klozevitz.services.interfaces.updateProcessors.callbackQueryUpdateProcessors.BasicStateCQUP;
 import org.klozevitz.services.interfaces.updateProcessors.NullableStateUpdateProcessor;
 import org.klozevitz.services.interfaces.updateProcessors.callbackQueryUpdateProcessors.UnregisteredStateCQUP;
@@ -24,10 +25,17 @@ public class CallbackQueryUpdateProcessorService implements CallbackQueryUpdateP
     private final WaitingForEmailStateCQUP waitingForEmailStateCQUP;
     private final BasicStateCQUP basicStateCQUP;
     private final WaitingForDepartmentTelegramUserIdStateCQUP waitingForDepartmentTelegramUserIdStateCQUP;
+    private final WrongAppUserRoleUpdateProcessor wrongAppUserRoleUpdateProcessor;
 
     @Override
     public SendMessage processCallbackQueryMessage(Update update, AppUser currentAppUser) {
-        var state = currentAppUser.getCompany().getState();
+        var company = currentAppUser.getCompany();
+
+        if (company == null) {
+            return wrongAppUserRoleUpdateProcessor.processUpdate(update);
+        }
+
+        var state = company.getState();
 
         if (state == null) {
             return nullableStateUpdateProcessor.processUpdate(update, currentAppUser);

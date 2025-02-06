@@ -26,7 +26,7 @@ public class Department extends BaseEntity {
     private AppUser appUser;
     @EqualsAndHashCode.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "company_id", insertable = false)
     private Company company;
     @EqualsAndHashCode.Exclude
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "department")

@@ -50,6 +50,10 @@ public class TelegramView {
             "корректным telegramUserId";
     private final String ALREADY_REGISTERED_TELEGRAM_USER_ID_ERROR_MESSAGE = "<b>Введенный Телеграм-id уже " +
             "зарегистрирован в системе</b>";
+    private final String WRONG_APP_USER_ROLE_ERROR_MESSAGE = "Вы зарегистрированы, как пользователь или как человек, " +
+            "отвечающий за отделение компании- функционал этого чата для Вас не доступен.\n" +
+            "Если Вам необходимо зарегистрироваться, как другая компания, попросите организацию, зарегистрировавшую" +
+            "Вас, удалить Вас или переназначить руководство отделом на другой аккаунт телеграм.";
     private MessageUtil messageUtil;
 
     /**
@@ -365,6 +369,17 @@ public class TelegramView {
         return messageUtil.addServiceMessage(answer, ALREADY_REGISTERED_TELEGRAM_USER_ID_ERROR_MESSAGE);
     }
 
+    /**
+     * Вью предназначен для тех, кто имеет аккаунт в другом чате, и попробовал воспользоваться функционалом текущего.
+     * СВОЕГО ВЬЮ в CompanyView нет
+     * */
+    public SendMessage wrongAppUserRoleErrorView(Update update) {
+        var answer = messageUtil.blankAnswer(update);
+
+        answer.setText(WRONG_APP_USER_ROLE_ERROR_MESSAGE);
+
+        return answer;
+    }
 
     /**
      * Базовое текстовое сообщение

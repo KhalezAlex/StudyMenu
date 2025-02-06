@@ -7,6 +7,7 @@ import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.messageProcessors.CommandUpdateProcessor;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.services.interfaces.updateProcessors.NullableStateUpdateProcessor;
+import org.klozevitz.services.interfaces.updateProcessors.WrongAppUserRoleUpdateProcessor;
 import org.klozevitz.services.interfaces.updateProcessors.commandUpdateProcessors.BasicStateCUP;
 import org.klozevitz.services.interfaces.updateProcessors.commandUpdateProcessors.UnregisteredStateCUP;
 import org.klozevitz.services.interfaces.updateProcessors.commandUpdateProcessors.WaitingForDepartmentTelegramUserIdStateCUP;
@@ -28,9 +29,17 @@ public class CommandUpdateProcessorService implements CommandUpdateProcessor {
     private final BasicStateCUP basicStateCUP;
     private final UnregisteredStateCUP unregisteredStateCUP;
     private final WaitingForDepartmentTelegramUserIdStateCUP waitingForDepartmentTelegramUserIdStateCUP;
+    private final WrongAppUserRoleUpdateProcessor wrongAppUserRoleUpdateProcessor;
 
     @Override
     public SendMessage processCommandMessage(Update update, AppUser currentAppUser) {
+
+        var company = currentAppUser.getCompany();
+
+        if (company == null) {
+            return wrongAppUserRoleUpdateProcessor.processUpdate(update);
+        }
+
         var state = currentAppUser.getCompany().getState();
 
         if (state == null) {
