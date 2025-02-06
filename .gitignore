@@ -2,3 +2,5 @@
 /company/node/src/main/resources/application.yaml
 /company/mail_service/src/main/resources/application.yaml
 /company/activation_rest_service/src/main/resources/application.yaml
+/department/department_dispatcher/src/main/resources/application.yaml
+/department/department_node/src/main/resources/application.yaml

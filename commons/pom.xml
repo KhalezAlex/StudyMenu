@@ -17,6 +17,7 @@
         <module>commons_dispatcher</module>
         <module>commons_rabbitMQ</module>
         <module>commons_node</module>
+        <module>commons_telegram</module>
     </modules>
 
     <properties>

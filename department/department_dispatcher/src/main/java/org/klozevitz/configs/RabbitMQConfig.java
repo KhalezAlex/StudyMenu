@@ -17,7 +17,7 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue textMessageUpdate() {
+    public Queue textMessageQueue() {
         return new Queue(DEPARTMENT_TEXT_UPDATE);
     }
 
@@ -37,5 +37,5 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue answerMessage() {return new Queue(DEPARTMENT_ANSWER_MESSAGE);}
+    public Queue answerMessageUpdate() {return new Queue(DEPARTMENT_ANSWER_MESSAGE);}
 }
