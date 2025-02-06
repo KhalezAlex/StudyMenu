@@ -1,7 +1,7 @@
 package org.klozevitz.services.implementations;
 
 import lombok.RequiredArgsConstructor;
-import org.klozevitz.TelegramView;
+import org.klozevitz.CompanyTelegramView;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.enitites.appUsers.enums.views.CompanyView;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
@@ -17,7 +17,7 @@ import static org.klozevitz.enitites.appUsers.enums.states.CompanyState.BASIC_ST
 public class ActivatorService implements Activator {
     private final AppUserRepo appUserRepo;
     private final CryptoTool cryptoTool;
-    private final TelegramView telegramView;
+    private final CompanyTelegramView telegramView;
     private final AnswerProducer answerProducer;
 
     @Override

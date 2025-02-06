@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
-public class TelegramView {
+public class CompanyTelegramView {
     private final String UNREGISTERED_WELCOME_MESSAGE = "Вы находитесь на главной странице чат-бота.\n" +
             "Ваша компания еще не зарегистрирована.\n" +
             "Нажмите кнопку для продолжения регистрации.";
@@ -50,7 +50,7 @@ public class TelegramView {
             "корректным telegramUserId";
     private final String ALREADY_REGISTERED_TELEGRAM_USER_ID_ERROR_MESSAGE = "<b>Введенный Телеграм-id уже " +
             "зарегистрирован в системе</b>";
-    private final String WRONG_APP_USER_ROLE_ERROR_MESSAGE = "Вы зарегистрированы, как пользователь или как человек, " +
+    private final String WRONG_APP_USER_ROLE_ERROR_MESSAGE = "Вы зарегистрированы, как персонал или как человек, " +
             "отвечающий за отделение компании- функционал этого чата для Вас не доступен.\n" +
             "Если Вам необходимо зарегистрироваться, как другая компания, попросите организацию, зарегистрировавшую" +
             "Вас, удалить Вас или переназначить руководство отделом на другой аккаунт телеграм.";

@@ -1,7 +1,7 @@
 package org.klozevitz.services.implementations.utils;
 
 import lombok.RequiredArgsConstructor;
-import org.klozevitz.TelegramView;
+import org.klozevitz.CompanyTelegramView;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.enitites.appUsers.Department;
 import org.klozevitz.enitites.appUsers.enums.states.CompanyState;
@@ -19,7 +19,7 @@ import static org.klozevitz.enitites.appUsers.enums.views.CompanyView.DEPARTMENT
 @Service
 @RequiredArgsConstructor
 public class DepartmentActivatorService implements DepartmentActivator {
-    private final TelegramView telegramView;
+    private final CompanyTelegramView telegramView;
     private final AppUserRepo appUserRepo;
 
 

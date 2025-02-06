@@ -2,12 +2,11 @@ package org.klozevitz.services.implementations.updateProcessors.commandUpdatePro
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
-import org.klozevitz.TelegramView;
+import org.klozevitz.CompanyTelegramView;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.messageProcessors.CommandUpdateProcessor;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
-import org.klozevitz.services.interfaces.updateProcessors.NullableStateUpdateProcessor;
-import org.klozevitz.services.interfaces.updateProcessors.WrongAppUserRoleUpdateProcessor;
+import org.klozevitz.messageProcessors.NullableStateUpdateProcessor;
 import org.klozevitz.services.interfaces.updateProcessors.commandUpdateProcessors.BasicStateCUP;
 import org.klozevitz.services.interfaces.updateProcessors.commandUpdateProcessors.UnregisteredStateCUP;
 import org.klozevitz.services.interfaces.updateProcessors.commandUpdateProcessors.WaitingForDepartmentTelegramUserIdStateCUP;
@@ -23,23 +22,15 @@ import static org.klozevitz.enitites.appUsers.enums.views.CompanyView.*;
 @Service("commandUpdateProcessor")
 @RequiredArgsConstructor
 public class CommandUpdateProcessorService implements CommandUpdateProcessor {
-    private final TelegramView telegramView;
+    private final CompanyTelegramView telegramView;
     private final AppUserRepo appUserRepo;
     private final NullableStateUpdateProcessor nullableStateUpdateProcessor;
     private final BasicStateCUP basicStateCUP;
     private final UnregisteredStateCUP unregisteredStateCUP;
     private final WaitingForDepartmentTelegramUserIdStateCUP waitingForDepartmentTelegramUserIdStateCUP;
-    private final WrongAppUserRoleUpdateProcessor wrongAppUserRoleUpdateProcessor;
 
     @Override
-    public SendMessage processCommandMessage(Update update, AppUser currentAppUser) {
-
-        var company = currentAppUser.getCompany();
-
-        if (company == null) {
-            return wrongAppUserRoleUpdateProcessor.processUpdate(update);
-        }
-
+    public SendMessage processCommandUpdate(Update update, AppUser currentAppUser) {
         var state = currentAppUser.getCompany().getState();
 
         if (state == null) {
@@ -48,15 +39,15 @@ public class CommandUpdateProcessorService implements CommandUpdateProcessor {
 
         switch (state) {
             case UNREGISTERED_STATE:
-                return unregisteredStateCUP.processCommandMessage(update, currentAppUser);
+                return unregisteredStateCUP.processCommandUpdate(update, currentAppUser);
             case WAITING_FOR_EMAIL_STATE:
                 return emailRequestView(update, currentAppUser);
             case WAITING_FOR_EMAIL_CONFIRMATION_STATE:
                 return emailConfirmationRequestView(update, currentAppUser);
             case BASIC_STATE:
-                return basicStateCUP.processCommandMessage(update, currentAppUser);
+                return basicStateCUP.processCommandUpdate(update, currentAppUser);
             case WAITING_FOR_DEPARTMENT_TELEGRAM_USER_ID_STATE:
-                return waitingForDepartmentTelegramUserIdStateCUP.processCommandMessage(update, currentAppUser);
+                return waitingForDepartmentTelegramUserIdStateCUP.processCommandUpdate(update, currentAppUser);
             default: {
                 log.error("Сообщение не попало ни в одну из веток состояний компании");
                 return telegramView.previousView(update, currentAppUser);

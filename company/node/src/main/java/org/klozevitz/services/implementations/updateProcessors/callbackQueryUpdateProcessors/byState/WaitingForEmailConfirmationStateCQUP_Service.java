@@ -7,7 +7,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 public class WaitingForEmailConfirmationStateCQUP_Service implements WaitingForEmailConfirmationStateCQUP {
     @Override
-    public SendMessage processCallbackQueryMessage(Update update, AppUser currentAppUser) {
+    public SendMessage processCallbackQueryUpdate(Update update, AppUser currentAppUser) {
         return null;
     }
 }

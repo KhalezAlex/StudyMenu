@@ -1,4 +1,4 @@
-package org.klozevitz.services.interfaces.updateProcessors;
+package org.klozevitz.messageProcessors;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;

@@ -10,6 +10,7 @@ import org.klozevitz.messageProcessors.TextUpdateProcessor;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.services.interfaces.AnswerProducer;
 import org.klozevitz.services.interfaces.Main;
+import org.klozevitz.messageProcessors.WrongAppUserRoleUpdateProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,8 @@ public class MainService implements Main {
     @Autowired
     private AppUserRepo appUserRepo;
     @Autowired
+    private WrongAppUserRoleUpdateProcessor wrongAppUserRoleUpdateProcessor;
+    @Autowired
     private TextUpdateProcessor textUpdateProcessor;
     @Autowired
     @Qualifier("commandUpdateProcessor")
@@ -38,32 +41,38 @@ public class MainService implements Main {
 
     @Override
     public void processTextMessage(Update update) {
-        var chatId = chatId(update);
-        var appUser = findOrSaveAppUser(update);
-        var answer = textUpdateProcessor.processTextMessage(update, appUser);
-        sendAnswer(answer, chatId);
+        var currentAppUser = findOrSaveAppUser(update);
+        var company = currentAppUser.getCompany();
+
+        var answer = company == null ?
+                wrongAppUserRoleUpdateProcessor.processUpdate(update) :
+                textUpdateProcessor.processTextUpdate(update, currentAppUser);
+
+        sendAnswer(answer);
     }
 
     @Override
     public void processCommandMessage(Update update) {
-        var chatId = chatId(update);
-        var appUser = findOrSaveAppUser(update);
-        var answer = commandUpdateProcessor.processCommandMessage(update, appUser);
-        sendAnswer(answer, chatId);
+        var currentAppUser = findOrSaveAppUser(update);
+        var company = currentAppUser.getCompany();
+
+        var answer = company == null ?
+                wrongAppUserRoleUpdateProcessor.processUpdate(update) :
+                commandUpdateProcessor.processCommandUpdate(update, currentAppUser);
+
+        sendAnswer(answer);
     }
 
     @Override
     public void processCallbackQueryMessage(Update update) {
-        var chatId = chatId(update);
-        var appUser = findOrSaveAppUser(update);
-        var answer = callbackQueryUpdateProcessor.processCallbackQueryMessage(update, appUser);
-        sendAnswer(answer, chatId);
-    }
+        var currentAppUser = findOrSaveAppUser(update);
+        var company = currentAppUser.getCompany();
 
-    private long chatId(Update update) {
-        return update.hasMessage() ?
-                update.getMessage().getChatId() :
-                update.getCallbackQuery().getMessage().getChatId();
+        var answer = company == null ?
+                wrongAppUserRoleUpdateProcessor.processUpdate(update) :
+                callbackQueryUpdateProcessor.processCallbackQueryUpdate(update, currentAppUser);
+
+        sendAnswer(answer);
     }
 
     private AppUser findOrSaveAppUser(Update update) {
@@ -99,7 +108,7 @@ public class MainService implements Main {
         return appUserRepo.save(persistentAppUser);
     }
 
-    private void sendAnswer(SendMessage output, Long chatId) {
-        answerProducer.produceAnswer(output);
+    private void sendAnswer(SendMessage answer) {
+        answerProducer.produceAnswer(answer);
     }
 }

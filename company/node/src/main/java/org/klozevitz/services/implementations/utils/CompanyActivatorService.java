@@ -2,7 +2,7 @@ package org.klozevitz.services.implementations.utils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
-import org.klozevitz.TelegramView;
+import org.klozevitz.CompanyTelegramView;
 import org.klozevitz.dto.MailParameters;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
@@ -30,7 +30,7 @@ public class CompanyActivatorService implements CompanyActivator {
     private String mailServiceUrl;
     private final AppUserRepo appUserRepo;
     private final CryptoTool cryptoTool;
-    private final TelegramView telegramView;
+    private final CompanyTelegramView telegramView;
 
 
     @Override

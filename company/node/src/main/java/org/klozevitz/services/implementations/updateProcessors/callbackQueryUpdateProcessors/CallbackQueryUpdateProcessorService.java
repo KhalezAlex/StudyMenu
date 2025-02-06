@@ -2,12 +2,11 @@ package org.klozevitz.services.implementations.updateProcessors.callbackQueryUpd
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
-import org.klozevitz.TelegramView;
+import org.klozevitz.CompanyTelegramView;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.messageProcessors.CallbackQueryUpdateProcessor;
-import org.klozevitz.services.interfaces.updateProcessors.WrongAppUserRoleUpdateProcessor;
 import org.klozevitz.services.interfaces.updateProcessors.callbackQueryUpdateProcessors.BasicStateCQUP;
-import org.klozevitz.services.interfaces.updateProcessors.NullableStateUpdateProcessor;
+import org.klozevitz.messageProcessors.NullableStateUpdateProcessor;
 import org.klozevitz.services.interfaces.updateProcessors.callbackQueryUpdateProcessors.UnregisteredStateCQUP;
 import org.klozevitz.services.interfaces.updateProcessors.callbackQueryUpdateProcessors.WaitingForDepartmentTelegramUserIdStateCQUP;
 import org.klozevitz.services.interfaces.updateProcessors.callbackQueryUpdateProcessors.WaitingForEmailStateCQUP;
@@ -19,23 +18,16 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @Service("callbackQueryUpdateProcessor")
 @RequiredArgsConstructor
 public class CallbackQueryUpdateProcessorService implements CallbackQueryUpdateProcessor {
-    private final TelegramView telegramView;
+    private final CompanyTelegramView telegramView;
     private final NullableStateUpdateProcessor nullableStateUpdateProcessor;
     private final UnregisteredStateCQUP unregisteredStateCQUP;
     private final WaitingForEmailStateCQUP waitingForEmailStateCQUP;
     private final BasicStateCQUP basicStateCQUP;
     private final WaitingForDepartmentTelegramUserIdStateCQUP waitingForDepartmentTelegramUserIdStateCQUP;
-    private final WrongAppUserRoleUpdateProcessor wrongAppUserRoleUpdateProcessor;
 
     @Override
-    public SendMessage processCallbackQueryMessage(Update update, AppUser currentAppUser) {
-        var company = currentAppUser.getCompany();
-
-        if (company == null) {
-            return wrongAppUserRoleUpdateProcessor.processUpdate(update);
-        }
-
-        var state = company.getState();
+    public SendMessage processCallbackQueryUpdate(Update update, AppUser currentAppUser) {
+        var state = currentAppUser.getCompany().getState();
 
         if (state == null) {
             return nullableStateUpdateProcessor.processUpdate(update, currentAppUser);
@@ -43,13 +35,13 @@ public class CallbackQueryUpdateProcessorService implements CallbackQueryUpdateP
 
         switch (state) {
             case UNREGISTERED_STATE:
-                return unregisteredStateCQUP.processCallbackQueryMessage(update, currentAppUser);
+                return unregisteredStateCQUP.processCallbackQueryUpdate(update, currentAppUser);
             case WAITING_FOR_EMAIL_CONFIRMATION_STATE:
-                return waitingForEmailStateCQUP.processCallbackQueryMessage(update, currentAppUser);
+                return waitingForEmailStateCQUP.processCallbackQueryUpdate(update, currentAppUser);
             case BASIC_STATE:
-                return basicStateCQUP.processCallbackQueryMessage(update, currentAppUser);
+                return basicStateCQUP.processCallbackQueryUpdate(update, currentAppUser);
             case WAITING_FOR_DEPARTMENT_TELEGRAM_USER_ID_STATE:
-                return waitingForDepartmentTelegramUserIdStateCQUP.processCallbackQueryMessage(update, currentAppUser);
+                return waitingForDepartmentTelegramUserIdStateCQUP.processCallbackQueryUpdate(update, currentAppUser);
             default: {
                 log.error("Сообщение не попало ни в одну из веток состояний компании");
                 return telegramView.previousView(update, currentAppUser);

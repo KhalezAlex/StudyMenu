@@ -2,11 +2,10 @@ package org.klozevitz.services.implementations.updateProcessors.textUpdateProces
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
-import org.klozevitz.TelegramView;
+import org.klozevitz.CompanyTelegramView;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.messageProcessors.TextUpdateProcessor;
-import org.klozevitz.services.interfaces.updateProcessors.NullableStateUpdateProcessor;
-import org.klozevitz.services.interfaces.updateProcessors.WrongAppUserRoleUpdateProcessor;
+import org.klozevitz.messageProcessors.NullableStateUpdateProcessor;
 import org.klozevitz.services.interfaces.utils.CompanyActivator;
 import org.klozevitz.services.interfaces.utils.DepartmentActivator;
 import org.springframework.stereotype.Service;
@@ -18,11 +17,10 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @Service
 @RequiredArgsConstructor
 public class TextUpdateProcessorService implements TextUpdateProcessor {
-    private final TelegramView telegramView;
+    private final CompanyTelegramView telegramView;
     private final CompanyActivator companyActivator;
     private final DepartmentActivator departmentActivator;
     private final NullableStateUpdateProcessor nullableStateUpdateProcessor;
-    private final WrongAppUserRoleUpdateProcessor wrongAppUserRoleUpdateProcessor;
 
     /**
      * Пока предусмотрена передача текстовых сообщений только в 2 статусах
@@ -33,13 +31,7 @@ public class TextUpdateProcessorService implements TextUpdateProcessor {
      * */
 
     @Override
-    public SendMessage processTextMessage(Update update, AppUser currentAppUser) {
-        var company = currentAppUser.getCompany();
-
-        if (company == null) {
-            return wrongAppUserRoleUpdateProcessor.processUpdate(update);
-        }
-
+    public SendMessage processTextUpdate(Update update, AppUser currentAppUser) {
         var state = currentAppUser.getCompany().getState();
 
         if (state == null) {
