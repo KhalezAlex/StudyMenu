@@ -1,7 +1,7 @@
 package org.klozevitz.configs;
 
 import org.klozevitz.MessageUtil;
-import org.klozevitz.TelegramView;
+import org.klozevitz.CompanyTelegramView;
 import org.klozevitz.utils.CryptoTool;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -13,8 +13,8 @@ public class AppConfig {
     private String salt;
 
     @Bean
-    public TelegramView view() {
-        return new TelegramView(messageUtil());
+    public CompanyTelegramView view() {
+        return new CompanyTelegramView(messageUtil());
     }
 
     @Bean

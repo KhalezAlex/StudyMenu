@@ -1,7 +1,7 @@
 package org.klozevitz.services.implementations.updateProcessors.commandUpdateProcessors.byState;
 
 import lombok.RequiredArgsConstructor;
-import org.klozevitz.TelegramView;
+import org.klozevitz.CompanyTelegramView;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.services.interfaces.updateProcessors.commandUpdateProcessors.BasicStateCUP;
@@ -14,12 +14,12 @@ import static org.klozevitz.enitites.appUsers.enums.views.CompanyView.REGISTERED
 @Service
 @RequiredArgsConstructor
 public class BasicStateCUP_Service implements BasicStateCUP {
-    private final TelegramView telegramView;
+    private final CompanyTelegramView telegramView;
     private final AppUserRepo appUserRepo;
 
 
     @Override
-    public SendMessage processCommandMessage(Update update, AppUser currentAppUser) {
+    public SendMessage processCommandUpdate(Update update, AppUser currentAppUser) {
         var command = update.getMessage().getText();
 
         switch (command) {

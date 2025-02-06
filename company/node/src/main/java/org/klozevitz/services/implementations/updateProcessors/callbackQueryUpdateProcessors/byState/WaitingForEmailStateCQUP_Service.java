@@ -2,7 +2,7 @@ package org.klozevitz.services.implementations.updateProcessors.callbackQueryUpd
 
 import lombok.RequiredArgsConstructor;
 import org.klozevitz.MessageUtil;
-import org.klozevitz.TelegramView;
+import org.klozevitz.CompanyTelegramView;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.services.interfaces.updateProcessors.callbackQueryUpdateProcessors.WaitingForEmailStateCQUP;
@@ -17,12 +17,12 @@ import static org.klozevitz.enitites.appUsers.enums.views.CompanyView.EMAIL_REQU
 @RequiredArgsConstructor
 public class WaitingForEmailStateCQUP_Service implements WaitingForEmailStateCQUP {
     private final String REGISTRATION_ABORT_NOTIFICATION_MESSAGE = "Регистрация была прервана";
-    private final TelegramView telegramView;
+    private final CompanyTelegramView telegramView;
     private final AppUserRepo appUserRepo;
     private final MessageUtil messageUtil;
 
     @Override
-    public SendMessage processCallbackQueryMessage(Update update, AppUser currentAppUser) {
+    public SendMessage processCallbackQueryUpdate(Update update, AppUser currentAppUser) {
         var command = update.getCallbackQuery().getData();
 
         switch (command) {

@@ -25,14 +25,14 @@ public enum CompanyView {
     private final String command;
     private final List<CompanyState> permissions;
 
-    public static CompanyView fromTextCommand(String command, CompanyState state) {
-
-        for (CompanyView v: CompanyView.values()) {
-            if (v.command.equals(command) && v.permissions.contains(state)) {
-                return v;
-            }
-        }
-
-        return null;
-    }
+//    public static CompanyView fromTextCommand(String command, CompanyState state) {
+//
+//        for (CompanyView v: CompanyView.values()) {
+//            if (v.command.equals(command) && v.permissions.contains(state)) {
+//                return v;
+//            }
+//        }
+//
+//        return null;
+//    }
 }

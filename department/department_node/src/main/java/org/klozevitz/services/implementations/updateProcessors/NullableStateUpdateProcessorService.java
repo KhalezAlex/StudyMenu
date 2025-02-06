@@ -1,28 +1,31 @@
 package org.klozevitz.services.implementations.updateProcessors;
 
 import lombok.RequiredArgsConstructor;
-import org.klozevitz.CompanyTelegramView;
+import lombok.extern.log4j.Log4j;
+import org.klozevitz.DepartmentTelegramView;
 import org.klozevitz.enitites.appUsers.AppUser;
-import org.klozevitz.repositories.appUsers.AppUserRepo;
+import org.klozevitz.enitites.appUsers.Department;
 import org.klozevitz.messageProcessors.NullableStateUpdateProcessor;
+import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import static org.klozevitz.enitites.appUsers.enums.views.CompanyView.NULL_COMPANY_STATE_NOTIFICATION_VIEW;
+import static org.klozevitz.enitites.appUsers.enums.views.DepartmentView.WRONG_APP_USER_ROLE_NOTIFICATION_VIEW;
 
-
+@Log4j
 @Service
 @RequiredArgsConstructor
 public class NullableStateUpdateProcessorService implements NullableStateUpdateProcessor {
-    private final CompanyTelegramView telegramView;
+    private final DepartmentTelegramView telegramView;
     private final AppUserRepo appUserRepo;
+
 
     @Override
     public SendMessage processUpdate(Update update, AppUser currentAppUser) {
-        currentAppUser.getCompany().setCurrentView(NULL_COMPANY_STATE_NOTIFICATION_VIEW);
+        currentAppUser.getDepartment().setCurrentView(WRONG_APP_USER_ROLE_NOTIFICATION_VIEW);
         appUserRepo.save(currentAppUser);
 
-        return telegramView.nullCompanyStateNotificationView(update);
+        return telegramView.wrongAppUserRoleErrorView(update);
     }
 }

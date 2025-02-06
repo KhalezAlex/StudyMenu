@@ -4,6 +4,7 @@ import javax.persistence.*;
 import lombok.*;
 import org.klozevitz.enitites.BaseEntity;
 import org.klozevitz.enitites.appUsers.enums.states.DepartmentState;
+import org.klozevitz.enitites.appUsers.enums.views.DepartmentView;
 import org.klozevitz.enitites.menu.Category;
 
 import java.util.Set;
@@ -19,6 +20,8 @@ import java.util.Set;
 public class Department extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private DepartmentState state;
+    @Enumerated(EnumType.STRING)
+    private DepartmentView currentView;
 
     @EqualsAndHashCode.Exclude
     @OneToOne(mappedBy = "department", cascade = CascadeType.ALL)

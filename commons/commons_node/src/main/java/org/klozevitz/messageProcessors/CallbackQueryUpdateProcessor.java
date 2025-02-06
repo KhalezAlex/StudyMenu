@@ -5,5 +5,5 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 public interface CallbackQueryUpdateProcessor {
-    SendMessage processCallbackQueryMessage(Update update, AppUser currentAppUser);
+    SendMessage processCallbackQueryUpdate(Update update, AppUser currentAppUser);
 }
