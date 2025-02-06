@@ -1,4 +1,4 @@
-package org.klozevitz.services.implementations.updateProcessors.callbackQueryUpdateProcessors.byState;
+package org.klozevitz.services.implementations.updateProcessors;
 
 import lombok.RequiredArgsConstructor;
 import org.klozevitz.TelegramView;
@@ -14,7 +14,7 @@ import static org.klozevitz.enitites.appUsers.enums.views.CompanyView.NULL_COMPA
 
 @Service
 @RequiredArgsConstructor
-public class NullableStateService implements NullableStateUpdateProcessor {
+public class NullableStateUpdateProcessorService implements NullableStateUpdateProcessor {
     private final TelegramView telegramView;
     private final AppUserRepo appUserRepo;
 

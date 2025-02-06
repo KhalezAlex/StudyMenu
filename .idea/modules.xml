@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/commons/commons_telegram/commons_telegram.iml" filepath="$PROJECT_DIR$/commons/commons_telegram/commons_telegram.iml" />
+      <module fileurl="file://$PROJECT_DIR$/department/department_dispatcher/department_dispatcher.iml" filepath="$PROJECT_DIR$/department/department_dispatcher/department_dispatcher.iml" />
+      <module fileurl="file://$PROJECT_DIR$/department/department_node/department_node.iml" filepath="$PROJECT_DIR$/department/department_node/department_node.iml" />
+      <module fileurl="file://$PROJECT_DIR$/department/department_telegram/department_telegram.iml" filepath="$PROJECT_DIR$/department/department_telegram/department_telegram.iml" />
+    </modules>
+  </component>
+</project>

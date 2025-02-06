@@ -6,6 +6,7 @@ import org.klozevitz.TelegramView;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.messageProcessors.TextUpdateProcessor;
 import org.klozevitz.services.interfaces.updateProcessors.NullableStateUpdateProcessor;
+import org.klozevitz.services.interfaces.updateProcessors.WrongAppUserRoleUpdateProcessor;
 import org.klozevitz.services.interfaces.utils.CompanyActivator;
 import org.klozevitz.services.interfaces.utils.DepartmentActivator;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ public class TextUpdateProcessorService implements TextUpdateProcessor {
     private final CompanyActivator companyActivator;
     private final DepartmentActivator departmentActivator;
     private final NullableStateUpdateProcessor nullableStateUpdateProcessor;
+    private final WrongAppUserRoleUpdateProcessor wrongAppUserRoleUpdateProcessor;
 
     /**
      * Пока предусмотрена передача текстовых сообщений только в 2 статусах
@@ -32,6 +34,12 @@ public class TextUpdateProcessorService implements TextUpdateProcessor {
 
     @Override
     public SendMessage processTextMessage(Update update, AppUser currentAppUser) {
+        var company = currentAppUser.getCompany();
+
+        if (company == null) {
+            return wrongAppUserRoleUpdateProcessor.processUpdate(update);
+        }
+
         var state = currentAppUser.getCompany().getState();
 
         if (state == null) {
