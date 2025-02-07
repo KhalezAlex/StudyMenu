@@ -30,10 +30,12 @@ public class MainService implements Main {
     private UpdateProcessor commandUpdateProcessor;
     @Resource(name = "textUpdateProcessor")
     private UpdateProcessor textUpdateProcessor;
+    @Resource(name = "callbackQueryUpdateProcessor")
+    private UpdateProcessor callbackQueryUpdateProcessor;
 
 
     @Override
-    public void processTextMessage(Update update) {
+    public void processTextUpdate(Update update) {
         var optionalCurrentAppUser = findAppUser(update);
         var answer = optionalCurrentAppUser.isEmpty() ?
                 notRegisteredAppUserUpdateProcessor.processUpdate(update) :
@@ -52,7 +54,7 @@ public class MainService implements Main {
 
 
     @Override
-    public void processCommandMessage(Update update) {
+    public void processCommandUpdate(Update update) {
         var optionalCurrentAppUser = findAppUser(update);
         var answer = optionalCurrentAppUser.isEmpty() ?
                 notRegisteredAppUserUpdateProcessor.processUpdate(update) :
@@ -71,12 +73,25 @@ public class MainService implements Main {
     }
 
     @Override
-    public void processCallbackQueryMessage(Update update) {
-//        var optionalCurrentAppUser =
+    public void processCallbackQueryUpdate(Update update) {
+        var optionalCurrentUser = findAppUser(update);
+        var answer = optionalCurrentUser.isEmpty() ?
+                notRegisteredAppUserUpdateProcessor.processUpdate(update) :
+                registeredUserCallbackQueryUpdateAnswer(update, optionalCurrentUser.get());
+
+        sendAnswer(answer);
+    }
+
+    private SendMessage registeredUserCallbackQueryUpdateAnswer(Update update, AppUser currentAppUser) {
+        var department = currentAppUser.getDepartment();
+
+        return department == null ?
+                wrongAppUserRoleUpdateProcessor.processUpdate(update) :
+                callbackQueryUpdateProcessor.processUpdate(update, currentAppUser);
     }
 
     @Override
-    public void processDocMessage(Update update) {
+    public void processDocUpdate(Update update) {
 
     }
 

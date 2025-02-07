@@ -6,7 +6,7 @@ import org.klozevitz.DepartmentTelegramView;
 import org.klozevitz.UpdateProcessor;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -20,6 +20,7 @@ public class BasicStateCUP implements UpdateProcessor {
     private final DepartmentTelegramView telegramView;
     @Inject
     private AppUserRepo appUserRepo;
+
 
     @Override
     public SendMessage processUpdate(Update update, AppUser currentAppUser) {

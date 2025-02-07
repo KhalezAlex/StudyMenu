@@ -32,7 +32,7 @@ public class Department extends BaseEntity {
     @JoinColumn(name = "company_id", insertable = false)
     private Company company;
     @EqualsAndHashCode.Exclude
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "department")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "department", fetch = FetchType.EAGER)
     private Set<Employee> employees;
     @EqualsAndHashCode.Exclude
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "department")

@@ -1,15 +1,24 @@
 package org.klozevitz;
 
 import lombok.RequiredArgsConstructor;
+import org.klozevitz.enitites.appUsers.AppUser;
+import org.klozevitz.enitites.appUsers.Department;
+import org.klozevitz.enitites.appUsers.Employee;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @RequiredArgsConstructor
 public class DepartmentTelegramView {
+    private final String PREVIOUS_VIEW_ERROR_MESSAGE = "<b>Вы совершили действие, которое привело к остановке " +
+            "выполнения процесса. Вернемся к предыдущему экрану:</b>";
+    private final String NULL_VIEW_ERROR_MESSAGE = "<b>ТАКОГО НЕ ДОЛЖНО БЫЛО ПРОИЗОЙТИ В ПРИНЦИПЕ- " +
+            "ЭТО СЕРВИСНОЕ СООБЩЕНИЕ. ЕСЛИ ВЫ ЕГО ВИДИТЕ, СВЯЖИТЕСЬ, ПОЖАЛУЙСТА, СО СЛУЖБОЙ ПОДДЕРЖКИ.</b>";
     private final String WRONG_APP_USER_ROLE_ERROR_MESSAGE = "Вы зарегистрированы, как персонал или как человек, " +
             "отвечающий за компанию в целом- функционал этого чата для Вас не доступен.\n" +
             "Если Вам необходимо зарегистрироваться, как руководитель отделения, попросите организацию, " +
@@ -21,8 +30,55 @@ public class DepartmentTelegramView {
             "для регистрации";
     private final String WELCOME_MESSAGE = "Вы находитесь на главной странице чат-бота.\n" +
             "Вам доступны следующие действия:";
+    private final String EMPLOYEES_MANAGEMENT_VIEW_MESSAGE = "На этой странице Вы можете управлять " +
+            "Вашим персоналом. Как только Вы добавите первого работника, он появится в списке.";
     private final MessageUtil messageUtil;
 
+
+    /**
+     * Метод получает пользователя и объект update и выдает сообщение с вьюхой, с которой пользователь уходит,
+     * чтобы вернуться назад
+     * */
+
+    public SendMessage previousView(Update update, AppUser currentAppUser) {
+        var answer = previousViewStrategy(update, currentAppUser);
+
+        return messageUtil.addServiceMessage(answer, PREVIOUS_VIEW_ERROR_MESSAGE);
+    }
+
+    private SendMessage previousViewStrategy(Update update, AppUser currentAppUser) {
+        var currentView = currentAppUser.getDepartment().getCurrentView();
+        var chatId = chatId(update);
+
+        if (currentView == null) {
+            return nullCurrentViewErrorView(update);
+        }
+
+        switch (currentView) {
+            case NULL_DEPARTMENT_STATE_ERROR_VIEW:
+                return nullDepartmentStateErrorView(update);
+            case WRONG_APP_USER_ROLE_ERROR_VIEW:
+                return wrongAppUserRoleErrorView(update);
+            case WELCOME_VIEW:
+                return welcomeView(update);
+            case EMPLOYEES_MANAGEMENT_VIEW:
+                return employeesManagementView(update, currentAppUser);
+            case NOT_REGISTERED_DEPARTMENT_ERROR_VIEW:
+                return notRegisteredDepartmentErrorView(update);
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * ЭТО СООБЩЕНИЕ НЕ МОЖЕТ ВЫЛЕТЕТЬ В ПРИНЦИПЕ!!!
+     * Сообщение о том, что не задан текущий вью пользователя
+     * */
+    public SendMessage nullCurrentViewErrorView(Update update) {
+        var answer = messageUtil.blankAnswer(update);
+
+        return messageUtil.addServiceMessage(answer, NULL_VIEW_ERROR_MESSAGE);
+    }
 
 
     /**
@@ -93,6 +149,59 @@ public class DepartmentTelegramView {
     }
 
 
+    /**
+     * Вью управления департаментами
+     * DepartmentView.EMPLOYEES_MANAGEMENT_VIEW
+     * */
+    public SendMessage employeesManagementView(Update update, AppUser currentAppUser) {
+        var employees = currentAppUser.getDepartment().getEmployees();
+        var answer = messageUtil.blankAnswer(update);
+        var employeesManagementViewKeyboardMarkUp =
+                employeesManagementViewKeyboardMarkUp(employees);
+
+        answer.setText(EMPLOYEES_MANAGEMENT_VIEW_MESSAGE);
+        answer.setReplyMarkup(employeesManagementViewKeyboardMarkUp);
+
+        return answer;
+    }
+
+    private InlineKeyboardMarkup employeesManagementViewKeyboardMarkUp(Set<Employee> employees) {
+        var employeesManagementViewKeyboardMarkUp = new InlineKeyboardMarkup();
+        var addEmployeeRow = List.of(
+                button("ДОБАВИТЬ РАБОТНИКА", "/add_employee"),
+                button("Выход", "/start")
+        );
+
+        List<List<InlineKeyboardButton>> employeesManagementViewKeyboardMarkupDepartmentsManagementTable;
+
+        if (!employees.isEmpty()) {
+            employeesManagementViewKeyboardMarkupDepartmentsManagementTable =
+                    employeesManagementViewKeyboardMarkUpEmployeeManagementTable(employees);
+            employeesManagementViewKeyboardMarkupDepartmentsManagementTable.add(addEmployeeRow);
+        } else {
+            employeesManagementViewKeyboardMarkupDepartmentsManagementTable =
+                    List.of(addEmployeeRow);
+        }
+
+        employeesManagementViewKeyboardMarkUp.setKeyboard(employeesManagementViewKeyboardMarkupDepartmentsManagementTable);
+
+        return employeesManagementViewKeyboardMarkUp;
+    }
+
+    private List<List<InlineKeyboardButton>> employeesManagementViewKeyboardMarkUpEmployeeManagementTable(Set<Employee> employees) {
+        final List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+
+        employees.forEach(e -> {
+            var text = String.format("РАБОТНИК %d", e.getId());
+            List<InlineKeyboardButton> row = List.of(
+                    button(text, "/asd"),
+                    button("X", "/asdasd")
+            );
+            rows.add(row);
+        });
+
+        return rows;
+    }
 
     /**
      * Базовое текстовое сообщение

@@ -20,27 +20,27 @@ public class UpdateConsumerService implements UpdateConsumer {
     @RabbitListener(queues = DEPARTMENT_TEXT_UPDATE)
     public void consumeTextUpdate(Update update) {
         log.debug("text message received");
-        main.processTextMessage(update);
+        main.processTextUpdate(update);
     }
 
     @Override
     @RabbitListener(queues = DEPARTMENT_COMMAND_UPDATE)
     public void consumeCommandUpdate(Update update) {
         log.debug("text command message received");
-        main.processCommandMessage(update);
+        main.processCommandUpdate(update);
     }
 
     @Override
     @RabbitListener(queues = DEPARTMENT_CALLBACK_QUERY_UPDATE)
     public void consumeCallbackQueryUpdate(Update update) {
         log.debug("callback query message received");
-        main.processCallbackQueryMessage(update);
+        main.processCallbackQueryUpdate(update);
     }
 
     @Override
     @RabbitListener(queues = DEPARTMENT_DOC_UPDATE)
     public void consumeDocUpdate(Update update) {
         log.debug("doc message received");
-        main.processDocMessage(update);
+        main.processDocUpdate(update);
     }
 }
