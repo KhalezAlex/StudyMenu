@@ -1,4 +1,4 @@
-package org.klozevitz.messageProcessors;
+package org.klozevitz.messageProcessors.utils;
 
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;

@@ -10,7 +10,7 @@ import org.klozevitz.messageProcessors.TextUpdateProcessor;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.services.interfaces.AnswerProducer;
 import org.klozevitz.services.interfaces.Main;
-import org.klozevitz.messageProcessors.WrongAppUserRoleUpdateProcessor;
+import org.klozevitz.messageProcessors.utils.WrongAppUserRoleUpdateProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;

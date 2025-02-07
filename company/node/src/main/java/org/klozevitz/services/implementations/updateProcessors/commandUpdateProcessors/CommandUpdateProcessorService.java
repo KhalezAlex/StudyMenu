@@ -6,7 +6,7 @@ import org.klozevitz.CompanyTelegramView;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.messageProcessors.CommandUpdateProcessor;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
-import org.klozevitz.messageProcessors.NullableStateUpdateProcessor;
+import org.klozevitz.messageProcessors.utils.NullableStateUpdateProcessor;
 import org.klozevitz.services.interfaces.updateProcessors.commandUpdateProcessors.BasicStateCUP;
 import org.klozevitz.services.interfaces.updateProcessors.commandUpdateProcessors.UnregisteredStateCUP;
 import org.klozevitz.services.interfaces.updateProcessors.commandUpdateProcessors.WaitingForDepartmentTelegramUserIdStateCUP;

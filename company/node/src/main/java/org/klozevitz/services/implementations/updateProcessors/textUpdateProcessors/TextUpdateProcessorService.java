@@ -5,7 +5,7 @@ import lombok.extern.log4j.Log4j;
 import org.klozevitz.CompanyTelegramView;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.messageProcessors.TextUpdateProcessor;
-import org.klozevitz.messageProcessors.NullableStateUpdateProcessor;
+import org.klozevitz.messageProcessors.utils.NullableStateUpdateProcessor;
 import org.klozevitz.services.interfaces.utils.CompanyActivator;
 import org.klozevitz.services.interfaces.utils.DepartmentActivator;
 import org.springframework.stereotype.Service;
