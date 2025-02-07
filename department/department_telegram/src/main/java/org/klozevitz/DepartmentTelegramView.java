@@ -3,6 +3,10 @@ package org.klozevitz;
 import lombok.RequiredArgsConstructor;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 public class DepartmentTelegramView {
@@ -15,6 +19,8 @@ public class DepartmentTelegramView {
     private final String NOT_REGISTERED_DEPARTMENT_ERROR_MESSAGE = "Вы не зарегистрированы, как человек, отвечающий " +
             "за отделение компании. Обратитесь к Вашему руководителю и предоставьте ему свой телеграмм-id " +
             "для регистрации";
+    private final String WELCOME_MESSAGE = "Вы находитесь на главной странице чат-бота.\n" +
+            "Вам доступны следующие действия:";
     private final MessageUtil messageUtil;
 
 
@@ -44,7 +50,47 @@ public class DepartmentTelegramView {
         return answer;
     }
 
+    /**
+     * Первое приветственное сообщение
+     * DepartmentView.WELCOME_VIEW
+     * */
+    public SendMessage welcomeView(Update update) {
+        var answer = messageUtil.blankAnswer(update);
+        var welcomeViewKeyboardMarkup = welcomeViewKeyboardMarkup();
 
+        answer.setText(WELCOME_MESSAGE);
+        answer.setReplyMarkup(welcomeViewKeyboardMarkup);
+
+        return answer;
+    }
+
+    private InlineKeyboardMarkup welcomeViewKeyboardMarkup() {
+        var keyboard = new InlineKeyboardMarkup();
+        var keyboardRows = List.of(
+                List.of(
+                    button("УПРАВЛЕНИЕ ПЕРСОНАЛОМ", "/employee_management")
+                ),
+                List.of(
+                    button("УПРАВЛЕНИЕ МАТЕРИАЛАМИ", "/material_management")
+                ),
+                List.of(
+                    button("УПРАВЛЕНИЕ ПРОФИЛЕМ", "/profile_management")
+                )
+        );
+
+        keyboard.setKeyboard(keyboardRows);
+
+        return keyboard;
+    }
+
+    private InlineKeyboardButton button(String text, String callbackData) {
+        var button = new InlineKeyboardButton();
+
+        button.setText(text);
+        button.setCallbackData(callbackData);
+
+        return button;
+    }
 
 
 
