@@ -44,7 +44,7 @@ public class BasicStateCQUP implements UpdateProcessor {
         currentAppUser.getDepartment().setCurrentView(EMPLOYEE_TG_ID_REQUEST_VIEW);
         appUserRepo.save(currentAppUser);
 
-        return telegramView.empoloyeeTgIdRequestView(update);
+        return telegramView.employeeTgIdRequestView(update);
     }
 
     private SendMessage materialManagementView(Update update, AppUser currentAppUser) {

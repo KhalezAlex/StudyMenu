@@ -348,7 +348,7 @@ public class CompanyTelegramView {
     /**
      * Вью уведомляет о неверно введенном telegramUserId при регистрации департамента
      * СВОЕГО ВЬЮ в CompanyView нет
-     * Возвращает меню управления департаментами
+     * Возвращает вью запроса telegramUserId
      * CompanyView.DEPARTMENT_TELEGRAM_USER_ID_REQUEST_VIEW
      * */
     public SendMessage invalidDepartmentTelegramUserIdErrorView(Update update) {

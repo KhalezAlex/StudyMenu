@@ -52,10 +52,11 @@ public class DepartmentActivatorService implements DepartmentActivator {
 
         try {
             var persistentDepartmentAppUser = appUserRepo.save(transientDepartmentAppUser);
+
             persistentCompany.getDepartments().add(persistentDepartmentAppUser.getDepartment());
             currentAppUser.getCompany().setCurrentView(DEPARTMENTS_MANAGEMENT_VIEW);
-            appUserRepo.save(persistentDepartmentAppUser);
 
+            appUserRepo.save(persistentDepartmentAppUser);
             appUserRepo.save(currentAppUser);
 
             return true;

@@ -30,11 +30,18 @@ public class DepartmentTelegramView {
     private final String WELCOME_MESSAGE = "Вы находитесь на главной странице чат-бота.\n" +
             "Вам доступны следующие действия:";
     private final String EMPLOYEES_MANAGEMENT_VIEW_MESSAGE = "На этой странице Вы можете управлять " +
-            "Вашим персоналом. Как только Вы добавите первого работника, он появится в списке.";
+            "Вашим персоналом. Как только Вы добавите первого сотрудника, он появится в списке.";
     private final String TG_USER_ID_REQUEST_VIEW_MESSAGE = "Введите id пользователя telegram \n" +
             "(требуется запросить у пользователя числовой идентификатор telegram user id - " +
             "он это может сделать в официальном боте @getmyid_bot) \n\n" +
-            "В последствии, если будет введен неправильный id, пользователя можно будет легко удалить.";;
+            "В последствии, если будет введен неправильный id, пользователя можно будет легко удалить.";
+    private final String EMPLOYEE_REGISTRATION_NOTIFICATION_MESSAGE = "<b>Телеграм-id \"%s\", " +
+            "нового сотрудника зарегистрирован. " +
+            "Вы можете отредактировать/удалить его в меню менеджмента персонала.</b>";
+    private final String INVALID_DEPARTMENT_TG_ID_ERROR_MESSAGE = "Введенная строка не является " +
+            "корректным telegramUserId";
+    private final String ALREADY_REGISTERED_TG_ID_ERROR_MESSAGE = "<b>Введенный Телеграм-id уже " +
+            "зарегистрирован в системе</b>";
     private final MessageUtil messageUtil;
 
 
@@ -171,7 +178,7 @@ public class DepartmentTelegramView {
     private InlineKeyboardMarkup employeesManagementViewKeyboardMarkUp(Set<Employee> employees) {
         var keyboardMarkUp = new InlineKeyboardMarkup();
         var addEmployeeRow = List.of(
-                button("ДОБАВИТЬ РАБОТНИКА", "/add_employee"),
+                button("ДОБАВИТЬ СОТРУДНИКА", "/add_employee"),
                 button("Выход", "/start")
         );
 
@@ -198,7 +205,7 @@ public class DepartmentTelegramView {
         final List<List<InlineKeyboardButton>> rows = new ArrayList<>();
 
         employees.forEach(e -> {
-            var text = String.format("РАБОТНИК %d", e.getId());
+            var text = String.format("СОТРУДНИК %d", e.getId());
             List<InlineKeyboardButton> row = List.of(
                     button(text, "/asd"),
                     button("X", "/asdasd")
@@ -211,9 +218,9 @@ public class DepartmentTelegramView {
 
     /**
      * Вью запроса телеграм-id для регистрации нового рабоника
-     * DepartmentView.TG_USER_ID_REQUEST_VIEW
+     * DepartmentView.EMPLOYEE_TG_USER_ID_REQUEST_VIEW
      * */
-    public SendMessage empoloyeeTgIdRequestView(Update update) {
+    public SendMessage employeeTgIdRequestView(Update update) {
         var answer = messageUtil.blankAnswer(update);
         var keyboard = new InlineKeyboardMarkup();
         var homePageRow = homepageKeyboardRow();
@@ -225,6 +232,46 @@ public class DepartmentTelegramView {
         answer.setText(TG_USER_ID_REQUEST_VIEW_MESSAGE);
 
         return answer;
+    }
+
+    /**
+     * Вью уведомляет об успешной регистрации сотрудника
+     * СВОЕГО ВЬЮ в DepartmentView нет
+     * Возвращает меню управления департаментами
+     * DepartmentView.EMPLOYEES_MANAGEMENT_VIEW
+     * */
+    public SendMessage newEmployeeRegistrationNotificationView(Update update, AppUser currentAppUser) {
+        var answer = employeesManagementView(update, currentAppUser);
+        var serviceMessage = String.format(
+                EMPLOYEE_REGISTRATION_NOTIFICATION_MESSAGE,
+                update.getMessage().getText()
+        );
+
+        return messageUtil.addServiceMessage(answer, serviceMessage);
+    }
+
+    /**
+     * Вью уведомляет о неверно введенном telegramUserId при регистрации сотрудника
+     * СВОЕГО ВЬЮ в DepartmentView нет
+     * Возвращает меню запроса telegramUserId
+     * DepartmentView.EMPLOYEE_TELEGRAM_USER_ID_REQUEST_VIEW
+     * */
+    public SendMessage invalidEmployeeTgIdErrorView(Update update) {
+        var answer = employeeTgIdRequestView(update);
+
+        return messageUtil.addServiceMessage(answer, INVALID_DEPARTMENT_TG_ID_ERROR_MESSAGE);
+    }
+
+    /**
+     * Вью уведомляет о том, что введенный при регистрации сотрудника telegramUserId уже есть в системе
+     * СВОЕГО ВЬЮ в DepartmentView нет
+     * Возвращает меню управления персоналом
+     * DepartmentView.EMPLOYEES_MANAGEMENT_VIEW
+     * */
+    public SendMessage alreadyRegisteredTelegramUserIdErrorView(Update update, AppUser currentAppUser) {
+        var answer = employeesManagementView(update, currentAppUser);
+
+        return messageUtil.addServiceMessage(answer, ALREADY_REGISTERED_TG_ID_ERROR_MESSAGE);
     }
 
 
