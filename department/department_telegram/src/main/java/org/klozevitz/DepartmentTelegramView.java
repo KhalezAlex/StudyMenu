@@ -2,7 +2,6 @@ package org.klozevitz;
 
 import lombok.RequiredArgsConstructor;
 import org.klozevitz.enitites.appUsers.AppUser;
-import org.klozevitz.enitites.appUsers.Department;
 import org.klozevitz.enitites.appUsers.Employee;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -32,6 +31,10 @@ public class DepartmentTelegramView {
             "Вам доступны следующие действия:";
     private final String EMPLOYEES_MANAGEMENT_VIEW_MESSAGE = "На этой странице Вы можете управлять " +
             "Вашим персоналом. Как только Вы добавите первого работника, он появится в списке.";
+    private final String TG_USER_ID_REQUEST_VIEW_MESSAGE = "Введите id пользователя telegram \n" +
+            "(требуется запросить у пользователя числовой идентификатор telegram user id - " +
+            "он это может сделать в официальном боте @getmyid_bot) \n\n" +
+            "В последствии, если будет введен неправильный id, пользователя можно будет легко удалить.";;
     private final MessageUtil messageUtil;
 
 
@@ -166,26 +169,29 @@ public class DepartmentTelegramView {
     }
 
     private InlineKeyboardMarkup employeesManagementViewKeyboardMarkUp(Set<Employee> employees) {
-        var employeesManagementViewKeyboardMarkUp = new InlineKeyboardMarkup();
+        var keyboardMarkUp = new InlineKeyboardMarkup();
         var addEmployeeRow = List.of(
                 button("ДОБАВИТЬ РАБОТНИКА", "/add_employee"),
                 button("Выход", "/start")
         );
 
-        List<List<InlineKeyboardButton>> employeesManagementViewKeyboardMarkupDepartmentsManagementTable;
+        List<List<InlineKeyboardButton>> departmentsManagementTable;
 
         if (!employees.isEmpty()) {
-            employeesManagementViewKeyboardMarkupDepartmentsManagementTable =
+            departmentsManagementTable =
                     employeesManagementViewKeyboardMarkUpEmployeeManagementTable(employees);
-            employeesManagementViewKeyboardMarkupDepartmentsManagementTable.add(addEmployeeRow);
+            departmentsManagementTable.add(addEmployeeRow);
         } else {
-            employeesManagementViewKeyboardMarkupDepartmentsManagementTable =
+            departmentsManagementTable =
                     List.of(addEmployeeRow);
         }
 
-        employeesManagementViewKeyboardMarkUp.setKeyboard(employeesManagementViewKeyboardMarkupDepartmentsManagementTable);
+        keyboardMarkUp
+                .setKeyboard(
+                        departmentsManagementTable
+                );
 
-        return employeesManagementViewKeyboardMarkUp;
+        return keyboardMarkUp;
     }
 
     private List<List<InlineKeyboardButton>> employeesManagementViewKeyboardMarkUpEmployeeManagementTable(Set<Employee> employees) {
@@ -204,6 +210,25 @@ public class DepartmentTelegramView {
     }
 
     /**
+     * Вью запроса телеграм-id для регистрации нового рабоника
+     * DepartmentView.TG_USER_ID_REQUEST_VIEW
+     * */
+    public SendMessage empoloyeeTgIdRequestView(Update update) {
+        var answer = messageUtil.blankAnswer(update);
+        var keyboard = new InlineKeyboardMarkup();
+        var homePageRow = homepageKeyboardRow();
+
+        keyboard.setKeyboard(
+                List.of(homePageRow)
+        );
+        answer.setReplyMarkup(keyboard);
+        answer.setText(TG_USER_ID_REQUEST_VIEW_MESSAGE);
+
+        return answer;
+    }
+
+
+    /**
      * Базовое текстовое сообщение
      * */
     public SendMessage textMessage(String message, Long chatId) {
@@ -212,6 +237,7 @@ public class DepartmentTelegramView {
         answer.setText(message);
         return answer;
     }
+
 
     /**
      * Сообщение об ошибке в результате потери статуса
@@ -233,5 +259,11 @@ public class DepartmentTelegramView {
         return update.hasMessage() ?
                 update.getMessage().getChatId() :
                 update.getCallbackQuery().getMessage().getChatId();
+    }
+
+    private List<InlineKeyboardButton> homepageKeyboardRow() {
+        return List.of(
+                button("Главная страница", "/start")
+        );
     }
 }

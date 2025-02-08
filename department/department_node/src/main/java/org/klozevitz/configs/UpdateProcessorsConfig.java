@@ -2,9 +2,8 @@ package org.klozevitz.configs;
 
 import org.klozevitz.DepartmentTelegramView;
 import org.klozevitz.MessageUtil;
-import org.klozevitz.UpdateProcessor;
-import org.klozevitz.WrongAppUserDataUpdateProcessor;
-import org.klozevitz.enitites.appUsers.AppUser;
+import org.klozevitz.services.messageProcessors.UpdateProcessor;
+import org.klozevitz.services.messageProcessors.WrongAppUserDataUpdateProcessor;
 import org.klozevitz.services.implementations.updateProcessors.NotRegisteredAppUserUpdateProcessor;
 import org.klozevitz.services.implementations.updateProcessors.NullableStateUpdateProcessor;
 import org.klozevitz.services.implementations.updateProcessors.WrongAppUserRoleUpdateProcessor;
@@ -15,7 +14,6 @@ import org.klozevitz.services.implementations.updateProcessors.commandUpdateProc
 import org.klozevitz.services.implementations.updateProcessors.textUpdateProcessors.TextUpdateProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
 @Configuration
 public class UpdateProcessorsConfig {

@@ -2,8 +2,8 @@ package org.klozevitz.services.implementations.main;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
-import org.klozevitz.UpdateProcessor;
-import org.klozevitz.WrongAppUserDataUpdateProcessor;
+import org.klozevitz.services.messageProcessors.UpdateProcessor;
+import org.klozevitz.services.messageProcessors.WrongAppUserDataUpdateProcessor;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.services.interfaces.main.AnswerProducer;

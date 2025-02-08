@@ -2,7 +2,7 @@ package org.klozevitz.services.implementations.updateProcessors.textUpdateProces
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
-import org.klozevitz.UpdateProcessor;
+import org.klozevitz.services.messageProcessors.UpdateProcessor;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
