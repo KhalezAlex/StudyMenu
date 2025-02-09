@@ -28,11 +28,9 @@ public class WaitForTgIdStateTUP implements UpdateProcessor {
         switch (state) {
             case WAIT_FOR_EMPLOYEE_TG_ID_STATE:
                 return registerEmployee(update, currentAppUser);
+            default:
+                return telegramView.previousView(update, currentAppUser);
         }
-
-
-
-        return null;
     }
 
     private SendMessage registerEmployee(Update update, AppUser currentAppUser) {

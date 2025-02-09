@@ -2,6 +2,7 @@ package org.klozevitz.configs;
 
 import org.klozevitz.DepartmentTelegramView;
 import org.klozevitz.MessageUtil;
+import org.klozevitz.services.implementations.util.EmployeeRegistrar;
 import org.klozevitz.services.messageProcessors.UpdateProcessor;
 import org.klozevitz.services.messageProcessors.WrongAppUserDataUpdateProcessor;
 import org.klozevitz.services.implementations.updateProcessors.NotRegisteredAppUserUpdateProcessor;
@@ -12,6 +13,7 @@ import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpda
 import org.klozevitz.services.implementations.updateProcessors.commandUpdateProcessors.CommandUpdateProcessor;
 import org.klozevitz.services.implementations.updateProcessors.commandUpdateProcessors.byState.BasicStateCUP;
 import org.klozevitz.services.implementations.updateProcessors.textUpdateProcessors.TextUpdateProcessor;
+import org.klozevitz.services.uitl.Registrar;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -74,11 +76,16 @@ public class UpdateProcessorsConfig {
         return new BasicStateCQUP(telegramView);
     }
 
+    @Bean
+    public Registrar employeeRegistrar() {
+        return new EmployeeRegistrar(telegramView());
+    }
+
     /**
      * TextUpdate-обработчики
      * */
     @Bean(name = "textUpdateProcessor")
     public UpdateProcessor textUpdateProcessorService() {
-        return new TextUpdateProcessor();
+        return new TextUpdateProcessor(nullableStateUpdateProcessor(), employeeRegistrar());
     }
 }

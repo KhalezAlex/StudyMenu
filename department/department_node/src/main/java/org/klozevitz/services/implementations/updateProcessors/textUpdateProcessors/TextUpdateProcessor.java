@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.klozevitz.services.messageProcessors.UpdateProcessor;
 import org.klozevitz.enitites.appUsers.AppUser;
+import org.klozevitz.services.uitl.Registrar;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -11,9 +12,21 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @RequiredArgsConstructor
 public class TextUpdateProcessor implements UpdateProcessor {
 
+    private final UpdateProcessor nullableStateUpdateProcessor;
+    private final Registrar employeeRegistrar;
+
     @Override
     public SendMessage processUpdate(Update update, AppUser currentAppUser) {
-        log.debug("text message will be processed");
+        var state = currentAppUser.getDepartment().getState();
+
+        if (state == null) {
+            nullableStateUpdateProcessor.processUpdate(update, currentAppUser);
+        }
+
+        switch (state) {
+            case WAIT_FOR_EMPLOYEE_TG_ID_STATE:
+                return employeeRegistrar.register(update, currentAppUser);
+        }
         return null;
     }
 }

@@ -10,7 +10,7 @@ public interface Registrar {
     SendMessage register(Update update, AppUser currentAppUser);
 
     default boolean isTgIdValid(String tgId) {
-        var regexp = "\\b\\d{8,9}\\b";
+        var regexp = "\\b\\d{8,11}\\b";
         var pattern = Pattern.compile(regexp);
         var matcher = pattern.matcher(tgId);
 
