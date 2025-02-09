@@ -42,7 +42,7 @@ public class CompanyTelegramView {
     private final String DEPARTMENT_TELEGRAM_USER_ID_REQUEST_MESSAGE = "Введите id пользователя telegram \n" +
             "(требуется запросить у пользователя числовой идентификатор telegram user id - " +
             "он это может сделать в официальном боте @getmyid_bot) \n\n" +
-            "В последствии, если будет введен неправильный id, компанию можно будет легко удалить.";
+            "В последствии, если будет введен неправильный id, пользователя можно будет легко удалить.";
     private final String DEPARTMENT_REGISTRATION_NOTIFICATION_MESSAGE = "<b>Телеграм-id \"%s\", " +
             "который будет отвечать за новое заведение, зарегистрирован. " +
             "Вы можете отредактировать/удалить его в меню менеджмента заведений.</b>";
@@ -348,7 +348,7 @@ public class CompanyTelegramView {
     /**
      * Вью уведомляет о неверно введенном telegramUserId при регистрации департамента
      * СВОЕГО ВЬЮ в CompanyView нет
-     * Возвращает меню управления департаментами
+     * Возвращает вью запроса telegramUserId
      * CompanyView.DEPARTMENT_TELEGRAM_USER_ID_REQUEST_VIEW
      * */
     public SendMessage invalidDepartmentTelegramUserIdErrorView(Update update) {

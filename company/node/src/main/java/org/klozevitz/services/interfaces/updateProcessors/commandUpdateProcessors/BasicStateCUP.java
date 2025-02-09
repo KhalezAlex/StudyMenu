@@ -1,6 +1,6 @@
 package org.klozevitz.services.interfaces.updateProcessors.commandUpdateProcessors;
 
-import org.klozevitz.messageProcessors.legacy.CommandUpdateProcessor;
+import org.klozevitz.services.legacyMessageProcessors.legacy.CommandUpdateProcessor;
 
 public interface BasicStateCUP extends CommandUpdateProcessor {
 }

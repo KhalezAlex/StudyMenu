@@ -2,7 +2,7 @@ package org.klozevitz.services.implementations.updateProcessors;
 
 import lombok.RequiredArgsConstructor;
 import org.klozevitz.CompanyTelegramView;
-import org.klozevitz.messageProcessors.legacy.utils.WrongAppUserRoleUpdateProcessor;
+import org.klozevitz.services.legacyMessageProcessors.legacy.utils.WrongAppUserRoleUpdateProcessor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
