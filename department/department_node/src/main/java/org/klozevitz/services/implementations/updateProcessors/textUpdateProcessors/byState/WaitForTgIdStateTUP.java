@@ -1,4 +1,4 @@
-package org.klozevitz.services.implementations.updateProcessors.commandUpdateProcessors.byState;
+package org.klozevitz.services.implementations.updateProcessors.textUpdateProcessors.byState;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -6,39 +6,34 @@ import org.klozevitz.DepartmentTelegramView;
 import org.klozevitz.services.messageProcessors.UpdateProcessor;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
+import org.klozevitz.services.uitl.Registrar;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import javax.inject.Inject;
 
-import static org.klozevitz.enitites.appUsers.enums.views.DepartmentView.WELCOME_VIEW;
-
 @Log4j
 @RequiredArgsConstructor
-public class BasicStateCUP implements UpdateProcessor {
+public class WaitForTgIdStateTUP implements UpdateProcessor {
     private final DepartmentTelegramView telegramView;
     @Inject
     private AppUserRepo appUserRepo;
-
+    @Inject
+    private Registrar employeeRegistrar;
 
     @Override
     public SendMessage processUpdate(Update update, AppUser currentAppUser) {
-        var command = update.getMessage().getText();
+        var state = currentAppUser.getDepartment().getState();
 
-        switch (command) {
-            case "/start":
-                return welcomeView(update, currentAppUser);
+        switch (state) {
+            case WAIT_FOR_EMPLOYEE_TG_ID_STATE:
+                return registerEmployee(update, currentAppUser);
             default:
-                return null;
+                return telegramView.previousView(update, currentAppUser);
         }
     }
 
-    private SendMessage welcomeView(Update update, AppUser currentAppUser) {
-        currentAppUser.getDepartment().setCurrentView(WELCOME_VIEW);
-        appUserRepo.save(currentAppUser);
-
-        return telegramView.welcomeView(update);
+    private SendMessage registerEmployee(Update update, AppUser currentAppUser) {
+        return employeeRegistrar.register(update, currentAppUser);
     }
-
-
 }

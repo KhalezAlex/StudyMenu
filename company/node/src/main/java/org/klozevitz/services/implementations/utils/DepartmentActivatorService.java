@@ -25,20 +25,20 @@ public class DepartmentActivatorService implements DepartmentActivator {
 
     @Override
     public SendMessage registerDepartment(Update update, AppUser currentAppUser) {
-        var departmentTelegramUserId = update.getMessage().getText();
-        var isTgUserIdValid = telegramUserIdValidation(departmentTelegramUserId);
+        var departmentTgId = update.getMessage().getText();
+        var isTgIdValid = isTgIdValid(departmentTgId);
 
-        if (isTgUserIdValid) {
-            var success = addDepartment(currentAppUser, Long.parseLong(departmentTelegramUserId));
+        if (isTgIdValid) {
+            var success = registerDepartment(currentAppUser, Long.parseLong(departmentTgId));
 
             return success ?
                     departmentRegistrationNotificationView(update, currentAppUser) :
                     alreadyRegisteredTelegramUserIdErrorView(update, currentAppUser);
         }
-        return invalidDepartmentTelegramUserIdErrorView(update);
+        return invalidDepartmentTgIdErrorView(update);
     }
 
-    private boolean addDepartment(AppUser currentAppUser, long telegramUserId) {
+    private boolean registerDepartment(AppUser currentAppUser, long telegramUserId) {
         var persistentCompany = currentAppUser.getCompany();
         var transientDepartmentAppUser = AppUser.builder()
                 .telegramUserId(telegramUserId)
@@ -52,10 +52,11 @@ public class DepartmentActivatorService implements DepartmentActivator {
 
         try {
             var persistentDepartmentAppUser = appUserRepo.save(transientDepartmentAppUser);
+
             persistentCompany.getDepartments().add(persistentDepartmentAppUser.getDepartment());
             currentAppUser.getCompany().setCurrentView(DEPARTMENTS_MANAGEMENT_VIEW);
-            appUserRepo.save(persistentDepartmentAppUser);
 
+            appUserRepo.save(persistentDepartmentAppUser);
             appUserRepo.save(currentAppUser);
 
             return true;
@@ -72,16 +73,15 @@ public class DepartmentActivatorService implements DepartmentActivator {
         return telegramView.newDepartmentRegistrationNotificationView(update, currentAppUser);
     }
 
-    private boolean telegramUserIdValidation(String departmentTelegramUserId) {
+    private boolean isTgIdValid(String departmentTgId) {
         var regexp = "\\b\\d{8,9}\\b";
         var pattern = Pattern.compile(regexp);
-        var matcher = pattern.matcher(departmentTelegramUserId);
+        var matcher = pattern.matcher(departmentTgId);
 
         return matcher.matches();
     }
 
-
-    private SendMessage invalidDepartmentTelegramUserIdErrorView(Update update) {
+    private SendMessage invalidDepartmentTgIdErrorView(Update update) {
         return telegramView.invalidDepartmentTelegramUserIdErrorView(update);
     }
 
