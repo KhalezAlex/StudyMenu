@@ -3,6 +3,7 @@ package org.klozevitz.services.implementations.updateProcessors.callbackQueryUpd
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.klozevitz.DepartmentTelegramView;
+import org.klozevitz.enitites.appUsers.enums.views.DepartmentView;
 import org.klozevitz.services.messageProcessors.UpdateProcessor;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.enitites.appUsers.enums.states.DepartmentState;
@@ -12,6 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import javax.inject.Inject;
 
+import static org.klozevitz.enitites.appUsers.enums.states.DepartmentState.WAIT_FOR_DOCUMENT_STATE;
 import static org.klozevitz.enitites.appUsers.enums.views.DepartmentView.*;
 
 @Log4j
@@ -42,7 +44,11 @@ public class BasicStateCQUP implements UpdateProcessor {
     }
 
     private SendMessage addResourceRequestView(Update update, AppUser currentAppUser) {
-        return null;
+        currentAppUser.getDepartment().setCurrentView(RESOURCE_REQUEST_VIEW);
+        currentAppUser.getDepartment().setState(WAIT_FOR_DOCUMENT_STATE);
+        appUserRepo.save(currentAppUser);
+
+        return telegramView.resourceRequestView(update);
     }
 
     private SendMessage employeeTelegramIdRequestView(Update update, AppUser currentAppUser) {

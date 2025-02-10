@@ -16,6 +16,10 @@ public class CallbackQueryUpdateProcessor implements UpdateProcessor {
     private UpdateProcessor nullableStateUpdateProcessor;
     @Resource(name = "basicStateCallbackQueryUpdateProcessor")
     private UpdateProcessor basicStateCallbackQueryUpdateProcessor;
+    @Resource(name = "waitForDocumentStateCallbackQueryUpdateProcessor")
+    private UpdateProcessor waitForDocumentStateCallbackQueryUpdateProcessor;
+    @Resource(name = "waitForEmployeeTgIdStateCallbackQueryUpdateProcessor")
+    private UpdateProcessor waitForEmployeeTgIdStateCallbackQueryUpdateProcessor;
 
     @Override
     public SendMessage processUpdate(Update update, AppUser currentAppUser) {
@@ -25,13 +29,13 @@ public class CallbackQueryUpdateProcessor implements UpdateProcessor {
             return nullableStateUpdateProcessor.processUpdate(update, currentAppUser);
         }
 
-        if (update.getCallbackQuery().getData().equals("/start")) {
-
-        }
-
         switch (state) {
             case BASIC_STATE:
                 return basicStateCallbackQueryUpdateProcessor.processUpdate(update, currentAppUser);
+            case WAIT_FOR_DOCUMENT_STATE:
+                return waitForDocumentStateCallbackQueryUpdateProcessor.processUpdate(update, currentAppUser);
+            case WAIT_FOR_EMPLOYEE_TG_ID_STATE:
+                return waitForEmployeeTgIdStateCallbackQueryUpdateProcessor.processUpdate(update, currentAppUser);
         }
         return null;
     }

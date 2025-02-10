@@ -296,7 +296,7 @@ public class DepartmentTelegramView {
     private InlineKeyboardMarkup resourcesManagementViewKeyboardMarkUp(Set<Category> resources) {
         var keyboardMarkUp = new InlineKeyboardMarkup();
         var addEmployeeRow = List.of(
-                button("ДОБАВИТЬ КАТЕГОРИЮ МЕНЮ", "/add_category"),
+                button("ДОБАВИТЬ КАТЕГОРИЮ МЕНЮ", "/add_resource"),
                 button("Выход", "/start")
         );
 

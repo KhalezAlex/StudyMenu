@@ -2,6 +2,8 @@ package org.klozevitz.configs;
 
 import org.klozevitz.DepartmentTelegramView;
 import org.klozevitz.MessageUtil;
+import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpdateProcessors.byState.WaitForDocumentStateCQUP;
+import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpdateProcessors.byState.WaitForEmployeeTgIdStateCQUP;
 import org.klozevitz.services.implementations.util.EmployeeRegistrar;
 import org.klozevitz.services.messageProcessors.UpdateProcessor;
 import org.klozevitz.services.messageProcessors.WrongAppUserDataUpdateProcessor;
@@ -76,9 +78,22 @@ public class UpdateProcessorsConfig {
         return new BasicStateCQUP(telegramView);
     }
 
+    @Bean("waitForDocumentStateCallbackQueryUpdateProcessor")
+    public UpdateProcessor waitForDocumentStateCallbackQueryUpdateProcessor() {
+        var telegramView = telegramView();
+        return new WaitForDocumentStateCQUP(telegramView);
+    }
+
+    @Bean("waitForEmployeeTgIdStateCallbackQueryUpdateProcessor")
+    public UpdateProcessor waitForEmployeeTgIdStateCallbackQueryUpdateProcessor() {
+        var telegramView = telegramView();
+        return new WaitForEmployeeTgIdStateCQUP(telegramView);
+    }
+
     @Bean
     public Registrar employeeRegistrar() {
-        return new EmployeeRegistrar(telegramView());
+        var telegramView = telegramView();
+        return new EmployeeRegistrar(telegramView);
     }
 
     /**
