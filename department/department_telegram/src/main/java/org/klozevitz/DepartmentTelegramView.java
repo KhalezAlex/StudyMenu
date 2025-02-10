@@ -58,7 +58,6 @@ public class DepartmentTelegramView {
 
     private SendMessage previousViewStrategy(Update update, AppUser currentAppUser) {
         var currentView = currentAppUser.getDepartment().getCurrentView();
-        var chatId = chatId(update);
 
         if (currentView == null) {
             return nullCurrentViewErrorView(update);
