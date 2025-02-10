@@ -74,7 +74,7 @@ public class DepartmentActivatorService implements DepartmentActivator {
     }
 
     private boolean isTgIdValid(String departmentTgId) {
-        var regexp = "\\b\\d{8,9}\\b";
+        var regexp = "\\b\\d{8,12}\\b";
         var pattern = Pattern.compile(regexp);
         var matcher = pattern.matcher(departmentTgId);
 
