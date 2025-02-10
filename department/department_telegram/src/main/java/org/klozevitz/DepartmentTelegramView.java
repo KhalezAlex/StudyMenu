@@ -44,7 +44,7 @@ public class DepartmentTelegramView {
     private final String ALREADY_REGISTERED_TG_ID_ERROR_MESSAGE = "<b>Введенный Телеграм-id уже " +
             "зарегистрирован в системе</b>";
     private final String RESOURCES_MANAGEMENT_VIEW_MESSAGE = "На этой странице Вы можете управлять " +
-            "Вашим персоналом. Как только Вы добавите первого сотрудника, он появится в списке.";
+            "Вашими методическими материалами. Как только Вы добавите первый, он появится в списке.";
     private final String RESOURCE_REQUEST_VIEW_MESSAGE = "Ожидание excel-документа формата, представленного ниже \n\n" +
             "В последствии, его можно будет легко удалить.";
     private final MessageUtil messageUtil;
@@ -287,7 +287,7 @@ public class DepartmentTelegramView {
         var resourcesManagementViewKeyboardMarkUp =
                 resourcesManagementViewKeyboardMarkUp(resources);
 
-        answer.setText(EMPLOYEES_MANAGEMENT_VIEW_MESSAGE);
+        answer.setText(RESOURCES_MANAGEMENT_VIEW_MESSAGE);
         answer.setReplyMarkup(resourcesManagementViewKeyboardMarkUp);
 
         return answer;
