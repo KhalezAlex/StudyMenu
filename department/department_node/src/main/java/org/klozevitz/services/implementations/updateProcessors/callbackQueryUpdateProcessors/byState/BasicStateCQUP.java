@@ -33,9 +33,15 @@ public class BasicStateCQUP implements UpdateProcessor {
                 return employeeManagementView(update, currentAppUser);
             case "/add_employee":
                 return employeeTelegramIdRequestView(update, currentAppUser);
-            case "/material_management":
-                return materialManagementView(update, currentAppUser);
+            case "/resources_management":
+                return resourcesManagementView(update, currentAppUser);
+            case "/add_resource":
+                return addResourceRequestView(update, currentAppUser);
         }
+        return null;
+    }
+
+    private SendMessage addResourceRequestView(Update update, AppUser currentAppUser) {
         return null;
     }
 
@@ -47,8 +53,11 @@ public class BasicStateCQUP implements UpdateProcessor {
         return telegramView.employeeTgIdRequestView(update);
     }
 
-    private SendMessage materialManagementView(Update update, AppUser currentAppUser) {
-        return null;
+    private SendMessage resourcesManagementView(Update update, AppUser currentAppUser) {
+        currentAppUser.getDepartment().setCurrentView(RESOURCES_MANAGEMENT_VIEW);
+        appUserRepo.save(currentAppUser);
+
+        return telegramView.resourcesManagementView(update, currentAppUser);
     }
 
     private SendMessage employeeManagementView(Update update, AppUser currentAppUser) {
