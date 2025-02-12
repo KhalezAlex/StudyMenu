@@ -8,9 +8,9 @@ INSERT INTO app_user_t (telegram_user_id, username, company_id)
 VALUES
     (315944589, 'Svyatkireev', 1);
 
-INSERT INTO department_t (state, company_id)
+INSERT INTO department_t (state, company_id, current_view)
 VALUES
-    ('BASIC_STATE', 1);
+    ('BASIC_STATE', 1, 'WELCOME_VIEW');
 
 INSERT INTO app_user_t (telegram_user_id, username, department_id)
 VALUES

@@ -9,6 +9,7 @@ import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import javax.annotation.Resource;
 import javax.inject.Inject;
 
 import static org.klozevitz.enitites.appUsers.enums.views.DepartmentView.WELCOME_VIEW;
@@ -17,6 +18,8 @@ import static org.klozevitz.enitites.appUsers.enums.views.DepartmentView.WELCOME
 @RequiredArgsConstructor
 public class BasicStateCUP implements UpdateProcessor {
     private final DepartmentTelegramView telegramView;
+    @Resource(name = "previousView_UpdateProcessor")
+    private UpdateProcessor previousViewUpdateProcessor;
     @Inject
     private AppUserRepo appUserRepo;
 
@@ -29,7 +32,7 @@ public class BasicStateCUP implements UpdateProcessor {
             case "/start":
                 return welcomeView(update, currentAppUser);
             default:
-                return null;
+                return previousViewUpdateProcessor.processUpdate(update, currentAppUser);
         }
     }
 

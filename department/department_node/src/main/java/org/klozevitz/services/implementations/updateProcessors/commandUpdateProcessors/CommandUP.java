@@ -11,10 +11,12 @@ import javax.annotation.Resource;
 
 @Log4j
 @RequiredArgsConstructor
-public class CommandUpdateProcessor implements UpdateProcessor {
-    @Resource(name = "nullableStateUpdateProcessor")
+public class CommandUP implements UpdateProcessor {
+    @Resource(name = "nullableState_UpdateProcessor")
     private UpdateProcessor nullableStateUpdateProcessor;
-    @Resource(name = "basicStateCommandUpdateProcessor")
+    @Resource(name = "previousView_UpdateProcessor")
+    private UpdateProcessor previousViewUpdateProcessor;
+    @Resource(name = "basicStateCommand_UpdateProcessor")
     private UpdateProcessor basicStateCommandUpdateProcessor;
 
 
@@ -27,8 +29,10 @@ public class CommandUpdateProcessor implements UpdateProcessor {
         }
 
         switch (state) {
-            case BASIC_STATE: return basicStateCommandUpdateProcessor.processUpdate(update, currentAppUser);
-            default: return null;
+            case BASIC_STATE:
+                return basicStateCommandUpdateProcessor.processUpdate(update, currentAppUser);
+            default:
+                return previousViewUpdateProcessor.processUpdate(update, currentAppUser);
         }
     }
 }

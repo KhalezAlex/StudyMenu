@@ -22,16 +22,18 @@ import java.util.Optional;
 public class MainService implements Main {
     private final AppUserRepo appUserRepo;
     private final AnswerProducer answerProducer;
-    @Resource(name = "wrongAppUserRoleUpdateProcessor")
+    @Resource(name = "wrongAppUserRole_UpdateProcessor")
     private WrongAppUserDataUpdateProcessor wrongAppUserRoleUpdateProcessor;
-    @Resource(name = "notRegisteredAppUserUpdateProcessor")
+    @Resource(name = "notRegisteredAppUser_UpdateProcessor")
     private WrongAppUserDataUpdateProcessor notRegisteredAppUserUpdateProcessor;
-    @Resource(name = "commandUpdateProcessor")
+    @Resource(name = "command_UpdateProcessor")
     private UpdateProcessor commandUpdateProcessor;
-    @Resource(name = "textUpdateProcessor")
+    @Resource(name = "text_UpdateProcessor")
     private UpdateProcessor textUpdateProcessor;
-    @Resource(name = "callbackQueryUpdateProcessor")
+    @Resource(name = "callbackQuery_UpdateProcessor")
     private UpdateProcessor callbackQueryUpdateProcessor;
+    @Resource(name = "document_UpdateProcessor")
+    private UpdateProcessor documentUpdateProcessor;
 
 
     @Override
@@ -69,15 +71,14 @@ public class MainService implements Main {
         return department == null ?
                 wrongAppUserRoleUpdateProcessor.processUpdate(update) :
                 commandUpdateProcessor.processUpdate(update, currentAppUser);
-
     }
 
     @Override
     public void processCallbackQueryUpdate(Update update) {
-        var optionalCurrentUser = findAppUser(update);
-        var answer = optionalCurrentUser.isEmpty() ?
+        var optionalCurrentAppUser = findAppUser(update);
+        var answer = optionalCurrentAppUser.isEmpty() ?
                 notRegisteredAppUserUpdateProcessor.processUpdate(update) :
-                registeredUserCallbackQueryUpdateAnswer(update, optionalCurrentUser.get());
+                registeredUserCallbackQueryUpdateAnswer(update, optionalCurrentAppUser.get());
 
         sendAnswer(answer);
     }
@@ -92,13 +93,20 @@ public class MainService implements Main {
 
     @Override
     public void processDocUpdate(Update update) {
+        var optionalCurrentAppUser = findAppUser(update);
+        var answer = optionalCurrentAppUser.isEmpty() ?
+                notRegisteredAppUserUpdateProcessor.processUpdate(update) :
+                registeredUserDocUpdateAnswer(update, optionalCurrentAppUser.get());
 
+        sendAnswer(answer);
     }
 
-    private long chatId(Update update) {
-        return update.hasMessage() ?
-                update.getMessage().getChatId() :
-                update.getCallbackQuery().getMessage().getChatId();
+    private SendMessage registeredUserDocUpdateAnswer(Update update, AppUser currentAppUser) {
+        var department = currentAppUser.getDepartment();
+
+        return department == null ?
+                wrongAppUserRoleUpdateProcessor.processUpdate(update) :
+                documentUpdateProcessor.processUpdate(update, currentAppUser);
     }
 
     private Optional<AppUser> findAppUser(Update update) {

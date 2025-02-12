@@ -79,6 +79,10 @@ public class DepartmentTelegramView {
                 return employeesManagementView(update, currentAppUser);
             case NOT_REGISTERED_DEPARTMENT_ERROR_VIEW:
                 return notRegisteredDepartmentErrorView(update);
+            case RESOURCES_MANAGEMENT_VIEW:
+                return resourcesManagementView(update, currentAppUser);
+            case RESOURCE_REQUEST_VIEW:
+                return resourceRequestView(update);
             default:
                 return null;
         }

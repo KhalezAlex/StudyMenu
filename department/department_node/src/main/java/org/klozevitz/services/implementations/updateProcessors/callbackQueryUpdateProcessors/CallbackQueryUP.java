@@ -11,14 +11,16 @@ import javax.annotation.Resource;
 
 @Log4j
 @RequiredArgsConstructor
-public class CallbackQueryUpdateProcessor implements UpdateProcessor {
-    @Resource(name = "nullableStateUpdateProcessor")
+public class CallbackQueryUP implements UpdateProcessor {
+    @Resource(name = "nullableState_UpdateProcessor")
     private UpdateProcessor nullableStateUpdateProcessor;
-    @Resource(name = "basicStateCallbackQueryUpdateProcessor")
+    @Resource(name = "previousView_UpdateProcessor")
+    private UpdateProcessor previousViewUpdateProcessor;
+    @Resource(name = "basicState_CallbackQuery_UpdateProcessor")
     private UpdateProcessor basicStateCallbackQueryUpdateProcessor;
-    @Resource(name = "waitForDocumentStateCallbackQueryUpdateProcessor")
+    @Resource(name = "waitForDocumentState_CallbackQuery_UpdateProcessor")
     private UpdateProcessor waitForDocumentStateCallbackQueryUpdateProcessor;
-    @Resource(name = "waitForEmployeeTgIdStateCallbackQueryUpdateProcessor")
+    @Resource(name = "waitForEmployeeTgIdState_CallbackQuery_UpdateProcessor")
     private UpdateProcessor waitForEmployeeTgIdStateCallbackQueryUpdateProcessor;
 
     @Override
@@ -36,7 +38,8 @@ public class CallbackQueryUpdateProcessor implements UpdateProcessor {
                 return waitForDocumentStateCallbackQueryUpdateProcessor.processUpdate(update, currentAppUser);
             case WAIT_FOR_EMPLOYEE_TG_ID_STATE:
                 return waitForEmployeeTgIdStateCallbackQueryUpdateProcessor.processUpdate(update, currentAppUser);
+            default:
+                return previousViewUpdateProcessor.processUpdate(update, currentAppUser);
         }
-        return null;
     }
 }

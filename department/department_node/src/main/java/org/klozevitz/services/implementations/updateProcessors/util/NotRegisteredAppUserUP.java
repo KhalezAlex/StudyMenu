@@ -1,4 +1,4 @@
-package org.klozevitz.services.implementations.updateProcessors;
+package org.klozevitz.services.implementations.updateProcessors.util;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -9,7 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Log
 @RequiredArgsConstructor
-public class NotRegisteredAppUserUpdateProcessor implements WrongAppUserDataUpdateProcessor {
+public class NotRegisteredAppUserUP implements WrongAppUserDataUpdateProcessor {
     private final DepartmentTelegramView telegramView;
 
     @Override

@@ -22,4 +22,9 @@ public class Category extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department;
+    @EqualsAndHashCode.Exclude
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "excel_doc_id")
+    private ExcelDocument excelDoc;
+
 }
