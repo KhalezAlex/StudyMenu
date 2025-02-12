@@ -8,6 +8,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONObject;
 import org.klozevitz.enitites.appUsers.AppUser;
+import org.klozevitz.services.implementations.util.ExcelToTestParser;
 import org.klozevitz.services.messageProcessors.UpdateProcessor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -24,9 +25,9 @@ import java.net.URL;
 @RequiredArgsConstructor
 public class DocumentUP implements UpdateProcessor {
     @Value("${fileService.service.file_info.url}")
-    private String fileInfoUrl;
+    private String tgFileInfoUrl;
     @Value("${fileService.service.file_storage.url}")
-    private String fileStorageUrl;
+    private String tgFileStorageUrl;
     @Value("${fileService.token}")
     private String token;
 
@@ -64,7 +65,8 @@ public class DocumentUP implements UpdateProcessor {
             ByteArrayInputStream bin = fileAsByteArrayInputStream(response);
             try {
                 Workbook workbook = new XSSFWorkbook(Package.open(bin));
-                System.out.println();
+                var parser = new ExcelToTestParser(workbook);
+                var menu = parser.parseMenu();
             } catch (IOException | InvalidFormatException e) {
                 // TODO ОБЯЗАТЕЛЬНО!!! вернуть сообщение-вью с ошибкой
                 throw new RuntimeException(e);
@@ -85,7 +87,7 @@ public class DocumentUP implements UpdateProcessor {
     }
 
     private byte[] downloadFile(String filePath) {
-        var fileUrl = fileStorageUrl
+        var fileUrl = tgFileStorageUrl
                 .replace("{token}", token)
                 .replace("{filePath}", filePath);
         URL urlObject;
@@ -108,7 +110,7 @@ public class DocumentUP implements UpdateProcessor {
         HttpEntity<String> request = new HttpEntity<>(headers);
 
         return restTemplate.exchange(
-                fileInfoUrl,
+                tgFileInfoUrl,
                 HttpMethod.GET,
                 request,
                 String.class,
