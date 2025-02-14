@@ -8,6 +8,7 @@ import org.klozevitz.services.implementations.updateProcessors.util.PreviousView
 import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpdateProcessors.byState.WaitForDocumentStateCQUP;
 import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpdateProcessors.byState.WaitForEmployeeTgIdStateCQUP;
 import org.klozevitz.services.implementations.util.EmployeeRegistrar;
+import org.klozevitz.services.implementations.util.ExcelToTestParser;
 import org.klozevitz.services.messageProcessors.UpdateProcessor;
 import org.klozevitz.services.messageProcessors.WrongAppUserDataUpdateProcessor;
 import org.klozevitz.services.implementations.updateProcessors.util.NotRegisteredAppUserUP;
@@ -125,5 +126,13 @@ public class UpdateProcessorsConfig {
     @Bean(name = "document_UpdateProcessor")
     public UpdateProcessor documentUpdateProcessor() {
         return new DocumentUP();
+    }
+
+    /**
+     * UTIL-бины
+     * */
+    @Bean(name = "excelToTestParser")
+    public ExcelToTestParser excelToTestParser() {
+        return new ExcelToTestParser();
     }
 }

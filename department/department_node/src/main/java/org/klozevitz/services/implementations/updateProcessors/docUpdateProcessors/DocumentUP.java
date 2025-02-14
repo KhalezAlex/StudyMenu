@@ -8,6 +8,10 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONObject;
 import org.klozevitz.enitites.appUsers.AppUser;
+import org.klozevitz.enitites.appUsers.Department;
+import org.klozevitz.enitites.menu.Category;
+import org.klozevitz.enitites.menu.Item;
+import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.services.implementations.util.ExcelToTestParser;
 import org.klozevitz.services.messageProcessors.UpdateProcessor;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,9 +21,11 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import javax.annotation.Resource;
+import javax.inject.Inject;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Set;
 
 @Log4j
 @RequiredArgsConstructor
@@ -35,6 +41,10 @@ public class DocumentUP implements UpdateProcessor {
     private UpdateProcessor nullableStateUpdateProcessor;
     @Resource(name = "previousView_UpdateProcessor")
     private UpdateProcessor previousViewUpdateProcessor;
+    @Resource(name = "excelToTestParser")
+    private ExcelToTestParser parser;
+    @Inject
+    private AppUserRepo appUserRepo;
 
 
     @Override
@@ -47,7 +57,6 @@ public class DocumentUP implements UpdateProcessor {
 
         switch (state) {
             case WAIT_FOR_DOCUMENT_STATE:
-                // TODO вернуть сообщение об том, что все окей
                 processDocumentMessage(update, currentAppUser);
                 return previousViewUpdateProcessor.processUpdate(update, currentAppUser);
             default:
@@ -56,26 +65,68 @@ public class DocumentUP implements UpdateProcessor {
     }
 
     private SendMessage processDocumentMessage(Update update, AppUser currentAppUser) {
-        var fileId = update
-                .getMessage()
-                .getDocument()
-                .getFileId();
+        var fileId = fileId(update);
         ResponseEntity<String> response = filePath(fileId);
         if (response.getStatusCode() == HttpStatus.OK) {
             ByteArrayInputStream bin = fileAsByteArrayInputStream(response);
             try {
                 Workbook workbook = new XSSFWorkbook(Package.open(bin));
-                var parser = new ExcelToTestParser(workbook);
-                var menu = parser.parseMenu();
+                Set<Item> menu = parser.parseMenu(workbook);
+                var fileName = fileName(update);
+                var persistentDepartment = currentAppUser.getDepartment();
+                var indexOfExtension = indexOfExtension(fileName);
+                var categoryName = fileName.substring(0, indexOfExtension);
+                var transientCategory = transientCategory(menu, persistentDepartment, categoryName);
+
+                setLinks(persistentDepartment, menu, transientCategory);
+                appUserRepo.save(currentAppUser);
+                System.out.println();
+                // TODO ОБЯЗАТЕЛЬНО!!! вернуть нормальную вьюху
+                return null;
             } catch (IOException | InvalidFormatException e) {
                 // TODO ОБЯЗАТЕЛЬНО!!! вернуть сообщение-вью с ошибкой
                 throw new RuntimeException(e);
             }
         }
+        // TODO вернуть вью о невозможности скачать файл
         return null;
     }
 
+    private void setLinks(Department persistentDepartment, Set<Item> menu, Category transientCategory) {
+        menu.forEach(item -> item.setCategory(transientCategory));
+        persistentDepartment.getMenu().add(transientCategory);
+    }
+
+    private Category transientCategory(Set<Item> menu, Department persistentAppDepartment, String categoryName) {
+        return Category.builder()
+                .name(categoryName)
+                .department(persistentAppDepartment)
+                .menu(menu)
+                .build();
+    }
+
+    private int indexOfExtension(String fileName) {
+        return fileName.lastIndexOf(".xlsx") == -1 ?
+                fileName.lastIndexOf("xls") - 1 :
+                fileName.lastIndexOf("xlsx") - 1;
+    }
+
+    private String fileId(Update update) {
+        return update
+                .getMessage()
+                .getDocument()
+                .getFileId();
+    }
+
+    private String fileName(Update update) {
+        return update
+                .getMessage()
+                .getDocument()
+                .getFileName();
+    }
+
     private ByteArrayInputStream fileAsByteArrayInputStream(ResponseEntity<String> response) {
+        assert response.getBody() != null;
         JSONObject jsonObject = new JSONObject(response.getBody());
         String filePath = String.valueOf(
                 jsonObject

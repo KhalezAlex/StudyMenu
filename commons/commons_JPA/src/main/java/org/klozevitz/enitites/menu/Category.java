@@ -18,7 +18,7 @@ import java.util.Set;
 public class Category extends BaseEntity {
     private String name;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "category")
-    private Set<Item> list;
+    private Set<Item> menu;
     @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department;

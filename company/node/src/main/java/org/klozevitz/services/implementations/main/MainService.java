@@ -3,7 +3,6 @@ package org.klozevitz.services.implementations.main;
 import lombok.extern.log4j.Log4j;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.enitites.appUsers.Company;
-import org.klozevitz.enitites.appUsers.enums.states.CompanyState;
 import org.klozevitz.services.legacyMessageProcessors.legacy.CallbackQueryUpdateProcessor;
 import org.klozevitz.services.legacyMessageProcessors.legacy.CommandUpdateProcessor;
 import org.klozevitz.services.legacyMessageProcessors.legacy.TextUpdateProcessor;
@@ -20,6 +19,7 @@ import org.telegram.telegrambots.meta.api.objects.User;
 
 import java.util.HashSet;
 
+import static org.klozevitz.enitites.appUsers.enums.states.CompanyState.UNREGISTERED_STATE;
 
 @Log4j
 @Service
@@ -93,19 +93,21 @@ public class MainService implements Main {
     }
 
     private AppUser newUnregisteredCompany(User telegramUser) {
+        var telegramUsername = telegramUser.getUserName();
+        var telegramUserId = telegramUser.getId();
         var transientApplicationUser = AppUser.builder()
-                .telegramUserId(telegramUser.getId())
-                .username(telegramUser.getUserName())
-                .company(
-                        Company.builder()
-                        .departments(new HashSet<>())
-                        .state(CompanyState.UNREGISTERED_STATE)
-                        .build()
-                )
+                .telegramUserId(telegramUserId)
+                .username(telegramUsername)
+                .build();
+        var transientCompany = Company.builder()
+                .appUser(transientApplicationUser)
+                .state(UNREGISTERED_STATE)
+                .departments(new HashSet<>())
                 .build();
 
-        var persistentAppUser = appUserRepo.save(transientApplicationUser);
-        return appUserRepo.save(persistentAppUser);
+        transientApplicationUser.setCompany(transientCompany);
+
+        return appUserRepo.save(transientApplicationUser);
     }
 
     private void sendAnswer(SendMessage answer) {

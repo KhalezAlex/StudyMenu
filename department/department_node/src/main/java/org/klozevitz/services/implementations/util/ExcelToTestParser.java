@@ -5,37 +5,28 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.klozevitz.enitites.menu.Ingredient;
 import org.klozevitz.enitites.menu.Item;
+import org.klozevitz.repositories.menu.IngredientRepo;
+import org.klozevitz.repositories.menu.ItemRepo;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
+import javax.inject.Inject;
+import java.util.*;
 
 @RequiredArgsConstructor
 public class ExcelToTestParser {
-    private final String firstString = "\"Название блюда/\n" +
-            "номер ингридиента\"\n";
-    private final Workbook wb;
+    @Inject
+    private ItemRepo itemRepo;
+    @Inject
+    private IngredientRepo ingredientRepo;
 
-    public List<Item> parseMenu() {
+    public Set<Item> parseMenu(Workbook workbook) {
         try {
-            var sheet = wb.getSheetAt(0);
-            Iterator<Row> wbIterator = sheet.iterator();
-            List<Item> menu = new ArrayList<>();
-            Row currentRow;
+            var sheet = workbook.getSheetAt(0);
+            final Iterator<Row> wbIterator = sheet.iterator();
+            final Set<Item> menu = new HashSet<>();
 
             wbIterator.next();
-
             while (wbIterator.hasNext()) {
-                currentRow = wbIterator.next();
-
-                var currentItem = itemFromRow(currentRow);
-
-                while ((currentRow = wbIterator.next()) != null && currentRow.getCell(0).getNumericCellValue() != 0) {
-                    var ingredient = ingredientFromRow(currentRow);
-                    currentItem.getIngredients().add(ingredient);
-                }
-
+                var currentItem = parseItem(wbIterator);
                 menu.add(currentItem);
             }
 
@@ -43,6 +34,17 @@ public class ExcelToTestParser {
         } catch (Exception e) {
             throw new RuntimeException();
         }
+    }
+
+    private Item parseItem(Iterator<Row> wbIterator) {
+        var currentRow = wbIterator.next();
+        var currentItem = itemFromRow(currentRow);
+        while ((currentRow = wbIterator.next()) != null && currentRow.getCell(0).getNumericCellValue() != 0) {
+            var ingredient = ingredientFromRow(currentRow);
+            ingredient.setItem(currentItem);
+            currentItem.getIngredients().add(ingredient);
+        }
+        return currentItem;
     }
 
     private Ingredient ingredientFromRow(Row currentRow) {

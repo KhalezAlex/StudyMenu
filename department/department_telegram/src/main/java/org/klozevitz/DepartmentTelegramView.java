@@ -299,7 +299,7 @@ public class DepartmentTelegramView {
 
     private InlineKeyboardMarkup resourcesManagementViewKeyboardMarkUp(Set<Category> resources) {
         var keyboardMarkUp = new InlineKeyboardMarkup();
-        var addEmployeeRow = List.of(
+        var addResourceRow = List.of(
                 button("ДОБАВИТЬ КАТЕГОРИЮ МЕНЮ", "/add_resource"),
                 button("Выход", "/start")
         );
@@ -309,10 +309,10 @@ public class DepartmentTelegramView {
         if (!resources.isEmpty()) {
             resourcesManagementTable =
                     resourcesManagementViewKeyboardMarkUpResourcesManagementTable(resources);
-            resourcesManagementTable.add(addEmployeeRow);
+            resourcesManagementTable.add(addResourceRow);
         } else {
             resourcesManagementTable =
-                    List.of(addEmployeeRow);
+                    List.of(addResourceRow);
         }
 
         keyboardMarkUp

@@ -42,13 +42,14 @@ public class DepartmentActivatorService implements DepartmentActivator {
         var persistentCompany = currentAppUser.getCompany();
         var transientDepartmentAppUser = AppUser.builder()
                 .telegramUserId(telegramUserId)
-                .department(
-                        Department.builder()
-                                .state(BASIC_STATE)
-                                .company(persistentCompany)
-                                .build()
-                )
                 .build();
+        var transientDepartment = Department.builder()
+                .appUser(transientDepartmentAppUser)
+                .company(persistentCompany)
+                .state(BASIC_STATE)
+                .build();
+
+        transientDepartmentAppUser.setDepartment(transientDepartment);
 
         try {
             var persistentDepartmentAppUser = appUserRepo.save(transientDepartmentAppUser);

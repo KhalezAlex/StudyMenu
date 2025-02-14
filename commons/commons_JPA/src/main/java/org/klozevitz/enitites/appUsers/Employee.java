@@ -18,6 +18,7 @@ public class Employee extends BaseEntity {
     private EmployeeState state;
 
     @OneToOne(mappedBy = "employee")
+    @JoinColumn(name = "app_user_id")
     private AppUser appUser;
     @ManyToOne
     @JoinColumn(name = "department_id")
