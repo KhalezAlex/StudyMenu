@@ -7,9 +7,11 @@ import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.enitites.appUsers.enums.states.DepartmentState;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.services.messageProcessors.UpdateProcessor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import javax.annotation.Resource;
 import javax.inject.Inject;
 
 import static org.klozevitz.enitites.appUsers.enums.views.DepartmentView.WELCOME_VIEW;
@@ -17,9 +19,8 @@ import static org.klozevitz.enitites.appUsers.enums.views.DepartmentView.WELCOME
 @Log4j
 @RequiredArgsConstructor
 public class WaitForEmployeeTgIdStateCQUP implements UpdateProcessor {
+    private final AppUserRepo appUserRepo;
     private final DepartmentTelegramView telegramView;
-    @Inject
-    private AppUserRepo appUserRepo;
 
     @Override
     public SendMessage processUpdate(Update update, AppUser currentAppUser) {

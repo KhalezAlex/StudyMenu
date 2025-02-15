@@ -8,32 +8,23 @@ import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.services.interfaces.main.AnswerProducer;
 import org.klozevitz.services.interfaces.main.Main;
-import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 
-import javax.annotation.Resource;
 import java.util.Optional;
 
 @Log4j
-@Service
 @RequiredArgsConstructor
 public class MainService implements Main {
     private final AppUserRepo appUserRepo;
     private final AnswerProducer answerProducer;
-    @Resource(name = "wrongAppUserRole_UpdateProcessor")
-    private WrongAppUserDataUpdateProcessor wrongAppUserRoleUpdateProcessor;
-    @Resource(name = "notRegisteredAppUser_UpdateProcessor")
-    private WrongAppUserDataUpdateProcessor notRegisteredAppUserUpdateProcessor;
-    @Resource(name = "command_UpdateProcessor")
-    private UpdateProcessor commandUpdateProcessor;
-    @Resource(name = "text_UpdateProcessor")
-    private UpdateProcessor textUpdateProcessor;
-    @Resource(name = "callbackQuery_UpdateProcessor")
-    private UpdateProcessor callbackQueryUpdateProcessor;
-    @Resource(name = "document_UpdateProcessor")
-    private UpdateProcessor documentUpdateProcessor;
+    private final WrongAppUserDataUpdateProcessor wrongAppUserRoleUpdateProcessor;
+    private final WrongAppUserDataUpdateProcessor notRegisteredAppUserUpdateProcessor;
+    private final UpdateProcessor commandUpdateProcessor;
+    private final UpdateProcessor textUpdateProcessor;
+    private final UpdateProcessor callbackQueryUpdateProcessor;
+    private final UpdateProcessor documentUpdateProcessor;
 
 
     @Override

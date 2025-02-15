@@ -7,21 +7,14 @@ import org.klozevitz.enitites.appUsers.AppUser;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import javax.annotation.Resource;
-
 @Log4j
 @RequiredArgsConstructor
 public class CallbackQueryUP implements UpdateProcessor {
-    @Resource(name = "nullableState_UpdateProcessor")
-    private UpdateProcessor nullableStateUpdateProcessor;
-    @Resource(name = "previousView_UpdateProcessor")
-    private UpdateProcessor previousViewUpdateProcessor;
-    @Resource(name = "basicState_CallbackQuery_UpdateProcessor")
-    private UpdateProcessor basicStateCallbackQueryUpdateProcessor;
-    @Resource(name = "waitForDocumentState_CallbackQuery_UpdateProcessor")
-    private UpdateProcessor waitForDocumentStateCallbackQueryUpdateProcessor;
-    @Resource(name = "waitForEmployeeTgIdState_CallbackQuery_UpdateProcessor")
-    private UpdateProcessor waitForEmployeeTgIdStateCallbackQueryUpdateProcessor;
+    private final UpdateProcessor nullableStateUpdateProcessor;
+    private final UpdateProcessor previousViewUpdateProcessor;
+    private final UpdateProcessor basicStateCallbackQueryUpdateProcessor;
+    private final UpdateProcessor waitForDocumentStateCallbackQueryUpdateProcessor;
+    private final UpdateProcessor waitForEmployeeTgIdStateCallbackQueryUpdateProcessor;
 
     @Override
     public SendMessage processUpdate(Update update, AppUser currentAppUser) {

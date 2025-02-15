@@ -12,12 +12,9 @@ import javax.annotation.Resource;
 @Log4j
 @RequiredArgsConstructor
 public class TextUP implements UpdateProcessor {
-    @Resource(name = "nullableState_UpdateProcessor")
     private final UpdateProcessor nullableStateUpdateProcessor;
-    @Resource(name = "previousView_UpdateProcessor")
-    private UpdateProcessor previousViewUpdateProcessor;
-    @Resource(name = "waitForEmployeeTgIdState_Text_UpdateProcessor")
-    private UpdateProcessor waitForEmployeeTgIdStateTextUpdateProcessor;
+    private final UpdateProcessor previousViewUpdateProcessor;
+    private final UpdateProcessor waitForEmployeeTgIdStateTextUpdateProcessor;
 
     @Override
     public SendMessage processUpdate(Update update, AppUser currentAppUser) {

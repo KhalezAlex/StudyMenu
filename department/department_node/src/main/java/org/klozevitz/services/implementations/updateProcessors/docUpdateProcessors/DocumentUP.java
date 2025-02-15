@@ -20,8 +20,6 @@ import org.springframework.web.client.RestTemplate;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import javax.annotation.Resource;
-import javax.inject.Inject;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -36,15 +34,10 @@ public class DocumentUP implements UpdateProcessor {
     private String tgFileStorageUrl;
     @Value("${fileService.token}")
     private String token;
-
-    @Resource(name = "nullableState_UpdateProcessor")
-    private UpdateProcessor nullableStateUpdateProcessor;
-    @Resource(name = "previousView_UpdateProcessor")
-    private UpdateProcessor previousViewUpdateProcessor;
-    @Resource(name = "excelToTestParser")
-    private ExcelToTestParser parser;
-    @Inject
-    private AppUserRepo appUserRepo;
+    private final AppUserRepo appUserRepo;
+    private final UpdateProcessor nullableStateUpdateProcessor;
+    private final UpdateProcessor previousViewUpdateProcessor;
+    private final ExcelToTestParser parser;
 
 
     @Override

@@ -7,17 +7,12 @@ import org.klozevitz.enitites.appUsers.AppUser;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import javax.annotation.Resource;
-
 @Log4j
 @RequiredArgsConstructor
 public class CommandUP implements UpdateProcessor {
-    @Resource(name = "nullableState_UpdateProcessor")
-    private UpdateProcessor nullableStateUpdateProcessor;
-    @Resource(name = "previousView_UpdateProcessor")
-    private UpdateProcessor previousViewUpdateProcessor;
-    @Resource(name = "basicStateCommand_UpdateProcessor")
-    private UpdateProcessor basicStateCommandUpdateProcessor;
+    private final UpdateProcessor nullableStateUpdateProcessor;
+    private final UpdateProcessor previousViewUpdateProcessor;
+    private final UpdateProcessor basicStateCommandUpdateProcessor;
 
 
     @Override

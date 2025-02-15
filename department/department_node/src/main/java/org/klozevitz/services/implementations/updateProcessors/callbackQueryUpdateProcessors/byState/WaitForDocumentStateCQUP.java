@@ -9,17 +9,14 @@ import org.klozevitz.services.messageProcessors.UpdateProcessor;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import javax.inject.Inject;
-
 import static org.klozevitz.enitites.appUsers.enums.states.DepartmentState.BASIC_STATE;
 import static org.klozevitz.enitites.appUsers.enums.views.DepartmentView.WELCOME_VIEW;
 
 @Log4j
 @RequiredArgsConstructor
 public class WaitForDocumentStateCQUP implements UpdateProcessor {
+    private final AppUserRepo appUserRepo;
     private final DepartmentTelegramView telegramView;
-    @Inject
-    private AppUserRepo appUserRepo;
 
     @Override
     public SendMessage processUpdate(Update update, AppUser currentAppUser) {

@@ -17,11 +17,9 @@ import static org.klozevitz.enitites.appUsers.enums.views.DepartmentView.WELCOME
 @Log4j
 @RequiredArgsConstructor
 public class BasicStateCUP implements UpdateProcessor {
+    private final AppUserRepo appUserRepo;
     private final DepartmentTelegramView telegramView;
-    @Resource(name = "previousView_UpdateProcessor")
-    private UpdateProcessor previousViewUpdateProcessor;
-    @Inject
-    private AppUserRepo appUserRepo;
+    private final UpdateProcessor previousViewUpdateProcessor;
 
 
     @Override

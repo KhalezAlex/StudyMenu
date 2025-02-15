@@ -1,23 +1,15 @@
 package org.klozevitz.services.implementations.util;
 
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.klozevitz.enitites.menu.Ingredient;
 import org.klozevitz.enitites.menu.Item;
-import org.klozevitz.repositories.menu.IngredientRepo;
-import org.klozevitz.repositories.menu.ItemRepo;
 
-import javax.inject.Inject;
 import java.util.*;
 
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class ExcelToTestParser {
-    @Inject
-    private ItemRepo itemRepo;
-    @Inject
-    private IngredientRepo ingredientRepo;
-
     public Set<Item> parseMenu(Workbook workbook) {
         try {
             var sheet = workbook.getSheetAt(0);

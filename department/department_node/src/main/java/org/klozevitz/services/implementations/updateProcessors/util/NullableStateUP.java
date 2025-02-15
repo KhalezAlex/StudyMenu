@@ -9,16 +9,13 @@ import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import javax.inject.Inject;
-
 import static org.klozevitz.enitites.appUsers.enums.views.DepartmentView.NULL_DEPARTMENT_STATE_ERROR_VIEW;
 
 @Log4j
 @RequiredArgsConstructor
 public class NullableStateUP implements UpdateProcessor {
+    private final AppUserRepo appUserRepo;
     private final DepartmentTelegramView telegramView;
-    @Inject
-    private AppUserRepo appUserRepo;
 
 
     @Override

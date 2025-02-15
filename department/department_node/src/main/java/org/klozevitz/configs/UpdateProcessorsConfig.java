@@ -1,7 +1,10 @@
 package org.klozevitz.configs;
 
+import lombok.RequiredArgsConstructor;
 import org.klozevitz.DepartmentTelegramView;
 import org.klozevitz.MessageUtil;
+import org.klozevitz.repositories.appUsers.AppUserRepo;
+import org.klozevitz.services.implementations.main.MainService;
 import org.klozevitz.services.implementations.updateProcessors.docUpdateProcessors.DocumentUP;
 import org.klozevitz.services.implementations.updateProcessors.textUpdateProcessors.byState.WaitForEmployeeTgIdStateTUP;
 import org.klozevitz.services.implementations.updateProcessors.util.PreviousViewUP;
@@ -9,6 +12,8 @@ import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpda
 import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpdateProcessors.byState.WaitForEmployeeTgIdStateCQUP;
 import org.klozevitz.services.implementations.util.EmployeeRegistrar;
 import org.klozevitz.services.implementations.util.ExcelToTestParser;
+import org.klozevitz.services.interfaces.main.AnswerProducer;
+import org.klozevitz.services.interfaces.main.Main;
 import org.klozevitz.services.messageProcessors.UpdateProcessor;
 import org.klozevitz.services.messageProcessors.WrongAppUserDataUpdateProcessor;
 import org.klozevitz.services.implementations.updateProcessors.util.NotRegisteredAppUserUP;
@@ -24,115 +29,169 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@RequiredArgsConstructor
 public class UpdateProcessorsConfig {
+    private final AppUserRepo appUserRepo;
+    private final AnswerProducer answerProducer;
+
+    @Bean
+    public Main main() {
+        return new MainService(
+                appUserRepo,
+                answerProducer,
+                wrongAppUserRoleUpdateProcessor(),
+                notRegisteredAppUserUpdateProcessor(),
+                commandUpdateProcessor(),
+                textUpdateProcessor(),
+                callbackQueryUpdateProcessor(),
+                documentUpdateProcessor()
+        );
+    }
+
+    @Bean
+    public WrongAppUserDataUpdateProcessor wrongAppUserRoleUpdateProcessor() {
+        return new WrongAppUserRoleUP(
+                telegramView()
+        );
+    }
+
+    @Bean
+    public WrongAppUserDataUpdateProcessor notRegisteredAppUserUpdateProcessor() {
+        return new NotRegisteredAppUserUP(
+                telegramView()
+        );
+    }
+
+    @Bean
+    public UpdateProcessor nullableStateUpdateProcessor() {
+        return new NullableStateUP(
+                appUserRepo,
+                telegramView()
+        );
+    }
+
+    @Bean
+    public UpdateProcessor previousViewUpdateProcessor() {
+        return new PreviousViewUP(
+                telegramView()
+        );
+    }
+
+    /**
+     * CommandUpdate-обработчики
+     */
+    @Bean
+    public UpdateProcessor commandUpdateProcessor() {
+        return new CommandUP(
+                nullableStateUpdateProcessor(),
+                previousViewUpdateProcessor(),
+                basicStateCommandUpdateProcessor()
+        );
+    }
+
+    @Bean
+    public UpdateProcessor basicStateCommandUpdateProcessor() {
+        return new BasicStateCUP(
+                appUserRepo,
+                telegramView(),
+                previousViewUpdateProcessor()
+        );
+    }
+
+    /**
+     * CallbackQuery-обработчики
+     */
+    @Bean
+    public UpdateProcessor callbackQueryUpdateProcessor() {
+        return new CallbackQueryUP(
+                nullableStateUpdateProcessor(),
+                previousViewUpdateProcessor(),
+                basicStateCallbackQueryUpdateProcessor(),
+                waitForDocumentStateCallbackQueryUpdateProcessor(),
+                waitForEmployeeTgIdStateCallbackQueryUpdateProcessor()
+        );
+    }
+
+    @Bean
+    public UpdateProcessor basicStateCallbackQueryUpdateProcessor() {
+        return new BasicStateCQUP(
+                appUserRepo,
+                telegramView(),
+                previousViewUpdateProcessor()
+        );
+    }
+
+    @Bean
+    public UpdateProcessor waitForDocumentStateCallbackQueryUpdateProcessor() {
+        return new WaitForDocumentStateCQUP(
+                appUserRepo,
+                telegramView()
+        );
+    }
+
+    @Bean
+    public UpdateProcessor waitForEmployeeTgIdStateCallbackQueryUpdateProcessor() {
+        return new WaitForEmployeeTgIdStateCQUP(
+                appUserRepo,
+                telegramView()
+        );
+    }
+
+    /**
+     * TextUpdate-обработчики
+     */
+    @Bean
+    public UpdateProcessor textUpdateProcessor() {
+        return new TextUP(
+                nullableStateUpdateProcessor(),
+                previousViewUpdateProcessor(),
+                waitForEmployeeTgIdStateTextUpdateProcessor()
+        );
+    }
+
+    @Bean
+    public UpdateProcessor waitForEmployeeTgIdStateTextUpdateProcessor() {
+        return new WaitForEmployeeTgIdStateTUP(
+                employeeRegistrar()
+        );
+    }
+
+    /**
+     * DocumentUpdate-обработчики
+     */
+    @Bean
+    public UpdateProcessor documentUpdateProcessor() {
+        return new DocumentUP(
+                appUserRepo,
+                nullableStateUpdateProcessor(),
+                previousViewUpdateProcessor(),
+                excelToTestParser());
+    }
+
+
+    /**
+     * UTIL-бины
+     */
     @Bean
     public MessageUtil messageUtil() {
         return new MessageUtil();
     }
 
-    @Bean(name = "departmentTelegramView")
+    @Bean
     public DepartmentTelegramView telegramView() {
-        var messageUtil = messageUtil();
-        return new DepartmentTelegramView(messageUtil);
+        return new DepartmentTelegramView(
+                messageUtil()
+        );
     }
-
-    @Bean(name = "wrongAppUserRole_UpdateProcessor")
-    public WrongAppUserDataUpdateProcessor wrongAppUserRoleUpdateProcessor() {
-        var telegramView = telegramView();
-        return new WrongAppUserRoleUP(telegramView);
-    }
-
-    @Bean(name = "notRegisteredAppUser_UpdateProcessor")
-    public WrongAppUserDataUpdateProcessor notRegisteredAppUserUpdateProcessor() {
-        var telegramView = telegramView();
-        return new NotRegisteredAppUserUP(telegramView);
-    }
-
-    @Bean(name = "nullableState_UpdateProcessor")
-    public UpdateProcessor nullableStateUpdateProcessor() {
-        var telegramView = telegramView();
-        return new NullableStateUP(telegramView);
-    }
-
-    @Bean(name = "previousView_UpdateProcessor")
-    public UpdateProcessor previousViewUpdateProcessor() {
-        var telegramView = telegramView();
-        return new PreviousViewUP(telegramView);
-    }
-
-    /**
-     * CommandUpdate-обработчики
-     * */
-    @Bean(name = "command_UpdateProcessor")
-    public UpdateProcessor commandUpdateProcessor() {
-        return new CommandUP();
-    }
-
-    @Bean(name = "basicStateCommand_UpdateProcessor")
-    public UpdateProcessor basicStateCommandUpdateProcessor() {
-        var telegramView = telegramView();
-        return new BasicStateCUP(telegramView);
-    }
-
-    /**
-     * CallbackQuery-обработчики
-     * */
-    @Bean("callbackQuery_UpdateProcessor")
-    public UpdateProcessor callbackQueryUpdateProcessor() {
-        return new CallbackQueryUP();
-    }
-
-    @Bean("basicState_CallbackQuery_UpdateProcessor")
-    public UpdateProcessor basicStateCallbackQueryUpdateProcessor() {
-        var telegramView = telegramView();
-        return new BasicStateCQUP(telegramView);
-    }
-
-    @Bean("waitForDocumentState_CallbackQuery_UpdateProcessor")
-    public UpdateProcessor waitForDocumentStateCallbackQueryUpdateProcessor() {
-        var telegramView = telegramView();
-        return new WaitForDocumentStateCQUP(telegramView);
-    }
-
-    @Bean("waitForEmployeeTgIdState_CallbackQuery_UpdateProcessor")
-    public UpdateProcessor waitForEmployeeTgIdStateCallbackQueryUpdateProcessor() {
-        var telegramView = telegramView();
-        return new WaitForEmployeeTgIdStateCQUP(telegramView);
+    @Bean
+    public ExcelToTestParser excelToTestParser() {
+        return new ExcelToTestParser();
     }
 
     @Bean
     public Registrar employeeRegistrar() {
-        var telegramView = telegramView();
-        return new EmployeeRegistrar(telegramView);
-    }
-
-    /**
-     * TextUpdate-обработчики
-     * */
-    @Bean(name = "text_UpdateProcessor")
-    public UpdateProcessor textUpdateProcessorService() {
-        return new TextUP(nullableStateUpdateProcessor());
-    }
-
-    @Bean(name = "waitForEmployeeTgIdState_Text_UpdateProcessor")
-    public UpdateProcessor waitForEmployeeTgIdStateTextUpdateProcessor() {
-        var employeeRegistrar = employeeRegistrar();
-        return new WaitForEmployeeTgIdStateTUP(employeeRegistrar);
-    }
-
-    /**
-     * DocumentUpdate-обработчики
-     * */
-    @Bean(name = "document_UpdateProcessor")
-    public UpdateProcessor documentUpdateProcessor() {
-        return new DocumentUP();
-    }
-
-    /**
-     * UTIL-бины
-     * */
-    @Bean(name = "excelToTestParser")
-    public ExcelToTestParser excelToTestParser() {
-        return new ExcelToTestParser();
+        return new EmployeeRegistrar(
+                telegramView()
+        );
     }
 }
