@@ -5,26 +5,26 @@ import org.klozevitz.DepartmentTelegramView;
 import org.klozevitz.MessageUtil;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.services.implementations.main.MainService;
-import org.klozevitz.services.implementations.updateProcessors.docUpdateProcessors.DocumentUP;
-import org.klozevitz.services.implementations.updateProcessors.textUpdateProcessors.byState.WaitForEmployeeTgIdStateTUP;
-import org.klozevitz.services.implementations.updateProcessors.util.PreviousViewUP;
-import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpdateProcessors.byState.WaitForDocumentStateCQUP;
-import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpdateProcessors.byState.WaitForEmployeeTgIdStateCQUP;
+import org.klozevitz.services.implementations.updateProcessors.docUpdateProcessors.DocumentDepartmentUP;
+import org.klozevitz.services.implementations.updateProcessors.textUpdateProcessors.byState.WaitForEmployeeTgIdStateDepartmentTUP;
+import org.klozevitz.services.implementations.updateProcessors.util.PreviousViewDepartmentUP;
+import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpdateProcessors.byState.WaitForDocumentStateDepartmentCQUP;
+import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpdateProcessors.byState.WaitForEmployeeTgIdStateDepartmentCQUP;
 import org.klozevitz.services.implementations.util.EmployeeRegistrar;
 import org.klozevitz.services.implementations.util.ExcelToTestParser;
 import org.klozevitz.services.interfaces.main.AnswerProducer;
 import org.klozevitz.services.interfaces.main.Main;
 import org.klozevitz.services.messageProcessors.UpdateProcessor;
 import org.klozevitz.services.messageProcessors.WrongAppUserDataUpdateProcessor;
-import org.klozevitz.services.implementations.updateProcessors.util.NotRegisteredAppUserUP;
-import org.klozevitz.services.implementations.updateProcessors.util.NullableStateUP;
-import org.klozevitz.services.implementations.updateProcessors.util.WrongAppUserRoleUP;
-import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpdateProcessors.CallbackQueryUP;
-import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpdateProcessors.byState.BasicStateCQUP;
-import org.klozevitz.services.implementations.updateProcessors.commandUpdateProcessors.CommandUP;
-import org.klozevitz.services.implementations.updateProcessors.commandUpdateProcessors.byState.BasicStateCUP;
-import org.klozevitz.services.implementations.updateProcessors.textUpdateProcessors.TextUP;
-import org.klozevitz.services.uitl.Registrar;
+import org.klozevitz.services.implementations.updateProcessors.util.NotRegisteredAppUserDepartmentUP;
+import org.klozevitz.services.implementations.updateProcessors.util.NullableStateDepartmentUP;
+import org.klozevitz.services.implementations.updateProcessors.util.WrongAppUserRoleDepartmentUP;
+import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpdateProcessors.CallbackQueryDepartmentUP;
+import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpdateProcessors.byState.BasicStateDepartmentCQUP;
+import org.klozevitz.services.implementations.updateProcessors.commandUpdateProcessors.CommandDepartmentUP;
+import org.klozevitz.services.implementations.updateProcessors.commandUpdateProcessors.byState.BasicStateDepartmentCUP;
+import org.klozevitz.services.implementations.updateProcessors.textUpdateProcessors.TextDepartmentUP;
+import org.klozevitz.services.util.Registrar;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -50,21 +50,21 @@ public class UpdateProcessorsConfig {
 
     @Bean
     public WrongAppUserDataUpdateProcessor wrongAppUserRoleUpdateProcessor() {
-        return new WrongAppUserRoleUP(
+        return new WrongAppUserRoleDepartmentUP(
                 telegramView()
         );
     }
 
     @Bean
     public WrongAppUserDataUpdateProcessor notRegisteredAppUserUpdateProcessor() {
-        return new NotRegisteredAppUserUP(
+        return new NotRegisteredAppUserDepartmentUP(
                 telegramView()
         );
     }
 
     @Bean
     public UpdateProcessor nullableStateUpdateProcessor() {
-        return new NullableStateUP(
+        return new NullableStateDepartmentUP(
                 appUserRepo,
                 telegramView()
         );
@@ -72,7 +72,7 @@ public class UpdateProcessorsConfig {
 
     @Bean
     public UpdateProcessor previousViewUpdateProcessor() {
-        return new PreviousViewUP(
+        return new PreviousViewDepartmentUP(
                 telegramView()
         );
     }
@@ -82,7 +82,7 @@ public class UpdateProcessorsConfig {
      */
     @Bean
     public UpdateProcessor commandUpdateProcessor() {
-        return new CommandUP(
+        return new CommandDepartmentUP(
                 nullableStateUpdateProcessor(),
                 previousViewUpdateProcessor(),
                 basicStateCommandUpdateProcessor()
@@ -91,7 +91,7 @@ public class UpdateProcessorsConfig {
 
     @Bean
     public UpdateProcessor basicStateCommandUpdateProcessor() {
-        return new BasicStateCUP(
+        return new BasicStateDepartmentCUP(
                 appUserRepo,
                 telegramView(),
                 previousViewUpdateProcessor()
@@ -103,7 +103,7 @@ public class UpdateProcessorsConfig {
      */
     @Bean
     public UpdateProcessor callbackQueryUpdateProcessor() {
-        return new CallbackQueryUP(
+        return new CallbackQueryDepartmentUP(
                 nullableStateUpdateProcessor(),
                 previousViewUpdateProcessor(),
                 basicStateCallbackQueryUpdateProcessor(),
@@ -114,7 +114,7 @@ public class UpdateProcessorsConfig {
 
     @Bean
     public UpdateProcessor basicStateCallbackQueryUpdateProcessor() {
-        return new BasicStateCQUP(
+        return new BasicStateDepartmentCQUP(
                 appUserRepo,
                 telegramView(),
                 previousViewUpdateProcessor()
@@ -123,7 +123,7 @@ public class UpdateProcessorsConfig {
 
     @Bean
     public UpdateProcessor waitForDocumentStateCallbackQueryUpdateProcessor() {
-        return new WaitForDocumentStateCQUP(
+        return new WaitForDocumentStateDepartmentCQUP(
                 appUserRepo,
                 telegramView()
         );
@@ -131,7 +131,7 @@ public class UpdateProcessorsConfig {
 
     @Bean
     public UpdateProcessor waitForEmployeeTgIdStateCallbackQueryUpdateProcessor() {
-        return new WaitForEmployeeTgIdStateCQUP(
+        return new WaitForEmployeeTgIdStateDepartmentCQUP(
                 appUserRepo,
                 telegramView()
         );
@@ -142,7 +142,7 @@ public class UpdateProcessorsConfig {
      */
     @Bean
     public UpdateProcessor textUpdateProcessor() {
-        return new TextUP(
+        return new TextDepartmentUP(
                 nullableStateUpdateProcessor(),
                 previousViewUpdateProcessor(),
                 waitForEmployeeTgIdStateTextUpdateProcessor()
@@ -151,7 +151,7 @@ public class UpdateProcessorsConfig {
 
     @Bean
     public UpdateProcessor waitForEmployeeTgIdStateTextUpdateProcessor() {
-        return new WaitForEmployeeTgIdStateTUP(
+        return new WaitForEmployeeTgIdStateDepartmentTUP(
                 employeeRegistrar()
         );
     }
@@ -161,7 +161,7 @@ public class UpdateProcessorsConfig {
      */
     @Bean
     public UpdateProcessor documentUpdateProcessor() {
-        return new DocumentUP(
+        return new DocumentDepartmentUP(
                 appUserRepo,
                 nullableStateUpdateProcessor(),
                 previousViewUpdateProcessor(),

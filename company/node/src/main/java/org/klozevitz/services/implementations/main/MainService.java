@@ -1,15 +1,17 @@
 package org.klozevitz.services.implementations.main;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.enitites.appUsers.Company;
-import org.klozevitz.services.legacyMessageProcessors.legacy.CallbackQueryUpdateProcessor;
 import org.klozevitz.services.legacyMessageProcessors.legacy.CommandUpdateProcessor;
 import org.klozevitz.services.legacyMessageProcessors.legacy.TextUpdateProcessor;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.services.interfaces.main.AnswerProducer;
 import org.klozevitz.services.interfaces.main.Main;
 import org.klozevitz.services.legacyMessageProcessors.legacy.utils.WrongAppUserRoleUpdateProcessor;
+import org.klozevitz.services.messageProcessors.UpdateProcessor;
+import org.klozevitz.services.messageProcessors.WrongAppUserDataUpdateProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -22,22 +24,14 @@ import java.util.HashSet;
 import static org.klozevitz.enitites.appUsers.enums.states.CompanyState.UNREGISTERED_STATE;
 
 @Log4j
-@Service
+@RequiredArgsConstructor
 public class MainService implements Main {
-    @Autowired
-    private AnswerProducer answerProducer;
-    @Autowired
-    private AppUserRepo appUserRepo;
-    @Autowired
-    private WrongAppUserRoleUpdateProcessor wrongAppUserRoleUpdateProcessor;
-    @Autowired
-    private TextUpdateProcessor textUpdateProcessor;
-    @Autowired
-    @Qualifier("commandUpdateProcessor")
-    private CommandUpdateProcessor commandUpdateProcessor;
-    @Autowired
-    @Qualifier("callbackQueryUpdateProcessor")
-    private CallbackQueryUpdateProcessor callbackQueryUpdateProcessor;
+    private final AppUserRepo appUserRepo;
+    private final AnswerProducer answerProducer;
+    private final WrongAppUserDataUpdateProcessor wrongAppUserRoleUpdateProcessor;
+    private final UpdateProcessor textUpdateProcessor;
+    private final UpdateProcessor commandUpdateProcessor;
+    private final UpdateProcessor callbackQueryUpdateProcessor;
 
     @Override
     public void processTextMessage(Update update) {
@@ -46,7 +40,7 @@ public class MainService implements Main {
 
         var answer = company == null ?
                 wrongAppUserRoleUpdateProcessor.processUpdate(update) :
-                textUpdateProcessor.processTextUpdate(update, currentAppUser);
+                textUpdateProcessor.processUpdate(update, currentAppUser);
 
         sendAnswer(answer);
     }
@@ -58,7 +52,7 @@ public class MainService implements Main {
 
         var answer = company == null ?
                 wrongAppUserRoleUpdateProcessor.processUpdate(update) :
-                commandUpdateProcessor.processCommandUpdate(update, currentAppUser);
+                commandUpdateProcessor.processUpdate(update, currentAppUser);
 
         sendAnswer(answer);
     }
@@ -70,7 +64,7 @@ public class MainService implements Main {
 
         var answer = company == null ?
                 wrongAppUserRoleUpdateProcessor.processUpdate(update) :
-                callbackQueryUpdateProcessor.processCallbackQueryUpdate(update, currentAppUser);
+                callbackQueryUpdateProcessor.processUpdate(update, currentAppUser);
 
         sendAnswer(answer);
     }

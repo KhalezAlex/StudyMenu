@@ -7,7 +7,7 @@ import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.enitites.appUsers.Employee;
 import org.klozevitz.enitites.appUsers.enums.states.DepartmentState;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
-import org.klozevitz.services.uitl.Registrar;
+import org.klozevitz.services.util.Registrar;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
