@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import static org.klozevitz.enitites.appUsers.enums.states.CompanyState.WAIT_FOR_DEPARTMENT_TELEGRAM_USER_ID_STATE;
+import static org.klozevitz.enitites.appUsers.enums.states.CompanyState.WAIT_FOR_DEPARTMENT_TG_ID_STATE;
 import static org.klozevitz.enitites.appUsers.enums.views.CompanyView.*;
 
 @Service
@@ -51,7 +51,7 @@ public class BasicStateCompanyCQUP implements UpdateProcessor {
     }
 
     private SendMessage departmentTelegramUserIdRequestView(Update update, AppUser currentAppUser) {
-        currentAppUser.getCompany().setState(WAIT_FOR_DEPARTMENT_TELEGRAM_USER_ID_STATE);
+        currentAppUser.getCompany().setState(WAIT_FOR_DEPARTMENT_TG_ID_STATE);
         currentAppUser.getCompany().setCurrentView(DEPARTMENT_TELEGRAM_USER_ID_REQUEST_VIEW);
         appUserRepo.save(currentAppUser);
 

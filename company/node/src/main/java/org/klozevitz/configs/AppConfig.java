@@ -5,8 +5,9 @@ import org.klozevitz.MessageUtil;
 import org.klozevitz.CompanyTelegramView;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.services.implementations.main.MainService;
+import org.klozevitz.services.implementations.updateProcessors.commandUpdateProcessors.byState.ContinuousRegistrationCompanyCUP;
 import org.klozevitz.services.implementations.updateProcessors.util.NullableStateCompanyUP;
-import org.klozevitz.services.implementations.updateProcessors.util.PreviousViewCompanyUpdateProcessor;
+import org.klozevitz.services.implementations.updateProcessors.util.PreviousViewCompanyUP;
 import org.klozevitz.services.implementations.updateProcessors.util.WrongAppUserRoleCompanyUP;
 import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpdateProcessors.CallbackQueryCompanyUP;
 import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpdateProcessors.byState.BasicStateCompanyCQUP;
@@ -71,26 +72,26 @@ public class AppConfig {
 
     @Bean
     public UpdateProcessor previousViewUpdateProcessor() {
-        return new PreviousViewCompanyUpdateProcessor(
+        return new PreviousViewCompanyUP(
                 telegramView()
         );
     }
 
     /**
-     * Text-update-обработчики
+     * TextUpdate-обработчики
      * */
     @Bean
     public UpdateProcessor textUpdateProcessor() {
         return new TextCompanyUpdateProcessor(
-                telegramView(),
                 companyRegistrar(),
                 departmentRegistrar(),
-                nullableStateUpdateProcessor()
+                nullableStateUpdateProcessor(),
+                previousViewUpdateProcessor()
         );
     }
 
     /**
-     * CallbackQuery-update-обработчики
+     * CallbackQueryUpdate-обработчики
      */
 
     @Bean
@@ -141,19 +142,16 @@ public class AppConfig {
     }
 
     /**
-     * Command-update-обработчики
+     * CommandUpdate-обработчики
      * */
-    // TODO обязательно первые два параметра положить в один из сервисов, которых еще нет.
-    //  Предположительно, в сервис, который будет работать на уровне регистрации компании
     @Bean
     public UpdateProcessor commandUpdateProcessor(){
         return new CommandCompanyUP(
-                appUserRepo,
-                telegramView(),
                 nullableStateUpdateProcessor(),
                 basicStateCommandUpdateProcessor(),
                 unregisteredStateCommandUpdateProcessor(),
                 waitForDepartmentTgIdStateCommandUpdateProcessor(),
+                continuousRegistrationCommandUpdateProcessor(),
                 previousViewUpdateProcessor()
         );
     }
@@ -170,7 +168,8 @@ public class AppConfig {
     public UpdateProcessor unregisteredStateCommandUpdateProcessor() {
         return new UnregisteredStateCompanyCUP(
                 appUserRepo,
-                telegramView()
+                telegramView(),
+                previousViewUpdateProcessor()
         );
     }
 
@@ -178,7 +177,17 @@ public class AppConfig {
     public UpdateProcessor waitForDepartmentTgIdStateCommandUpdateProcessor() {
         return new WaitForDepartmentTgIdStateCompanyCUP(
                 appUserRepo,
-                telegramView()
+                telegramView(),
+                previousViewUpdateProcessor()
+        );
+    }
+
+    @Bean
+    public UpdateProcessor continuousRegistrationCommandUpdateProcessor() {
+        return new ContinuousRegistrationCompanyCUP(
+                appUserRepo,
+                telegramView(),
+                previousViewUpdateProcessor()
         );
     }
 

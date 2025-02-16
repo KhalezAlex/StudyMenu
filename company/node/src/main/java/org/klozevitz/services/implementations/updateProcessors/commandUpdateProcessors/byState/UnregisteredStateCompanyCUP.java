@@ -1,6 +1,7 @@
 package org.klozevitz.services.implementations.updateProcessors.commandUpdateProcessors.byState;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j;
 import org.klozevitz.CompanyTelegramView;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
@@ -10,10 +11,12 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import static org.klozevitz.enitites.appUsers.enums.views.CompanyView.UNREGISTERED_WELCOME_VIEW;
 
+@Log4j
 @RequiredArgsConstructor
 public class UnregisteredStateCompanyCUP implements UpdateProcessor {
     private final AppUserRepo appUserRepo;
     private final CompanyTelegramView telegramView;
+    private final UpdateProcessor previousViewUpdateProcessor;
 
     @Override
     public SendMessage processUpdate(Update update, AppUser currentAppUser) {
@@ -23,7 +26,7 @@ public class UnregisteredStateCompanyCUP implements UpdateProcessor {
             case "/start":
                 return unregisteredWelcomeView(update, currentAppUser);
             default:
-                return telegramView.previousView(update, currentAppUser);
+                return previousViewUpdateProcessor.processUpdate(update, currentAppUser);
         }
     }
 

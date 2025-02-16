@@ -10,7 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Log4j
 @RequiredArgsConstructor
-public class PreviousViewCompanyUpdateProcessor implements UpdateProcessor {
+public class PreviousViewCompanyUP implements UpdateProcessor {
     private final CompanyTelegramView telegramView;
 
     @Override

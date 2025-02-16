@@ -48,6 +48,9 @@ public class UpdateProcessorsConfig {
         );
     }
 
+    /**
+     * Update-обработчики
+     */
     @Bean
     public WrongAppUserDataUpdateProcessor wrongAppUserRoleUpdateProcessor() {
         return new WrongAppUserRoleDepartmentUP(

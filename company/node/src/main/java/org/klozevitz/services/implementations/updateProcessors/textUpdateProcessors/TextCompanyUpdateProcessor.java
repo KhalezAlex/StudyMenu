@@ -13,10 +13,11 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @Log4j
 @RequiredArgsConstructor
 public class TextCompanyUpdateProcessor implements UpdateProcessor {
-    private final CompanyTelegramView telegramView;
     private final Registrar companyRegistrar;
     private final Registrar departmentRegistrar;
     private final UpdateProcessor nullableStateUpdateProcessor;
+    private final UpdateProcessor previousViewUpdateProcessor;
+
 
     /**
      * Пока предусмотрена передача текстовых сообщений только в 2 статусах
@@ -37,10 +38,10 @@ public class TextCompanyUpdateProcessor implements UpdateProcessor {
         switch (state) {
             case WAIT_FOR_EMAIL_STATE:
                 return companyRegistrar.register(update, currentAppUser);
-            case WAIT_FOR_DEPARTMENT_TELEGRAM_USER_ID_STATE:
+            case WAIT_FOR_DEPARTMENT_TG_ID_STATE:
                 return departmentRegistrar.register(update, currentAppUser);
             default:
-                return telegramView.previousView(update, currentAppUser);
+                return previousViewUpdateProcessor.processUpdate(update, currentAppUser);
         }
     }
 

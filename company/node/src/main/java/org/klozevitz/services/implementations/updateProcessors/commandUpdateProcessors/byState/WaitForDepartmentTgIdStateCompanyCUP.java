@@ -14,6 +14,7 @@ import static org.klozevitz.enitites.appUsers.enums.views.CompanyView.REGISTERED
 public class WaitForDepartmentTgIdStateCompanyCUP implements UpdateProcessor {
     private final AppUserRepo appUserRepo;
     private final CompanyTelegramView telegramView;
+    private final UpdateProcessor previousViewUpdateProcessor;
 
     @Override
     public SendMessage processUpdate(Update update, AppUser currentAppUser) {
@@ -23,7 +24,7 @@ public class WaitForDepartmentTgIdStateCompanyCUP implements UpdateProcessor {
             case "/start":
                 return registeredWelcomeView(update, currentAppUser);
             default:
-                return telegramView.previousView(update, currentAppUser);
+                return previousViewUpdateProcessor.processUpdate(update, currentAppUser);
         }
     }
 

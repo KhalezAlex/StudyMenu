@@ -33,7 +33,7 @@ public class CallbackQueryCompanyUP implements UpdateProcessor {
                 return waitingForEmailStateCQUP.processUpdate(update, currentAppUser);
             case BASIC_STATE:
                 return basicStateCQUP.processUpdate(update, currentAppUser);
-            case WAIT_FOR_DEPARTMENT_TELEGRAM_USER_ID_STATE:
+            case WAIT_FOR_DEPARTMENT_TG_ID_STATE:
                 return waitingForDepartmentTgIdStateCQUP.processUpdate(update, currentAppUser);
             default: {
                 log.error("Сообщение не попало ни в одну из веток состояний компании");
