@@ -13,7 +13,7 @@ import javax.annotation.PostConstruct;
 @Log4j
 @Component
 @RequiredArgsConstructor
-public class DepartmentTelegramBot extends TelegramBotComponent {
+public class EmployeeTelegramBot extends TelegramBotComponent {
     @Value(value = "${bot.username}")
     private String username;
     @Value(value = "${bot.token}")
