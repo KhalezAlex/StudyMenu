@@ -8,30 +8,23 @@ import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.services.interfaces.main.AnswerProducer;
 import org.klozevitz.services.interfaces.main.Main;
-import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 
-import javax.annotation.Resource;
 import java.util.Optional;
 
 @Log4j
-@Service
 @RequiredArgsConstructor
 public class MainService implements Main {
     private final AppUserRepo appUserRepo;
     private final AnswerProducer answerProducer;
-    @Resource(name = "wrongAppUserRoleUpdateProcessor")
-    private WrongAppUserDataUpdateProcessor wrongAppUserRoleUpdateProcessor;
-    @Resource(name = "notRegisteredAppUserUpdateProcessor")
-    private WrongAppUserDataUpdateProcessor notRegisteredAppUserUpdateProcessor;
-    @Resource(name = "commandUpdateProcessor")
-    private UpdateProcessor commandUpdateProcessor;
-    @Resource(name = "textUpdateProcessor")
-    private UpdateProcessor textUpdateProcessor;
-    @Resource(name = "callbackQueryUpdateProcessor")
-    private UpdateProcessor callbackQueryUpdateProcessor;
+    private final WrongAppUserDataUpdateProcessor wrongAppUserRoleUpdateProcessor;
+    private final WrongAppUserDataUpdateProcessor notRegisteredAppUserUpdateProcessor;
+    private final UpdateProcessor commandUpdateProcessor;
+    private final UpdateProcessor textUpdateProcessor;
+    private final UpdateProcessor callbackQueryUpdateProcessor;
+    private final UpdateProcessor documentUpdateProcessor;
 
 
     @Override
@@ -69,15 +62,14 @@ public class MainService implements Main {
         return department == null ?
                 wrongAppUserRoleUpdateProcessor.processUpdate(update) :
                 commandUpdateProcessor.processUpdate(update, currentAppUser);
-
     }
 
     @Override
     public void processCallbackQueryUpdate(Update update) {
-        var optionalCurrentUser = findAppUser(update);
-        var answer = optionalCurrentUser.isEmpty() ?
+        var optionalCurrentAppUser = findAppUser(update);
+        var answer = optionalCurrentAppUser.isEmpty() ?
                 notRegisteredAppUserUpdateProcessor.processUpdate(update) :
-                registeredUserCallbackQueryUpdateAnswer(update, optionalCurrentUser.get());
+                registeredUserCallbackQueryUpdateAnswer(update, optionalCurrentAppUser.get());
 
         sendAnswer(answer);
     }
@@ -92,13 +84,20 @@ public class MainService implements Main {
 
     @Override
     public void processDocUpdate(Update update) {
+        var optionalCurrentAppUser = findAppUser(update);
+        var answer = optionalCurrentAppUser.isEmpty() ?
+                notRegisteredAppUserUpdateProcessor.processUpdate(update) :
+                registeredUserDocUpdateAnswer(update, optionalCurrentAppUser.get());
 
+        sendAnswer(answer);
     }
 
-    private long chatId(Update update) {
-        return update.hasMessage() ?
-                update.getMessage().getChatId() :
-                update.getCallbackQuery().getMessage().getChatId();
+    private SendMessage registeredUserDocUpdateAnswer(Update update, AppUser currentAppUser) {
+        var department = currentAppUser.getDepartment();
+
+        return department == null ?
+                wrongAppUserRoleUpdateProcessor.processUpdate(update) :
+                documentUpdateProcessor.processUpdate(update, currentAppUser);
     }
 
     private Optional<AppUser> findAppUser(Update update) {

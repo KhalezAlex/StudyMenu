@@ -27,7 +27,8 @@ public class Company extends BaseEntity {
 
     @EqualsAndHashCode.Exclude
     @OneToOne(mappedBy = "company", cascade = CascadeType.ALL)
-    @JoinColumn(name = "app_user_id", insertable = false)
+//    @JoinColumn(name = "app_user_id", insertable = false)
+    @JoinColumn(name = "app_user_id")
     private AppUser appUser;
     @EqualsAndHashCode.Exclude
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "company", fetch = FetchType.EAGER)

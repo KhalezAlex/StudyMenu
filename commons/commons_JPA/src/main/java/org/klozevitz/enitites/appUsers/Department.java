@@ -25,11 +25,13 @@ public class Department extends BaseEntity {
 
     @EqualsAndHashCode.Exclude
     @OneToOne(mappedBy = "department", cascade = CascadeType.ALL)
-    @JoinColumn(name = "app_user_id", insertable = false)
+//    @JoinColumn(name = "app_user_id", insertable = false)
+    @JoinColumn(name = "app_user_id")
     private AppUser appUser;
     @EqualsAndHashCode.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id", insertable = false)
+//    @JoinColumn(name = "company_id", insertable = false)
+    @JoinColumn(name = "company_id")
     private Company company;
     @EqualsAndHashCode.Exclude
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "department", fetch = FetchType.EAGER)
