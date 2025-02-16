@@ -8,7 +8,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
-import static org.klozevitz.RabbitQueue.DEPARTMENT_ANSWER_MESSAGE;
+import static org.klozevitz.RabbitQueue.EMPLOYEE_ANSWER_MESSAGE;
 
 @Log4j
 @Service
@@ -17,7 +17,7 @@ public class AnswerConsumerService implements AnswerConsumer {
     private final UpdateController updateController;
 
     @Override
-    @RabbitListener(queues = DEPARTMENT_ANSWER_MESSAGE)
+    @RabbitListener(queues = EMPLOYEE_ANSWER_MESSAGE)
     public void consume(SendMessage sendMessage) {
         updateController.setView(sendMessage);
     }
