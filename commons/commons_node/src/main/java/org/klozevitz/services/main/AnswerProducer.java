@@ -1,4 +1,4 @@
-package org.klozevitz.services.interfaces.main;
+package org.klozevitz.services.main;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 

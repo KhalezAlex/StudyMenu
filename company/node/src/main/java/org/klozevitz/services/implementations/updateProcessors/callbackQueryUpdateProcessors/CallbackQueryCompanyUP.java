@@ -2,7 +2,6 @@ package org.klozevitz.services.implementations.updateProcessors.callbackQueryUpd
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
-import org.klozevitz.CompanyTelegramView;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.services.messageProcessors.UpdateProcessor;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -10,13 +9,13 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Log4j
 @RequiredArgsConstructor
-public class CompanyCallbackQueryUP implements UpdateProcessor {
-    private final CompanyTelegramView telegramView;
+public class CallbackQueryCompanyUP implements UpdateProcessor {
     private final UpdateProcessor nullableStateUpdateProcessor;
     private final UpdateProcessor unregisteredStateCQUP;
     private final UpdateProcessor waitingForEmailStateCQUP;
     private final UpdateProcessor basicStateCQUP;
     private final UpdateProcessor waitingForDepartmentTgIdStateCQUP;
+    private final UpdateProcessor previousViewUpdateProcessor;
 
     @Override
     public SendMessage processUpdate(Update update, AppUser currentAppUser) {
@@ -38,7 +37,7 @@ public class CompanyCallbackQueryUP implements UpdateProcessor {
                 return waitingForDepartmentTgIdStateCQUP.processUpdate(update, currentAppUser);
             default: {
                 log.error("Сообщение не попало ни в одну из веток состояний компании");
-                return telegramView.previousView(update, currentAppUser);
+                return previousViewUpdateProcessor.processUpdate(update, currentAppUser);
             }
         }
     }

@@ -1,4 +1,4 @@
-package org.klozevitz.services.implementations.updateProcessors;
+package org.klozevitz.services.implementations.updateProcessors.util;
 
 import lombok.RequiredArgsConstructor;
 import org.klozevitz.CompanyTelegramView;
@@ -11,7 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import static org.klozevitz.enitites.appUsers.enums.views.CompanyView.NULL_COMPANY_STATE_NOTIFICATION_VIEW;
 
 @RequiredArgsConstructor
-public class CompanyNullableStateUP implements UpdateProcessor {
+public class NullableStateCompanyUP implements UpdateProcessor {
     private final AppUserRepo appUserRepo;
     private final CompanyTelegramView telegramView;
 

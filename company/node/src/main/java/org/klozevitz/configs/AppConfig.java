@@ -5,13 +5,14 @@ import org.klozevitz.MessageUtil;
 import org.klozevitz.CompanyTelegramView;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.services.implementations.main.MainService;
-import org.klozevitz.services.implementations.updateProcessors.CompanyNullableStateUP;
-import org.klozevitz.services.implementations.updateProcessors.WrongAppUserRoleCompanyUP;
-import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpdateProcessors.CompanyCallbackQueryUP;
-import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpdateProcessors.byState.CompanyBasicStateCQUP;
-import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpdateProcessors.byState.CompanyUnregisteredStateCQUP;
-import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpdateProcessors.byState.CompanyWaitingForDepartmentTgIdStateCQUP;
-import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpdateProcessors.byState.CompanyWaitingForEmailStateCQUP;
+import org.klozevitz.services.implementations.updateProcessors.util.NullableStateCompanyUP;
+import org.klozevitz.services.implementations.updateProcessors.util.PreviousViewCompanyUpdateProcessor;
+import org.klozevitz.services.implementations.updateProcessors.util.WrongAppUserRoleCompanyUP;
+import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpdateProcessors.CallbackQueryCompanyUP;
+import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpdateProcessors.byState.BasicStateCompanyCQUP;
+import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpdateProcessors.byState.UnregisteredStateCompanyCQUP;
+import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpdateProcessors.byState.WaitForDepartmentTgIdStateCompanyCQUP;
+import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpdateProcessors.byState.WaitingForEmailStateCompanyCQUP;
 import org.klozevitz.services.implementations.updateProcessors.commandUpdateProcessors.CommandCompanyUP;
 import org.klozevitz.services.implementations.updateProcessors.commandUpdateProcessors.byState.BasicStateCompanyCUP;
 import org.klozevitz.services.implementations.updateProcessors.commandUpdateProcessors.byState.UnregisteredStateCompanyCUP;
@@ -19,7 +20,7 @@ import org.klozevitz.services.implementations.updateProcessors.commandUpdateProc
 import org.klozevitz.services.implementations.updateProcessors.textUpdateProcessors.TextCompanyUpdateProcessor;
 import org.klozevitz.services.implementations.utils.CompanyRegistrar;
 import org.klozevitz.services.implementations.utils.DepartmentRegistrar;
-import org.klozevitz.services.interfaces.main.AnswerProducer;
+import org.klozevitz.services.main.AnswerProducer;
 import org.klozevitz.services.interfaces.main.Main;
 import org.klozevitz.services.messageProcessors.UpdateProcessor;
 import org.klozevitz.services.messageProcessors.WrongAppUserDataUpdateProcessor;
@@ -36,21 +37,6 @@ public class AppConfig {
     private String salt;
     private final AppUserRepo appUserRepo;
     private final AnswerProducer answerProducer;
-
-    @Bean
-    public CompanyTelegramView telegramView() {
-        return new CompanyTelegramView(messageUtil());
-    }
-
-    @Bean
-    public MessageUtil messageUtil() {
-        return new MessageUtil();
-    }
-
-    @Bean
-    public CryptoTool cryptoTool() {
-        return new CryptoTool(salt);
-    }
 
     @Bean
     public Main main() {
@@ -70,7 +56,7 @@ public class AppConfig {
 
     @Bean
     public UpdateProcessor nullableStateUpdateProcessor() {
-        return new CompanyNullableStateUP(
+        return new NullableStateCompanyUP(
                 appUserRepo,
                 telegramView()
         );
@@ -80,6 +66,13 @@ public class AppConfig {
     public WrongAppUserDataUpdateProcessor wrongAppUserRoleUpdateProcessor() {
         return new WrongAppUserRoleCompanyUP(
             telegramView()
+        );
+    }
+
+    @Bean
+    public UpdateProcessor previousViewUpdateProcessor() {
+        return new PreviousViewCompanyUpdateProcessor(
+                telegramView()
         );
     }
 
@@ -102,35 +95,37 @@ public class AppConfig {
 
     @Bean
     public UpdateProcessor callbackQueryUpdateProcessor() {
-        return new CompanyCallbackQueryUP(
-                telegramView(),
+        return new CallbackQueryCompanyUP(
                 nullableStateUpdateProcessor(),
                 unregisteredStateCallbackQueryUpdateProcessor(),
                 waitingForEmailStateCallbackQueryUpdateProcessor(),
                 basicStateCallbackQueryUpdateProcessor(),
-                waitingForDepartmentTgIdStateCallbackQueryUpdateProcessor()
+                waitingForDepartmentTgIdStateCallbackQueryUpdateProcessor(),
+                previousViewUpdateProcessor()
                 );
     }
 
     @Bean
     public UpdateProcessor basicStateCallbackQueryUpdateProcessor() {
-        return new CompanyBasicStateCQUP(
+        return new BasicStateCompanyCQUP(
                 appUserRepo,
-                telegramView()
+                telegramView(),
+                previousViewUpdateProcessor()
         );
     }
 
     @Bean
     UpdateProcessor unregisteredStateCallbackQueryUpdateProcessor() {
-        return new CompanyUnregisteredStateCQUP(
+        return new UnregisteredStateCompanyCQUP(
                 appUserRepo,
-                telegramView()
+                telegramView(),
+                previousViewUpdateProcessor()
         );
     }
 
     @Bean
     public UpdateProcessor waitingForEmailStateCallbackQueryUpdateProcessor() {
-        return new CompanyWaitingForEmailStateCQUP(
+        return new WaitingForEmailStateCompanyCQUP(
                 appUserRepo,
                 telegramView(),
                 messageUtil()
@@ -139,7 +134,7 @@ public class AppConfig {
 
     @Bean
     public UpdateProcessor waitingForDepartmentTgIdStateCallbackQueryUpdateProcessor() {
-        return new CompanyWaitingForDepartmentTgIdStateCQUP(
+        return new WaitForDepartmentTgIdStateCompanyCQUP(
                 appUserRepo,
                 telegramView()
         );
@@ -158,7 +153,8 @@ public class AppConfig {
                 nullableStateUpdateProcessor(),
                 basicStateCommandUpdateProcessor(),
                 unregisteredStateCommandUpdateProcessor(),
-                waitForDepartmentTgIdStateCommandUpdateProcessor()
+                waitForDepartmentTgIdStateCommandUpdateProcessor(),
+                previousViewUpdateProcessor()
         );
     }
 
@@ -189,6 +185,21 @@ public class AppConfig {
     /**
      * UTILS
      */
+    @Bean
+    public CompanyTelegramView telegramView() {
+        return new CompanyTelegramView(messageUtil());
+    }
+
+    @Bean
+    public MessageUtil messageUtil() {
+        return new MessageUtil();
+    }
+
+    @Bean
+    public CryptoTool cryptoTool() {
+        return new CryptoTool(salt);
+    }
+
     @Bean
     public Registrar companyRegistrar() {
         return new CompanyRegistrar(

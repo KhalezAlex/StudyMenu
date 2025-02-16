@@ -12,9 +12,10 @@ import static org.klozevitz.enitites.appUsers.enums.states.CompanyState.BASIC_ST
 import static org.klozevitz.enitites.appUsers.enums.views.CompanyView.REGISTERED_WELCOME_VIEW;
 
 @RequiredArgsConstructor
-public class CompanyWaitingForDepartmentTgIdStateCQUP implements UpdateProcessor {
+public class WaitForDepartmentTgIdStateCompanyCQUP implements UpdateProcessor {
     private final AppUserRepo appUserRepo;
     private final CompanyTelegramView telegramView;
+
 
     @Override
     public SendMessage processUpdate(Update update, AppUser currentAppUser) {

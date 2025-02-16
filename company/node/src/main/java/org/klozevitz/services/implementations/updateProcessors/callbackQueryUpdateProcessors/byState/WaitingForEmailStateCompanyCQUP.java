@@ -15,7 +15,7 @@ import static org.klozevitz.enitites.appUsers.enums.views.CompanyView.EMAIL_REQU
 
 @Service
 @RequiredArgsConstructor
-public class CompanyWaitingForEmailStateCQUP implements UpdateProcessor {
+public class WaitingForEmailStateCompanyCQUP implements UpdateProcessor {
     private final String REGISTRATION_ABORT_NOTIFICATION_MESSAGE = "Регистрация была прервана";
     private final AppUserRepo appUserRepo;
     private final CompanyTelegramView telegramView;

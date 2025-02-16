@@ -12,9 +12,11 @@ import static org.klozevitz.enitites.appUsers.enums.states.CompanyState.WAIT_FOR
 import static org.klozevitz.enitites.appUsers.enums.views.CompanyView.EMAIL_REQUEST_VIEW;
 
 @RequiredArgsConstructor
-public class CompanyUnregisteredStateCQUP implements UpdateProcessor {
+public class UnregisteredStateCompanyCQUP implements UpdateProcessor {
     private final AppUserRepo appUserRepo;
     private final CompanyTelegramView telegramView;
+    private final UpdateProcessor previousViewUpdateProcessor;
+
 
     @Override
     public SendMessage processUpdate(Update update, AppUser currentAppUser) {
@@ -24,7 +26,7 @@ public class CompanyUnregisteredStateCQUP implements UpdateProcessor {
             case "/register":
                 return emailRequestView(update, currentAppUser);
             default:
-                return telegramView.previousView(update, currentAppUser);
+                return previousViewUpdateProcessor.processUpdate(update, currentAppUser);
         }
     }
 

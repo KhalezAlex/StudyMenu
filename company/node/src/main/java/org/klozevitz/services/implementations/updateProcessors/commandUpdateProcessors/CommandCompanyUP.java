@@ -22,6 +22,7 @@ public class CommandCompanyUP implements UpdateProcessor {
     private final UpdateProcessor basicStateCUP;
     private final UpdateProcessor unregisteredStateCUP;
     private final UpdateProcessor waitForDepartmentTelegramUserIdStateCUP;
+    private final UpdateProcessor previousViewUpdateProcessor;
 
     @Override
     public SendMessage processUpdate(Update update, AppUser currentAppUser) {
@@ -44,7 +45,7 @@ public class CommandCompanyUP implements UpdateProcessor {
                 return waitForDepartmentTelegramUserIdStateCUP.processUpdate(update, currentAppUser);
             default: {
                 log.error("Сообщение не попало ни в одну из веток состояний компании");
-                return telegramView.previousView(update, currentAppUser);
+                return previousViewUpdateProcessor.processUpdate(update, currentAppUser);
             }
         }
     }

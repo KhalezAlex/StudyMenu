@@ -1,4 +1,4 @@
-package org.klozevitz.services.implementations.updateProcessors;
+package org.klozevitz.services.implementations.updateProcessors.util;
 
 import lombok.RequiredArgsConstructor;
 import org.klozevitz.CompanyTelegramView;

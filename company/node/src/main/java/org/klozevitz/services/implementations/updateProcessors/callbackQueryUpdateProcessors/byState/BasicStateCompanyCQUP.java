@@ -14,9 +14,11 @@ import static org.klozevitz.enitites.appUsers.enums.views.CompanyView.*;
 
 @Service
 @RequiredArgsConstructor
-public class CompanyBasicStateCQUP implements UpdateProcessor {
+public class BasicStateCompanyCQUP implements UpdateProcessor {
     private final AppUserRepo appUserRepo;
     private final CompanyTelegramView telegramView;
+    private final UpdateProcessor previousViewUpdateProcessor;
+
 
     @Override
     public SendMessage processUpdate(Update update, AppUser currentAppUser) {
@@ -30,7 +32,7 @@ public class CompanyBasicStateCQUP implements UpdateProcessor {
             case "/add_department":
                 return departmentTelegramUserIdRequestView(update, currentAppUser);
             default:
-                return telegramView.previousView(update, currentAppUser);
+                return previousViewUpdateProcessor.processUpdate(update, currentAppUser);
         }
     }
 
