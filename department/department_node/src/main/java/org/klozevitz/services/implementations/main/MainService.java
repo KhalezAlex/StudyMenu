@@ -2,11 +2,11 @@ package org.klozevitz.services.implementations.main;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
+import org.klozevitz.services.main.AnswerProducer;
 import org.klozevitz.services.messageProcessors.UpdateProcessor;
 import org.klozevitz.services.messageProcessors.WrongAppUserDataUpdateProcessor;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
-import org.klozevitz.services.interfaces.main.AnswerProducer;
 import org.klozevitz.services.interfaces.main.Main;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;

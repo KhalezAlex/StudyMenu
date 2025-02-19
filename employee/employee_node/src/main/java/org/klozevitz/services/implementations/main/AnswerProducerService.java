@@ -1,4 +1,4 @@
-package org.klozevitz.services.implementation.main;
+package org.klozevitz.services.implementations.main;
 
 import lombok.RequiredArgsConstructor;
 import org.klozevitz.services.main.AnswerProducer;
