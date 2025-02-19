@@ -5,6 +5,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.klozevitz.enitites.menu.Ingredient;
 import org.klozevitz.enitites.menu.Item;
+import org.klozevitz.enitites.menu.TestQuestion;
 
 import java.util.*;
 
@@ -53,6 +54,7 @@ public class ExcelToTestParser {
                 .weight(currentRow.getCell(2).getNumericCellValue())
                 .units(currentRow.getCell(3).getStringCellValue())
                 .ingredients(new HashSet<>())
+                .question(new TestQuestion())
                 .build();
     }
 }

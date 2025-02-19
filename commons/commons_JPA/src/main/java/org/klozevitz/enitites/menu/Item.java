@@ -22,4 +22,7 @@ public class Item extends BaseEntity {
     private Category category;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "item")
     private Set<Ingredient> ingredients;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "test_question_id")
+    private TestQuestion question;
 }
