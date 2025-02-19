@@ -3,23 +3,30 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>TEST_MENU_TELEGRAM_BOT_PRODUCTION</artifactId>
+        <artifactId>employee</artifactId>
         <groupId>org.klozevitz</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>employee</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>employee_dispatcher</module>
-        <module>employee_node</module>
-        <module>employee_telegram</module>
-    </modules>
+    <artifactId>employee_telegram</artifactId>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.telegram</groupId>
+            <artifactId>telegrambots-spring-boot-starter</artifactId>
+            <version>${telegrambots.starter.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.klozevitz</groupId>
+            <artifactId>commons_telegram</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 </project>

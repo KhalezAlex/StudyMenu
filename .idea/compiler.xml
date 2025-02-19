@@ -12,6 +12,7 @@
         <module name="common_utils" />
         <module name="employee_node" />
         <module name="commons_dispatcher" />
+        <module name="employee_telegram" />
         <module name="department_dispatcher" />
         <module name="department_telegram" />
         <module name="department_node" />
@@ -50,6 +51,7 @@
       <module name="employee" options="-parameters" />
       <module name="employee_dispatcher" options="-parameters" />
       <module name="employee_node" options="-parameters" />
+      <module name="employee_telegram" options="-parameters" />
       <module name="mailService" options="-parameters" />
       <module name="mail_service" options="-parameters" />
       <module name="node" options="-parameters" />
