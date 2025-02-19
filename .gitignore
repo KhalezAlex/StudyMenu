@@ -4,3 +4,5 @@
 /company/activation_rest_service/src/main/resources/application.yaml
 /department/department_dispatcher/src/main/resources/application.yaml
 /department/department_node/src/main/resources/application.yaml
+/employee/employee_node/src/main/resources/application.yaml
+/employee/employee_dispatcher/src/main/resources/application.yaml

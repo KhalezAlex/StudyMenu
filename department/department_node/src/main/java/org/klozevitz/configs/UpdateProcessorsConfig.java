@@ -12,8 +12,8 @@ import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpda
 import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpdateProcessors.byState.WaitForEmployeeTgIdStateDepartmentCQUP;
 import org.klozevitz.services.implementations.util.EmployeeRegistrar;
 import org.klozevitz.services.implementations.util.ExcelToTestParser;
-import org.klozevitz.services.interfaces.main.AnswerProducer;
 import org.klozevitz.services.interfaces.main.Main;
+import org.klozevitz.services.main.AnswerProducer;
 import org.klozevitz.services.messageProcessors.UpdateProcessor;
 import org.klozevitz.services.messageProcessors.WrongAppUserDataUpdateProcessor;
 import org.klozevitz.services.implementations.updateProcessors.util.NotRegisteredAppUserDepartmentUP;

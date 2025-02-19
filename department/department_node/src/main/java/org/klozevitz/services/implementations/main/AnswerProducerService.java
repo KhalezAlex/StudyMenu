@@ -1,7 +1,7 @@
 package org.klozevitz.services.implementations.main;
 
 import lombok.RequiredArgsConstructor;
-import org.klozevitz.services.interfaces.main.AnswerProducer;
+import org.klozevitz.services.main.AnswerProducer;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
