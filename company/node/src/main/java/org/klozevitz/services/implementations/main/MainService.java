@@ -1,9 +1,9 @@
 package org.klozevitz.services.implementations.main;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.enitites.appUsers.Company;
+import org.klozevitz.logger.LoggerInfo;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.services.main.AnswerProducer;
 import org.klozevitz.services.interfaces.main.Main;
@@ -17,7 +17,6 @@ import java.util.HashSet;
 
 import static org.klozevitz.enitites.appUsers.enums.states.CompanyState.UNREGISTERED_STATE;
 
-@Log4j
 @RequiredArgsConstructor
 public class MainService implements Main {
     private final AppUserRepo appUserRepo;
@@ -26,6 +25,7 @@ public class MainService implements Main {
     private final UpdateProcessor textUpdateProcessor;
     private final UpdateProcessor commandUpdateProcessor;
     private final UpdateProcessor callbackQueryUpdateProcessor;
+    private final LoggerInfo loggerInfo;
 
     @Override
     public void processTextMessage(Update update) {
@@ -37,6 +37,7 @@ public class MainService implements Main {
                 textUpdateProcessor.processUpdate(update, currentAppUser);
 
         sendAnswer(answer);
+        loggerInfo.LoggerInfoUpdate(update);
     }
 
     @Override
@@ -49,6 +50,7 @@ public class MainService implements Main {
                 commandUpdateProcessor.processUpdate(update, currentAppUser);
 
         sendAnswer(answer);
+        loggerInfo.LoggerInfoUpdate(update);
     }
 
     @Override
@@ -61,6 +63,7 @@ public class MainService implements Main {
                 callbackQueryUpdateProcessor.processUpdate(update, currentAppUser);
 
         sendAnswer(answer);
+        loggerInfo.LoggerInfoUpdate(update);
     }
 
     private AppUser findOrSaveAppUser(Update update) {

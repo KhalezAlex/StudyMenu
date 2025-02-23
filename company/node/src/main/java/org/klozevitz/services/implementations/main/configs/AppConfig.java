@@ -1,8 +1,9 @@
-package org.klozevitz.configs;
+package org.klozevitz.services.implementations.main.configs;
 
 import lombok.RequiredArgsConstructor;
 import org.klozevitz.MessageUtil;
 import org.klozevitz.CompanyTelegramView;
+import org.klozevitz.logger.LoggerInfo;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.services.implementations.main.MainService;
 import org.klozevitz.services.implementations.updateProcessors.commandUpdateProcessors.byState.ContinuousRegistrationCompanyCUP;
@@ -38,6 +39,7 @@ public class AppConfig {
     private String salt;
     private final AppUserRepo appUserRepo;
     private final AnswerProducer answerProducer;
+    private final LoggerInfo loggerInfo;
 
     @Bean
     public Main main() {
@@ -47,7 +49,8 @@ public class AppConfig {
                 wrongAppUserRoleUpdateProcessor(),
                 textUpdateProcessor(),
                 commandUpdateProcessor(),
-                callbackQueryUpdateProcessor()
+                callbackQueryUpdateProcessor(),
+                loggerInfo
         );
     }
 
@@ -59,14 +62,16 @@ public class AppConfig {
     public UpdateProcessor nullableStateUpdateProcessor() {
         return new NullableStateCompanyUP(
                 appUserRepo,
-                telegramView()
+                telegramView(),
+                loggerInfo
         );
     }
 
     @Bean
     public WrongAppUserDataUpdateProcessor wrongAppUserRoleUpdateProcessor() {
         return new WrongAppUserRoleCompanyUP(
-            telegramView()
+            telegramView(),
+            loggerInfo
         );
     }
 
@@ -214,7 +219,8 @@ public class AppConfig {
         return new CompanyRegistrar(
                 appUserRepo,
                 cryptoTool(),
-                telegramView()
+                telegramView(),
+                loggerInfo
         );
     }
 
@@ -222,7 +228,8 @@ public class AppConfig {
     public Registrar departmentRegistrar() {
         return new DepartmentRegistrar(
                 appUserRepo,
-                telegramView()
+                telegramView(),
+                loggerInfo
         );
     }
 }

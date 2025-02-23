@@ -13,6 +13,7 @@
         <module name="employee_node" />
         <module name="commons_dispatcher" />
         <module name="department_dispatcher" />
+        <module name="commons_utils" />
         <module name="department_telegram" />
         <module name="department_node" />
         <module name="employee_dispatcher" />
@@ -41,6 +42,7 @@
       <module name="commons_node" options="-parameters" />
       <module name="commons_rabbitMQ" options="-parameters" />
       <module name="commons_telegram" options="-parameters" />
+      <module name="commons_utils" options="-parameters" />
       <module name="company" options="-parameters" />
       <module name="department" options="-parameters" />
       <module name="department_dispatcher" options="-parameters" />

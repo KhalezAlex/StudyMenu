@@ -2,6 +2,7 @@ package org.klozevitz.controllers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
+import org.klozevitz.logger.LoggerInfo;
 import org.klozevitz.telegram.TelegramBotComponent;
 import org.klozevitz.interfaces.UpdateProducer;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ import static org.klozevitz.RabbitQueue.*;
 @RequiredArgsConstructor
 public class UpdateController {
     private final UpdateProducer updateProducer;
+    private final LoggerInfo loggerInfo;
     private TelegramBotComponent bot;
 
     public void registerBot(TelegramBotComponent bot) {
@@ -30,7 +32,7 @@ public class UpdateController {
         if (update.hasMessage() || update.hasCallbackQuery()) {
             distributeMessageByType(update);
         } else {
-            log.error("Unsupported received message type " + update);
+            loggerInfo.LoggerErrorUnsupportedMessageType(update);
         }
     }
 
