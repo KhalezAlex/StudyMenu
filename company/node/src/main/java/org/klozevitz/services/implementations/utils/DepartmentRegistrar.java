@@ -5,6 +5,7 @@ import org.klozevitz.CompanyTelegramView;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.enitites.appUsers.Department;
 import org.klozevitz.enitites.appUsers.enums.states.CompanyState;
+import org.klozevitz.logger.LoggerInfo;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.services.util.Registrar;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -19,6 +20,7 @@ import static org.klozevitz.enitites.appUsers.enums.views.CompanyView.DEPARTMENT
 public class DepartmentRegistrar implements Registrar {
     private final AppUserRepo appUserRepo;
     private final CompanyTelegramView telegramView;
+    private final LoggerInfo loggerInfo;
 
 
     @Override
@@ -72,6 +74,7 @@ public class DepartmentRegistrar implements Registrar {
         return telegramView.newDepartmentRegistrationNotificationView(update, currentAppUser);
     }
 
+    @Override
     public boolean isTgIdValid(String departmentTgId) {
         var regexp = "\\b\\d{8,12}\\b";
         var pattern = Pattern.compile(regexp);
@@ -81,12 +84,14 @@ public class DepartmentRegistrar implements Registrar {
     }
 
     private SendMessage invalidDepartmentTgIdErrorView(Update update) {
+        loggerInfo.LoggerErrorInvalidDepartmentTelegramUserId(update);
         return telegramView.invalidDepartmentTelegramUserIdErrorView(update);
     }
 
     private SendMessage alreadyRegisteredTelegramUserIdErrorView(Update update, AppUser currentAppUser) {
         currentAppUser.getCompany().setCurrentView(DEPARTMENTS_MANAGEMENT_VIEW);
         appUserRepo.save(currentAppUser);
+        loggerInfo.LoggerErrorAlreadyRegisteredTelegramUserId(update);
 
         return telegramView.alreadyRegisteredTelegramUserIdErrorView(update, currentAppUser);
     }

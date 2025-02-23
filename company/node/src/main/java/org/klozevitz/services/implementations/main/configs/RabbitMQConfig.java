@@ -1,4 +1,4 @@
-package org.klozevitz.configs;
+package org.klozevitz.services.implementations.main.configs;
 
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;

@@ -15,27 +15,18 @@ public class RabbitMQConfig {
     public MessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter();
     }
-
     @Bean
     public Queue textMessageUpdate() {
-        return new Queue(DEPARTMENT_TEXT_UPDATE);
+        return new Queue(COMPANY_TEXT_UPDATE);
     }
-
     @Bean
     public Queue commandUpdate() {
-        return new Queue(DEPARTMENT_COMMAND_UPDATE);
+        return new Queue(COMPANY_COMMAND_UPDATE);
     }
-
     @Bean
     public Queue callbackQueryUpdate() {
-        return new Queue(DEPARTMENT_CALLBACK_QUERY_UPDATE);
+        return new Queue(COMPANY_CALLBACK_QUERY_UPDATE);
     }
-
     @Bean
-    public Queue docUpdate() {
-        return new Queue(DEPARTMENT_DOC_UPDATE);
-    }
-
-    @Bean
-    public Queue answerMessage() {return new Queue(DEPARTMENT_ANSWER_MESSAGE);}
+    public Queue answerMessage() {return new Queue(COMPANY_ANSWER_MESSAGE);}
 }

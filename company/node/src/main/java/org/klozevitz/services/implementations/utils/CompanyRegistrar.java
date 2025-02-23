@@ -5,12 +5,12 @@ import lombok.extern.log4j.Log4j;
 import org.klozevitz.CompanyTelegramView;
 import org.klozevitz.dto.MailParameters;
 import org.klozevitz.enitites.appUsers.AppUser;
+import org.klozevitz.logger.LoggerInfo;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.services.util.Registrar;
 import org.klozevitz.utils.CryptoTool;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -30,6 +30,7 @@ public class CompanyRegistrar implements Registrar {
     private final AppUserRepo appUserRepo;
     private final CryptoTool cryptoTool;
     private final CompanyTelegramView telegramView;
+    private final LoggerInfo loggerInfo;
 
 
     @Override
@@ -40,12 +41,14 @@ public class CompanyRegistrar implements Registrar {
             InternetAddress emailAddress = new InternetAddress(email);
             emailAddress.validate();
         } catch (AddressException e) {
+            loggerInfo.LoggerErrorWrongEmail(update);
             return telegramView.wrongEmailNotificationView(update);
         }
 
         var userByEmail = appUserRepo.findByEmail(email);
 
         if (userByEmail.isPresent()) {
+            loggerInfo.LoggerErrorAlreadyRegisteredEmail(update);
             return telegramView.alreadyRegisteredEmailNotificationView(update);
         }
 

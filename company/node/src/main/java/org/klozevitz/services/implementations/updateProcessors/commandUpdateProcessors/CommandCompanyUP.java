@@ -27,16 +27,22 @@ public class CommandCompanyUP implements UpdateProcessor {
 
         switch (state) {
             case UNREGISTERED_STATE:
+                log.info("UNREGISTERED_STATE: " + update.getMessage().getFrom().getId());
                 return unregisteredStateCUP.processUpdate(update, currentAppUser);
             case WAIT_FOR_EMAIL_STATE:
+                log.info("WAIT_FOR_EMAIL_STATE: " + update.getMessage().getFrom().getId());
+                return continuousRegistrationCUP.processUpdate(update, currentAppUser);
             case WAIT_FOR_EMAIL_CONFIRMATION_STATE:
+                log.info("WAIT_FOR_EMAIL_CONFIRMATION_STATE: " + update.getMessage().getFrom().getId());
                 return continuousRegistrationCUP.processUpdate(update, currentAppUser);
             case BASIC_STATE:
+                log.info("BASIC_STATE: " + update.getMessage().getFrom().getId());
                 return basicStateCUP.processUpdate(update, currentAppUser);
             case WAIT_FOR_DEPARTMENT_TG_ID_STATE:
+                log.info("WAIT_FOR_DEPARTMENT_TG_ID_STATE: " + update.getMessage().getFrom().getId());
                 return waitForDepartmentTgIdStateCUP.processUpdate(update, currentAppUser);
             default: {
-                log.error("Сообщение не попало ни в одну из веток состояний компании");
+                log.error("Сообщение из CommandCompanyUP не попало ни в одну из веток состояний компании" + update);
                 return previousViewUpdateProcessor.processUpdate(update, currentAppUser);
             }
         }

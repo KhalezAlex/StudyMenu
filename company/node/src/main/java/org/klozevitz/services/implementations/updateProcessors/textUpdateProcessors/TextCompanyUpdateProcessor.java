@@ -2,7 +2,6 @@ package org.klozevitz.services.implementations.updateProcessors.textUpdateProces
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
-import org.klozevitz.CompanyTelegramView;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.services.messageProcessors.UpdateProcessor;
 import org.klozevitz.services.util.Registrar;
@@ -37,10 +36,13 @@ public class TextCompanyUpdateProcessor implements UpdateProcessor {
 
         switch (state) {
             case WAIT_FOR_EMAIL_STATE:
+                log.info("WAIT_FOR_EMAIL_STATE: " + update.getMessage().getFrom().getId());
                 return companyRegistrar.register(update, currentAppUser);
             case WAIT_FOR_DEPARTMENT_TG_ID_STATE:
+                log.info("WAIT_FOR_DEPARTMENT_TG_ID_STATE: " + update.getMessage().getFrom().getId());
                 return departmentRegistrar.register(update, currentAppUser);
             default:
+                log.error("Сообщение из TextCompanyUpdateProcessor не попало ни в одну из веток состояний компании" + update);
                 return previousViewUpdateProcessor.processUpdate(update, currentAppUser);
         }
     }
