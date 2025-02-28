@@ -4,7 +4,6 @@ import lombok.NoArgsConstructor;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.klozevitz.enitites.appUsers.Department;
 import org.klozevitz.enitites.menu.Category;
 import org.klozevitz.enitites.menu.Ingredient;
 import org.klozevitz.enitites.menu.Item;
@@ -21,7 +20,7 @@ public class ExcelToTestParser {
         var numberOfSheets = workbook.getNumberOfSheets();
         while (index < numberOfSheets) {
             var sheet = workbook.getSheetAt(index);
-            var categoryItems = parseCategory(sheet);
+            var categoryItems = parseCategoryItems(sheet);
             var categoryName = workbook.getSheetName(index);
             var category = category(categoryItems, categoryName);
             menu.add(category);
@@ -44,7 +43,7 @@ public class ExcelToTestParser {
     }
 
 
-    public Set<Item> parseCategory(Sheet sheet) {
+    public Set<Item> parseCategoryItems(Sheet sheet) {
         try {
             final Iterator<Row> wbIterator = sheet.iterator();
             final Set<Item> menu = new HashSet<>();
