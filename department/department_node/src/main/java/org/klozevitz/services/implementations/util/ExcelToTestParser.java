@@ -1,8 +1,11 @@
 package org.klozevitz.services.implementations.util;
 
 import lombok.NoArgsConstructor;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.klozevitz.enitites.appUsers.Department;
+import org.klozevitz.enitites.menu.Category;
 import org.klozevitz.enitites.menu.Ingredient;
 import org.klozevitz.enitites.menu.Item;
 import org.klozevitz.enitites.menu.TestQuestion;
@@ -11,9 +14,38 @@ import java.util.*;
 
 @NoArgsConstructor
 public class ExcelToTestParser {
-    public Set<Item> parseMenu(Workbook workbook) {
+    public Set<Category> parseFile(Workbook workbook) {
+        Set<Category> menu = new HashSet<>();
+
+        var index = 0;
+        var numberOfSheets = workbook.getNumberOfSheets();
+        while (index < numberOfSheets) {
+            var sheet = workbook.getSheetAt(index);
+            var categoryItems = parseCategory(sheet);
+            var categoryName = workbook.getSheetName(index);
+            var category = category(categoryItems, categoryName);
+            menu.add(category);
+            index++;
+        }
+
+        return menu;
+    }
+
+
+    private Category category(Set<Item> menu, String categoryName) {
+        var category = Category.builder()
+                .name(categoryName)
+                .menu(menu)
+                .build();
+
+        category.getMenu().forEach(item -> item.setCategory(category));
+
+        return category;
+    }
+
+
+    public Set<Item> parseCategory(Sheet sheet) {
         try {
-            var sheet = workbook.getSheetAt(0);
             final Iterator<Row> wbIterator = sheet.iterator();
             final Set<Item> menu = new HashSet<>();
 

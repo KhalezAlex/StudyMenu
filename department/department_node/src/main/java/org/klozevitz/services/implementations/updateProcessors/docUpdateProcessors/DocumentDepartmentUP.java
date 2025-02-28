@@ -64,14 +64,10 @@ public class DocumentDepartmentUP implements UpdateProcessor {
             ByteArrayInputStream bin = fileAsByteArrayInputStream(response);
             try {
                 Workbook workbook = new XSSFWorkbook(Package.open(bin));
-                Set<Item> menu = parser.parseMenu(workbook);
-                var fileName = fileName(update);
+                Set<Category> menu = parser.parseFile(workbook);
                 var persistentDepartment = currentAppUser.getDepartment();
-                var indexOfExtension = indexOfExtension(fileName);
-                var categoryName = fileName.substring(0, indexOfExtension);
-                var transientCategory = transientCategory(menu, persistentDepartment, categoryName);
 
-                setLinks(persistentDepartment, menu, transientCategory);
+                setLinks(persistentDepartment, menu);
                 appUserRepo.save(currentAppUser);
                 System.out.println();
                 // TODO ОБЯЗАТЕЛЬНО!!! вернуть нормальную вьюху
@@ -85,9 +81,9 @@ public class DocumentDepartmentUP implements UpdateProcessor {
         return null;
     }
 
-    private void setLinks(Department persistentDepartment, Set<Item> menu, Category transientCategory) {
-        menu.forEach(item -> item.setCategory(transientCategory));
-        persistentDepartment.getMenu().add(transientCategory);
+    private void setLinks(Department persistentDepartment, Set<Category> menu) {
+        menu.forEach(category -> category.setDepartment(persistentDepartment));
+        persistentDepartment.getMenu().addAll(menu);
     }
 
     private Category transientCategory(Set<Item> menu, Department persistentAppDepartment, String categoryName) {
