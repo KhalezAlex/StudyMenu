@@ -1,14 +1,15 @@
-package org.klozevitz.configs;
+package org.klozevitz.configs.viewResolvers;
 
 import lombok.RequiredArgsConstructor;
 import org.klozevitz.EmployeeTelegramView;
+import org.klozevitz.MessageUtil;
 import org.klozevitz.repositories.appUsers.EmployeeRepo;
 import org.klozevitz.repositories.menu.CategoryRepo;
 import org.klozevitz.repositories.menu.ItemRepo;
-import org.klozevitz.services.implementations.updateProcessors.viewResolvers.ItemChoiceViewResolver;
+import org.klozevitz.services.implementations.updateProcessors.viewResolvers.CategoryInfoViewResolver;
 import org.klozevitz.services.implementations.updateProcessors.viewResolvers.CategoryChoiceViewResolver;
-import org.klozevitz.services.implementations.updateProcessors.viewResolvers.ItemInfoViewResolver;
 import org.klozevitz.services.implementations.updateProcessors.viewResolvers.WelcomeViewResolver;
+import org.klozevitz.services.interfaces.main.AnswerProducer;
 import org.klozevitz.services.interfaces.updateProcessors.UpdateProcessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -19,9 +20,20 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @RequiredArgsConstructor
 public class ViewResolversEmployeeConfig {
     private final ApplicationContext appContext;
+    private final AnswerProducer answerProducer;
     private final EmployeeRepo employeeRepo;
     private final CategoryRepo categoryRepo;
     private final ItemRepo itemRepo;
+    private MessageUtil messageUtil() {
+        return new MessageUtil();
+    }
+
+    @Bean("telegramView")
+    public EmployeeTelegramView telegramView() {
+        return new EmployeeTelegramView(
+                messageUtil()
+        );
+    }
 
     @Bean(name = "welcomeViewResolver")
     public UpdateProcessor<Update, Long> welcomeViewResolver() {
@@ -40,23 +52,13 @@ public class ViewResolversEmployeeConfig {
         );
     }
 
-    @Bean(name = "itemChoiceViewResolver")
+    @Bean(name = "categoryInfoViewResolver")
     public UpdateProcessor<Update, Long> itemChoiceViewResolver() {
-        return new ItemChoiceViewResolver(
+        return new CategoryInfoViewResolver(
                 employeeRepo,
                 itemRepo,
                 appContext.getBean("telegramView", EmployeeTelegramView.class),
                 categoryChoiceViewResolver()
         );
-    }
-
-    @Bean(name = "itemInfoViewResolver")
-    public UpdateProcessor<Update, Long> itemViewResolver() {
-        return new ItemInfoViewResolver(
-                employeeRepo,
-                itemRepo,
-                appContext.getBean("telegramView", EmployeeTelegramView.class),
-                appContext.getBean("previousViewUpdateProcessor", UpdateProcessor.class)
-                );
     }
 }

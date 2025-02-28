@@ -1,4 +1,4 @@
-package org.klozevitz.configs;
+package org.klozevitz.configs.dispatchers;
 
 import lombok.RequiredArgsConstructor;
 import org.klozevitz.services.interfaces.updateProcessors.UpdateProcessor;
@@ -27,27 +27,10 @@ public class CommandDispatchersEmployeeConfig {
                 appContext.getBean("categoryChoiceViewResolver", UpdateProcessor.class)
         );
         dispatcher.put(
-                "/category_choice_",
-                appContext.getBean("itemChoiceViewResolver", UpdateProcessor.class)
-        );
-        dispatcher.put(
-                "/item_choice_",
-                appContext.getBean("itemInfoViewResolver", UpdateProcessor.class)
+                "/category_info_",
+                appContext.getBean("categoryInfoViewResolver", UpdateProcessor.class)
         );
 
         return dispatcher;
     }
-
-    @Bean(name = "studyStateCallbackQueryCommandDispatcher")
-    public Map<String, UpdateProcessor<Update, Long>> studyStateCallbackQueryCommandDispatcher() {
-        Map<String, UpdateProcessor<Update, Long>> dispatcher = new HashMap<>();
-
-        dispatcher.put(
-                "/start",
-                appContext.getBean("welcomeViewResolver", UpdateProcessor.class)
-        );
-
-        return dispatcher;
-    }
-
 }

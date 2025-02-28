@@ -1,4 +1,4 @@
-package org.klozevitz.configs;
+package org.klozevitz.configs.dispatchers;
 
 import lombok.RequiredArgsConstructor;
 import org.klozevitz.enitites.appUsers.enums.states.EmployeeState;

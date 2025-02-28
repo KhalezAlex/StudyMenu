@@ -7,5 +7,5 @@ public enum EmployeeView {
     WELCOME_VIEW,
     CATEGORY_CHOICE_VIEW,
     TEST_CHOICE_VIEW,
-    ITEM_CHOICE_VIEW
+    CATEGORY_INFO_VIEW
 }

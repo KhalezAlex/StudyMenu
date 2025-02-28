@@ -3,25 +3,23 @@ package org.klozevitz.services.implementations.updateProcessors.viewResolvers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.klozevitz.EmployeeTelegramView;
-import org.klozevitz.enitites.appUsers.Employee;
 import org.klozevitz.enitites.menu.Item;
-import org.klozevitz.enitites.menu.resources.WorkBook;
 import org.klozevitz.repositories.appUsers.EmployeeRepo;
 import org.klozevitz.repositories.menu.ItemRepo;
+import org.klozevitz.services.interfaces.main.AnswerProducer;
 import org.klozevitz.services.interfaces.updateProcessors.UpdateProcessor;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.klozevitz.enitites.appUsers.enums.views.EmployeeView.ITEM_CHOICE_VIEW;
+import static org.klozevitz.enitites.appUsers.enums.views.EmployeeView.CATEGORY_INFO_VIEW;
 
 @Log4j
 @RequiredArgsConstructor
-public class ItemChoiceViewResolver implements UpdateProcessor<Update, Long> {
+public class CategoryInfoViewResolver implements UpdateProcessor<Update, Long> {
     private final String WRONG_CATEGORY_ID_ERROR_MESSAGE = "<b>Вы перенаправлены на предыдущую страницу. " +
             "Запрашиваемая Вами категория меню не найдена</b>";
     private final String WRONG_COMMAND_ERROR_MESSAGE = "Вы совершили некорректное действие- " +
@@ -33,23 +31,8 @@ public class ItemChoiceViewResolver implements UpdateProcessor<Update, Long> {
     private final UpdateProcessor<Update, Long> categoryChoiceViewResolver;
 
 
-    // TODO не доделано
     @Override
     public SendMessage processUpdate(Update update, Long telegramUserId) {
-        return update.hasMessage() ?
-                commandUpdateResolver(update, telegramUserId) :
-                callbackQueryUpdateResolver(update, telegramUserId);
-    }
-
-    private SendMessage commandUpdateResolver(Update update, long telegramUserId) {
-        var persistentEmployee = employeeRepo.findByAppUserTelegramUserId(telegramUserId);
-
-        // TODO вернуть список категорий
-//        return telegramView.itemChoiceView(update, itemForView);
-        return null;
-    }
-
-    private SendMessage callbackQueryUpdateResolver(Update update, long telegramUserId) {
         var data = update.getCallbackQuery().getData();
         var categoryId = categoryIdFromUpdate(data);
 
@@ -57,27 +40,46 @@ public class ItemChoiceViewResolver implements UpdateProcessor<Update, Long> {
             return wrongCategoryIdView(update, telegramUserId, data);
         }
 
-        List<Item> items = itemRepo.findByCategoryId(categoryId);
-        Map<Long, String> mapForView = items.stream()
-                .collect(Collectors.toMap(
-                        Item::getId,
-                        Item::getName
-                ));
+        var items = itemRepo.findByCategoryId(categoryId);
 
-        employeeRepo.setEmployeeCurrentView(ITEM_CHOICE_VIEW.name(), telegramUserId);
+        employeeRepo.setEmployeeCurrentView(CATEGORY_INFO_VIEW.name(), telegramUserId);
 
-        return telegramView.itemChoiceView(update, mapForView);
+        var message = categoryInfoMessage(items);
+
+        return telegramView.categoryInfoView(update, message);
     }
 
-    private WorkBook setNewWorkbookToEmployee(long categoryId, Employee persistentEmployee) {
-        WorkBook workBook;
-        var menu = itemRepo.findByCategoryId(categoryId);
-        workBook = new WorkBook(new HashSet<>(menu));
+    private String categoryInfoMessage(List<Item> items) {
+        var sb = new StringBuilder();
 
-        persistentEmployee.setWorkbook(workBook);
-        employeeRepo.save(persistentEmployee);
-        return workBook;
+        items.forEach(item -> {
+            var recipe = recipeFromBaseEntity(item);
+
+            sb
+                    .append(recipe)
+                    .append("\n\n");
+        });
+
+        var maxCharCount = new AtomicInteger(0);
+        var strings = List.of(sb.toString().split("\n"));
+
+        strings.forEach(string -> {
+            if (string.length() > maxCharCount.get()) {
+                maxCharCount.set(string.length());
+            }
+        });
+
+        var line = "\n\n" + String
+                .valueOf('=')
+                .repeat(maxCharCount.get() + 1) + "\n\n";
+        var result = sb
+                .toString()
+                .replace("\n\n", line)
+                .replace("</b>", "</b>\n");
+
+        return line + result;
     }
+
 
     /**
      * такого вью нет.
@@ -104,5 +106,27 @@ public class ItemChoiceViewResolver implements UpdateProcessor<Update, Long> {
         } catch (Exception e) {
             return -1L;
         }
+    }
+
+    private String recipeFromBaseEntity(Item item) {
+        AtomicInteger atomicIndex = new AtomicInteger(1);
+        StringBuilder sb = new StringBuilder();
+
+        sb
+                .append("<b>")
+                .append(item.getName())
+                .append("</b>");
+
+        item.getIngredients().forEach(
+                ingredient -> sb
+                        .append("\n  ")
+                        .append(atomicIndex.getAndIncrement())
+                        .append(".   ")
+                        .append(ingredient.getName())
+                        .append(" - ")
+                        .append(ingredient.getWeight().intValue())
+                        .append(ingredient.getUnits()));
+
+        return sb.toString();
     }
 }
