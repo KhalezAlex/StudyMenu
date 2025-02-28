@@ -1,14 +1,30 @@
 INSERT INTO company_t (email, current_view, state)
-VALUES ('klozevitz@yandex.ru', 'REGISTERED_WELCOME_VIEW', 'BASIC_STATE');
+-- VALUES ('svytkireev@icloud.com', 'WELCOME_VIEW', 'BASIC_STATE');
+VALUES ('klozevitz@yandex.ru', 'WELCOME_VIEW', 'BASIC_STATE');
+--     ('ksenpts@mail.ru', 'WELCOME_VIEW', 'BASIC_STATE');
 
-INSERT INTO app_user_t (telegram_user_id, username, company_id)
-VALUES (315944589, 'Svyatkireev', 1);
+INSERT INTO department_t (company_id, current_view, state)
+VALUES (1, 'WELCOME_VIEW', 'BASIC_STATE');
+--     (2, 'WELCOME_VIEW', 'BASIC_STATE'),
+--     (3, 'WELCOME_VIEW', 'BASIC_STATE');
 
-INSERT INTO department_t (state, company_id, current_view)
-VALUES ('BASIC_STATE', 1, 'WELCOME_VIEW');
+INSERT INTO employee_t (current_view, state, department_id)
+VALUES ('WELCOME_VIEW', 'BASIC_STATE', 1);
 
-INSERT INTO app_user_t (telegram_user_id, username, department_id)
-VALUES (292005725, 'Proxodimiec', 1);
+INSERT INTO app_user_t (telegram_user_id, username, company_id, department_id, employee_id)
+    -- VALUES (315944589, 'Svyatkireev', 1, null, null),
+--        (1871866801, 'Kseneks', null, 1, null),
+VALUES (292005725, 'Proxodimiec', 1, 1, 1);
+
+UPDATE company_t as c
+SET c.app_user_id = 1
+WHERE c.id = 1;
+UPDATE department_t as d
+SET d.app_user_id = 1
+WHERE d.id = 1;
+UPDATE employee_t as d
+SET d.app_user_id = 1
+WHERE d.id = 1;
 
 INSERT INTO category_t (name, department_id)
 VALUES ('Сендвичи', 1);
@@ -18,14 +34,17 @@ VALUES ('<b>A</b>\n\t1. Зерновой хлеб 70г\n\t2. Форель - 60г
         '<b>B</b>\n\t1. Зерновой хлеб 50г\n\t2. Форель - 80г\n\t3. Сливочный сыр - 40г\n\t4. Руккола - 20г\n\t5. Авокадо - 30г',
         '<b>C</b>\n\t1. Зерновой хлеб 70г\n\t2. Семга - 60г\n\t3. Сливочный сыр - 50г\n\t4. Руккола - 10г\n\t5. Помидор - 40г',
         '<b>D</b>\n\t1. Зерновой хлеб 70г\n\t2. Семга - 60г\n\t3. Сливочный сыр - 50г\n\t4. Руккола - 10г\n\t5. Помидор - 40г'),
+
        ('<b>A</b>\n\t1. Булочка чиабатта - 80г\n\t2. Соус тар-тар - 40г\n\t3. Индейка - 80г\n\t4. Салат листовой - 10г\n\t5. Помидор - 30г\n\t6. Огурец - 30г',
         '<b>B</b>\n\t1. Булочка чиабатта - 60г\n\t2. Соус тар-тар - 30г\n\t3. Индейка - 100г\n\t4. Салат листовой - 30г\n\t5. Помидор - 50г\n\t6. Огурец - 30г',
         '<b>C</b>\n\t1. Булочка чиабатта - 70г\n\t2. Соус барбекю - 50г\n\t3. Индейка - 80г\n\t4. Салат руккола - 20г\n\t5. Сыр моцарелла - 40г\n\t6. Огурец - 40г',
         '<b>D</b>\n\t1. Булочка чиабатта - 90г\n\t2. Соус песто - 60г\n\t3. Индейка - 70г\n\t4. Салат микс - 40г\n\t5. Редис - 30г\n\t6. Огурец - 30г'),
+
        ('<b>A</b>\n\t1. Зерновая булочка - 95г\n\t2. Сливочный сыр - 50г\n\t3. Лосось - 60г\n\t4. Салат листовой - 20г\n\t5. Укроп - 1г\n\t6. Клюква - 4г',
         '<b>B</b>\n\t1. Зерновая булочка - 95г\n\t2. Сливочный сыр - 40г\n\t3. Лосось - 60г\n\t4. Салат листовой - 20г\n\t5. Укроп - 1г\n\t6. Клюква - 4г',
         '<b>C</b>\n\t1. Зерновая булочка - 95г\n\t2. Сливочный сыр - 40г\n\t3. Форель - 60г\n\t4. Салат листовой - 20г\n\t5. Укроп - 1г',
         '<b>D</b>\n\t1. Зерновая булочка - 95г\n\t2. Сливочный сыр - 40г\n\t3. Лосось - 60г\n\t4. Салат листовой - 20г\n\t5. Клюква - 4г'),
+
        ('<b>A</b>\n\t1. Круассан - 80г\n\t2. Моцарелла - 40г\n\t3. Помидоры - 30г\n\t4. Соус песто - 10г\n\t5. Руккола - 10г',
         '<b>B</b>\n\t1. Круассан - 80г\n\t2. Моцарелла - 40г\n\t3. Помидоры - 30г\n\t4. Соус песто - 10г',
         '<b>C</b>\n\t1. Круассан - 80г\n\t2. Моцарелла - 40г\n\t3. Помидоры - 30г\n\t4. Соус песто - 10г',

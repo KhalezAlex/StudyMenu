@@ -84,7 +84,7 @@ public class CompanyTelegramView {
                 return emailRequestView(update);
             case EMAIL_CONFIRMATION_REQUEST_VIEW:
                 return emailConfirmationRequestView(update);
-            case REGISTERED_WELCOME_VIEW:
+            case WELCOME_VIEW:
                 return registeredWelcomeView(update);
             case EMAIL_CONFIRMATION_NOTIFICATION_VIEW:
                 return emailConfirmationNotificationView(chatId);

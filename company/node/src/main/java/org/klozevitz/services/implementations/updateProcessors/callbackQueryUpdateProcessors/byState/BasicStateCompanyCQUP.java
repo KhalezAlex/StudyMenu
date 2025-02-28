@@ -38,7 +38,7 @@ public class BasicStateCompanyCQUP implements UpdateProcessor {
 
 
     private SendMessage registeredWelcomeView(Update update, AppUser currentAppUser) {
-        currentAppUser.getCompany().setCurrentView(REGISTERED_WELCOME_VIEW);
+        currentAppUser.getCompany().setCurrentView(WELCOME_VIEW);
         appUserRepo.save(currentAppUser);
 
         return telegramView.registeredWelcomeView(update);

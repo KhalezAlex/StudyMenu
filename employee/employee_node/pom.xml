@@ -64,6 +64,12 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
+<!--        <dependency>-->
+<!--            <groupId>org.flywaydb</groupId>-->
+<!--            <artifactId>flyway-core</artifactId>-->
+<!--            <version>7.0.0</version>-->
+<!--        </dependency>-->
+
         <!--        util dependencies-->
 
         <!--        to save json format data to database-->
@@ -91,11 +97,10 @@
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>org.klozevitz</groupId>
-            <artifactId>commons_node</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.klozevitz</groupId>-->
+<!--            <artifactId>commons_node</artifactId>-->
+<!--            <version>1.0-SNAPSHOT</version>-->
+<!--        </dependency>-->
     </dependencies>
-
 </project>

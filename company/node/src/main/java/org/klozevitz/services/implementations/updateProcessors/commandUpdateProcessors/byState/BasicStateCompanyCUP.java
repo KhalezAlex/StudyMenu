@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import static org.klozevitz.enitites.appUsers.enums.views.CompanyView.REGISTERED_WELCOME_VIEW;
+import static org.klozevitz.enitites.appUsers.enums.views.CompanyView.WELCOME_VIEW;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +31,7 @@ public class BasicStateCompanyCUP implements UpdateProcessor {
     }
 
     private SendMessage registeredWelcomeView(Update update, AppUser currentAppUser) {
-        currentAppUser.getCompany().setCurrentView(REGISTERED_WELCOME_VIEW);
+        currentAppUser.getCompany().setCurrentView(WELCOME_VIEW);
         appUserRepo.save(currentAppUser);
 
         return telegramView.registeredWelcomeView(update);

@@ -9,7 +9,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import static org.klozevitz.enitites.appUsers.enums.states.CompanyState.BASIC_STATE;
-import static org.klozevitz.enitites.appUsers.enums.views.CompanyView.REGISTERED_WELCOME_VIEW;
+import static org.klozevitz.enitites.appUsers.enums.views.CompanyView.WELCOME_VIEW;
 
 @RequiredArgsConstructor
 public class WaitForDepartmentTgIdStateCompanyCQUP implements UpdateProcessor {
@@ -30,7 +30,7 @@ public class WaitForDepartmentTgIdStateCompanyCQUP implements UpdateProcessor {
     }
 
     private SendMessage registeredWelcomeView(Update update, AppUser currentAppUser) {
-        currentAppUser.getCompany().setCurrentView(REGISTERED_WELCOME_VIEW);
+        currentAppUser.getCompany().setCurrentView(WELCOME_VIEW);
         currentAppUser.getCompany().setState(BASIC_STATE);
         appUserRepo.save(currentAppUser);
 
@@ -38,7 +38,7 @@ public class WaitForDepartmentTgIdStateCompanyCQUP implements UpdateProcessor {
     }
 
     private SendMessage defaultOption(Update update, AppUser currentAppUser) {
-        currentAppUser.getCompany().setCurrentView(REGISTERED_WELCOME_VIEW);
+        currentAppUser.getCompany().setCurrentView(WELCOME_VIEW);
         currentAppUser.getCompany().setState(BASIC_STATE);
         appUserRepo.save(currentAppUser);
 

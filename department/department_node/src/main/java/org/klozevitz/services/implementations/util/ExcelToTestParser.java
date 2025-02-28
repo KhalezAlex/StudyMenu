@@ -32,15 +32,21 @@ public class ExcelToTestParser {
     private Item parseItem(Iterator<Row> wbIterator) {
         var currentRow = wbIterator.next();
         var currentItem = itemFromRow(currentRow);
-        while ((currentRow = wbIterator.next()) != null && currentRow.getCell(0).getNumericCellValue() != 0) {
-            var ingredient = ingredientFromRow(currentRow);
+        while ((currentRow = wbIterator.next()) != null && !endOfItemBlock(currentRow)) {
+            var ingredient = parseIngredient(currentRow);
             ingredient.setItem(currentItem);
             currentItem.getIngredients().add(ingredient);
         }
         return currentItem;
     }
 
-    private Ingredient ingredientFromRow(Row currentRow) {
+    private boolean endOfItemBlock(Row row) {
+        var cellType = row.getCell(0).getCellType();
+
+        return cellType == 1 && row.getCell(0).getStringCellValue().equals("-");
+    }
+
+    private Ingredient parseIngredient(Row currentRow) {
         return Ingredient.builder()
                 .name(currentRow.getCell(1).getStringCellValue())
                 .weight(currentRow.getCell(2).getNumericCellValue())

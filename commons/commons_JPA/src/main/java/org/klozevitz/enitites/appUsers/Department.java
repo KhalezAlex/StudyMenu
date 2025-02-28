@@ -39,4 +39,6 @@ public class Department extends BaseEntity {
     @EqualsAndHashCode.Exclude
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "department", fetch = FetchType.EAGER)
     private Set<Category> menu;
+
+    // TODO:
 }
