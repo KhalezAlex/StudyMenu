@@ -65,7 +65,7 @@ public class EmployeeTelegramView {
             case CATEGORY_CHOICE_VIEW:
                 return welcomeView(update);
             case CATEGORY_INFO_VIEW:
-                return null;
+                return welcomeView(update);
             case TEST_CHOICE_VIEW:
                 return welcomeView(update);
             default:
