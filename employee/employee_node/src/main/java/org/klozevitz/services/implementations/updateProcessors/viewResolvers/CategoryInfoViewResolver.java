@@ -69,7 +69,7 @@ public class CategoryInfoViewResolver implements UpdateProcessor<Update, Long> {
 
         var line = "\n\n" + String
                 .valueOf('=')
-                .repeat(maxCharCount.get() + 1) + "\n\n";
+                .repeat((int) (maxCharCount.get() * 0.7)) + "\n\n";
         var result = sb
                 .toString()
                 .replace("\n\n", line)

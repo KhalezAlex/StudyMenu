@@ -26,8 +26,9 @@ public class EmployeeTelegramView {
             "для регистрации";
     private final String WELCOME_MESSAGE = "Вы находитесь на главной странице чат-бота.\n" +
             "Вам доступны следующие действия:";
-    private final String CATEGORY_CHOICE_MESSAGE = "Меню выбора категории для изучения";
+    private final String CATEGORY_INFO_CHOICE_MESSAGE = "Меню выбора категории для изучения";
     private final String ITEM_CHOICE_MESSAGE = "Меню выбора блюда";
+    private final String CATEGORY_TEST_CHOICE_MESSAGE = "Меню выбора категории для тестирования";
 
 
     private final MessageUtil messageUtil;
@@ -62,11 +63,11 @@ public class EmployeeTelegramView {
                 return notRegisteredErrorView(update);
             case WELCOME_VIEW:
                 return welcomeView(update);
-            case CATEGORY_CHOICE_VIEW:
+            case CATEGORY_INFO_CHOICE_VIEW:
                 return welcomeView(update);
             case CATEGORY_INFO_VIEW:
                 return welcomeView(update);
-            case TEST_CHOICE_VIEW:
+            case CATEGORY_TEST_CHOICE_VIEW:
                 return welcomeView(update);
             default:
                 return previousView(update, currentView);
@@ -137,8 +138,8 @@ public class EmployeeTelegramView {
         var keyboard = new InlineKeyboardMarkup();
         var keyboardRows = List.of(
                 List.of(
-                        button("ИЗУЧЕНИЕ МАТЕРИАЛА", "/category_choice_view"),
-                        button("ТЕСТИРОВАНИЕ", "/test_choice_view")
+                        button("ИЗУЧЕНИЕ МАТЕРИАЛА", "/category_info_choice_view"),
+                        button("ТЕСТИРОВАНИЕ", "/category_test_choice_view")
                 )
         );
 
@@ -149,13 +150,13 @@ public class EmployeeTelegramView {
 
     /**
      * Вью выбора ресурса для изучения
-     * EmployeeView.CATEGORY_CHOICE_VIEW
+     * EmployeeView.CATEGORY_INFO_CHOICE_VIEW
      */
-    public SendMessage categoryChoiceView(Update update, Map<Long, String> resources) {
+    public SendMessage categoryInfoChoiceView(Update update, Map<Long, String> resources) {
         var answer = messageUtil.blankAnswer(update);
         var categoryChoiceViewKeyboardMarkup = resourcesChoiceViewKeyboardMarkup(resources);
 
-        answer.setText(CATEGORY_CHOICE_MESSAGE);
+        answer.setText(CATEGORY_INFO_CHOICE_MESSAGE);
         answer.setReplyMarkup(categoryChoiceViewKeyboardMarkup);
 
         return answer;
@@ -227,18 +228,6 @@ public class EmployeeTelegramView {
      * EmployeeView.CATEGORY_INFO_VIEW
      */
 
-    /**
-     * В этом вью сначала идут несколько сообщений с информацией по блюдам, а потом- основное- с кнопками
-     * */
-    public SendMessage itemInfoView(Update update, String recipe) {
-        var answer = messageUtil.blankAnswer(update);
-
-        answer.setText(recipe);
-        answer.enableHtml(true);
-
-        return answer;
-    }
-
     public SendMessage categoryInfoView(Update update, String message) {
         var answer = messageUtil.blankAnswer(update);
         var categoryInfoViewKeyboardMarkup = categoryInfoViewKeyboardMarkup();
@@ -261,6 +250,33 @@ public class EmployeeTelegramView {
                     )
             );
         }});
+        keyboardRows.add(homepageKeyboardRow());
+        keyboard.setKeyboard(keyboardRows);
+
+        return keyboard;
+    }
+
+    /**
+     * Вью выбора ресурса для тестирования
+     * EmployeeView.CATEGORY_TEST_CHOICE_VIEW
+     */
+    public SendMessage categoryTestChoiceView(Update update, Map<Long, String> resources) {
+        var answer = messageUtil.blankAnswer(update);
+        var categoryTestChoiceViewKeyboardMarkup = categoryTestChoiceViewKeyboardMarkup(resources);
+
+        answer.setText(CATEGORY_TEST_CHOICE_MESSAGE);
+        answer.setReplyMarkup(categoryTestChoiceViewKeyboardMarkup);
+
+        return answer;
+    }
+
+    private InlineKeyboardMarkup categoryTestChoiceViewKeyboardMarkup(Map<Long, String> resources) {
+        var keyboard = new InlineKeyboardMarkup();
+        final List<List<InlineKeyboardButton>> keyboardRows = new ArrayList<>();
+
+        resources.forEach((key, value) -> keyboardRows.add(List.of(
+                button(value, String.format("/category_test_%d", key))
+        )));
         keyboardRows.add(homepageKeyboardRow());
         keyboard.setKeyboard(keyboardRows);
 

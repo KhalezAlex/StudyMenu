@@ -11,6 +11,8 @@ import org.klozevitz.enitites.appUsers.enums.states.EmployeeState;
 import org.klozevitz.enitites.appUsers.enums.views.EmployeeView;
 import org.klozevitz.enitites.menu.resources.WorkBook;
 
+import java.util.Set;
+
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true)
@@ -35,4 +37,6 @@ public class Employee extends BaseEntity {
     @Type(type = "jsonb")
     @Column(columnDefinition = "jsonb")
     private WorkBook workbook;
+    @OneToMany(orphanRemoval = true)
+    private Set<MessageId> messages;
 }

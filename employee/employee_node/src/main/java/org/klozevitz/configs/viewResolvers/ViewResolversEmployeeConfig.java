@@ -8,6 +8,7 @@ import org.klozevitz.repositories.menu.CategoryRepo;
 import org.klozevitz.repositories.menu.ItemRepo;
 import org.klozevitz.services.implementations.updateProcessors.viewResolvers.CategoryInfoViewResolver;
 import org.klozevitz.services.implementations.updateProcessors.viewResolvers.CategoryChoiceViewResolver;
+import org.klozevitz.services.implementations.updateProcessors.viewResolvers.CategoryTestChoiceViewResolver;
 import org.klozevitz.services.implementations.updateProcessors.viewResolvers.WelcomeViewResolver;
 import org.klozevitz.services.interfaces.main.AnswerProducer;
 import org.klozevitz.services.interfaces.updateProcessors.UpdateProcessor;
@@ -46,6 +47,15 @@ public class ViewResolversEmployeeConfig {
     @Bean(name = "categoryChoiceViewResolver")
     public UpdateProcessor<Update, Long> categoryChoiceViewResolver() {
         return new CategoryChoiceViewResolver(
+                employeeRepo,
+                categoryRepo,
+                appContext.getBean("telegramView", EmployeeTelegramView.class)
+        );
+    }
+
+    @Bean(name = "categoryTestChoiceViewResolver")
+    public UpdateProcessor<Update, Long> categoryTestChoiceViewResolver() {
+        return new CategoryTestChoiceViewResolver(
                 employeeRepo,
                 categoryRepo,
                 appContext.getBean("telegramView", EmployeeTelegramView.class)

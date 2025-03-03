@@ -23,9 +23,13 @@ public class CommandDispatchersEmployeeConfig {
                 "/start",
                 appContext.getBean("welcomeViewResolver", UpdateProcessor.class)
         );
-        dispatcher.put("/category_choice_view",
+        dispatcher.put(
+                "/category_info_choice_view",
                 appContext.getBean("categoryChoiceViewResolver", UpdateProcessor.class)
         );
+        dispatcher.put(
+                "/category_test_choice_view",
+                appContext.getBean("categoryTestChoiceViewResolver", UpdateProcessor.class));
         dispatcher.put(
                 "/category_info_",
                 appContext.getBean("categoryInfoViewResolver", UpdateProcessor.class)
