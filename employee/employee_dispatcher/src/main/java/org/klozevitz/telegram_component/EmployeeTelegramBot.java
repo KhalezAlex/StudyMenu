@@ -3,6 +3,7 @@ package org.klozevitz.telegram_component;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.klozevitz.controllers.UpdateController;
+import org.klozevitz.services.EmployeeViewManager;
 import org.klozevitz.telegram.TelegramBotComponent;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -19,12 +20,14 @@ public class EmployeeTelegramBot extends TelegramBotComponent {
     @Value(value = "${bot.token}")
     private String token;
     private final UpdateController updateController;
+    private final EmployeeViewManager viewManager;
 
     @PostConstruct
     public void init() {
         super.setUsername(username);
         super.setToken(token);
         updateController.registerBot(this);
+        viewManager.registerBot(this);
     }
 
     @Override

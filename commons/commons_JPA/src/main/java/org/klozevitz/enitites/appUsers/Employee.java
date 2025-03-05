@@ -37,6 +37,4 @@ public class Employee extends BaseEntity {
     @Type(type = "jsonb")
     @Column(columnDefinition = "jsonb")
     private WorkBook workbook;
-    @OneToMany(orphanRemoval = true)
-    private Set<MessageId> messages;
 }

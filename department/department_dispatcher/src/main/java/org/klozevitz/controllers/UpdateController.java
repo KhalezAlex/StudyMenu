@@ -2,8 +2,10 @@ package org.klozevitz.controllers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
+import org.klozevitz.DepartmentDispatcherApp;
 import org.klozevitz.interfaces.UpdateProducer;
 import org.klozevitz.telegram.TelegramBotComponent;
+import org.klozevitz.telegram_component.DepartmentTelegramBot;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -15,9 +17,9 @@ import static org.klozevitz.RabbitQueue.*;
 @RequiredArgsConstructor
 public class UpdateController {
     private final UpdateProducer updateProducer;
-    private TelegramBotComponent bot;
+    private DepartmentTelegramBot bot;
 
-    public void registerBot(TelegramBotComponent bot) {
+    public void registerBot(DepartmentTelegramBot bot) {
         this.bot = bot;
     }
 

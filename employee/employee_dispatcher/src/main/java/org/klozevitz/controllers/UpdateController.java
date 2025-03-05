@@ -3,6 +3,7 @@ package org.klozevitz.controllers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.klozevitz.interfaces.UpdateProducer;
+import org.klozevitz.interfaces.ViewManager;
 import org.klozevitz.telegram.TelegramBotComponent;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -15,6 +16,7 @@ import static org.klozevitz.RabbitQueue.*;
 @RequiredArgsConstructor
 public class UpdateController {
     private final UpdateProducer updateProducer;
+    private final ViewManager viewManager;
     private TelegramBotComponent bot;
 
     public void registerBot(TelegramBotComponent bot) {
@@ -27,6 +29,7 @@ public class UpdateController {
             return;
         }
         if ((update.hasMessage() && update.getMessage().hasText()) || update.hasCallbackQuery()) {
+
             distributeMessageByType(update);
         } else {
             log.error("Unsupported received message type " + update);
@@ -43,6 +46,7 @@ public class UpdateController {
         } else {
             processCallBackQueryUpdate(update);
         }
+
     }
 
     private void processTextUpdate(Update update) {
@@ -58,6 +62,13 @@ public class UpdateController {
     }
 
     public void setView(SendMessage sendMessage) {
-        bot.sendAnswerMessage(sendMessage);
+        var message = bot.sendAnswerMessage(sendMessage);
+
+        viewManager.saveMessageId(message);
+        viewManager.
+                flushHistory(
+                        Long.parseLong(sendMessage.getChatId()
+                        )
+                );
     }
 }
