@@ -64,7 +64,7 @@ public class UpdateController {
     public void setView(SendMessage sendMessage) {
         var message = bot.sendAnswerMessage(sendMessage);
 
-        viewManager.saveMessageId(message);
+        viewManager.saveMessageId(sendMessage, message.getMessageId());
         viewManager.
                 flushHistory(
                         Long.parseLong(sendMessage.getChatId()

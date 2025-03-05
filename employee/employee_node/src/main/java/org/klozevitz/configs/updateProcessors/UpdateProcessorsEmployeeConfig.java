@@ -39,7 +39,7 @@ public class UpdateProcessorsEmployeeConfig {
                 notRegisteredAppUserUpdateProcessor(),
                 appContext.getBean("commandUpdateProcessor", UpdateProcessor.class),
                 appContext.getBean("callbackQueryUpdateProcessor", UpdateProcessor.class)
-                );
+        );
     }
 
     /**
@@ -70,6 +70,7 @@ public class UpdateProcessorsEmployeeConfig {
     @Bean(name = "previousViewUpdateProcessor")
     public UpdateProcessor<Update, EmployeeView> previousViewUpdateProcessor() {
         return new PreviousViewEmployeeUP(
+                appUserRepo,
                 appContext.getBean("telegramView", EmployeeTelegramView.class)
         );
     }

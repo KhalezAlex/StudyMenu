@@ -1,8 +1,8 @@
 package org.klozevitz.interfaces;
 
-import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 public interface ViewManager {
-    void saveMessageId(Message messageSent);
+    void saveMessageId(SendMessage answer, int sentMessageId);
     void flushHistory(long telegramUserId);
 }

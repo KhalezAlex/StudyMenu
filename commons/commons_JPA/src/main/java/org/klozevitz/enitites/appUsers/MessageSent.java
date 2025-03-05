@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.klozevitz.enitites.BaseEntity;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 import javax.persistence.*;
@@ -20,9 +21,10 @@ import javax.persistence.*;
 @Entity
 @Table(name = "message_sent_t")
 public class MessageSent extends BaseEntity {
+    private Integer messageId;
     @Type(type = "jsonb")
     @Column(columnDefinition = "jsonb")
-    private Message message;
+    private SendMessage answer;
     @ManyToOne
     @JoinColumn(name = "app_user_id")
     private AppUser appUser;
