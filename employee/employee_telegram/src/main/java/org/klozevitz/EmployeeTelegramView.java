@@ -246,7 +246,7 @@ public class EmployeeTelegramView {
         keyboardRows.add(new ArrayList<>() {{
             add(
                     button(
-                            "НАЗАД", "/category_choice_view"
+                            "НАЗАД", "/category_info_choice_view"
                     )
             );
         }});
