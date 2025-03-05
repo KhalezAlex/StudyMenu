@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.klozevitz.enitites.BaseEntity;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -37,4 +38,7 @@ public class AppUser extends BaseEntity {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "employee_id")
     private Employee employee;
+    @EqualsAndHashCode.Exclude
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "appUser", orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<MessageId> messages;
 }
