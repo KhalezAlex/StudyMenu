@@ -1,6 +1,6 @@
 package org.klozevitz.repositories.appUsers;
 
-import org.klozevitz.enitites.appUsers.MessageId;
+import org.klozevitz.enitites.appUsers.MessageSent;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -9,9 +9,9 @@ import org.springframework.stereotype.Repository;
 import javax.transaction.Transactional;
 
 @Repository
-public interface MessageIdRepo extends JpaRepository<MessageId, Long> {
+public interface MessageSentRepo extends JpaRepository<MessageSent, Long> {
     @Query(
-            value = "INSERT INTO message_id_t (app_user_id, message_id)" +
+            value = "INSERT INTO message_sent_t (app_user_id, message_id)" +
                     "VALUES (?1, ?2)",
             nativeQuery = true
     )
@@ -20,10 +20,10 @@ public interface MessageIdRepo extends JpaRepository<MessageId, Long> {
     void save(long appUserId, int messageId);
 
     @Query(
-            value = "DELETE FROM message_id_t WHERE message_id = ?1",
+            value = "DELETE FROM message_sent_t WHERE id = ?1",
             nativeQuery = true
     )
     @Transactional
     @Modifying
-    void deleteMessageIdByMessageId(int messageId);
+    void deleteMessageById(long messageId);
 }

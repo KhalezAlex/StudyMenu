@@ -2,23 +2,24 @@ package org.klozevitz.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
-import org.klozevitz.enitites.appUsers.MessageId;
+import org.klozevitz.enitites.appUsers.MessageSent;
 import org.klozevitz.interfaces.ViewManager;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
-import org.klozevitz.repositories.appUsers.MessageIdRepo;
+import org.klozevitz.repositories.appUsers.MessageSentRepo;
 import org.klozevitz.telegram_component.EmployeeTelegramBot;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Comparator;
 
 @Log4j
 @Component
 @RequiredArgsConstructor
 public class EmployeeViewManager implements ViewManager {
-    private final MessageIdRepo messageIdRepo;
+    private final MessageSentRepo messageSentRepo;
     private final AppUserRepo appUserRepo;
     private EmployeeTelegramBot bot;
 
@@ -29,33 +30,37 @@ public class EmployeeViewManager implements ViewManager {
     @Override
     public void saveMessageId(Message messageSent) {
         var telegramUserId = messageSent.getChatId();
-        var currentAppUser = appUserRepo.findByTelegramUserId(telegramUserId);
-        messageIdRepo.save(currentAppUser.get().getId(), messageSent.getMessageId());
+        var optionalCurrentAppUser = appUserRepo.findByTelegramUserId(telegramUserId);
+        var currentAppUser = optionalCurrentAppUser.get();
+
+        currentAppUser.getMessages().add(
+                MessageSent.builder()
+                        .message(messageSent)
+                        .appUser(currentAppUser)
+                        .build()
+        );
+        appUserRepo.save(optionalCurrentAppUser.get());
     }
 
     @Override
     public void flushHistory(long telegramUserId) {
-        var messageIds = appUserRepo
+        var persistentMessages = appUserRepo
                 .findByTelegramUserId(telegramUserId)
                 .get()
-                .getMessages()
-                .stream()
-                .map(MessageId::getMessageId)
-                .collect(Collectors.toList());
-        if (messageIds.isEmpty()) {
-            return;
-        }
+                .getMessages();
+        ArrayList<MessageSent> messages = new ArrayList<>(persistentMessages);
 
-        messageIds.sort(Integer::compare);
+        messages.sort(Comparator.comparingInt(message -> message.getMessage().getMessageId()));
 
-        int messageId = -1;
-        while (!(messageIds.size() == 1)) {
-            messageId = messageIds.get(0);
-            delete(telegramUserId, messageId);
-            messageIdRepo.deleteMessageIdByMessageId(messageId);
-            messageIds.remove(0);
+        int persistentMessageTgMessageId = -1;
+        while (!(messages.size() == 1)) {
+            var persistentMessage = messages.get(0);
+            persistentMessageTgMessageId = persistentMessage.getMessage().getMessageId();
+            delete(telegramUserId, persistentMessageTgMessageId);
+            messageSentRepo.deleteMessageById(persistentMessage.getId());
+            messages.remove(0);
         }
-        delete(telegramUserId, messageId - 1);
+        delete(telegramUserId, persistentMessageTgMessageId - 1);
     }
 
     private void delete(long telegramUserId, int messageId) {

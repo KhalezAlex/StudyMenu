@@ -40,5 +40,5 @@ public class AppUser extends BaseEntity {
     private Employee employee;
     @EqualsAndHashCode.Exclude
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "appUser", orphanRemoval = true, fetch = FetchType.EAGER)
-    private Set<MessageId> messages;
+    private Set<MessageSent> messages;
 }
