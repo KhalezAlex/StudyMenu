@@ -1,12 +1,11 @@
-package org.klozevitz.configs.updateProcessors;
+package org.klozevitz.configs.legacy.updateProcessors;
 
 import lombok.RequiredArgsConstructor;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.enitites.appUsers.enums.views.EmployeeView;
-import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpdateProcessors.CallbackQueryEmployeeUP;
-import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpdateProcessors.byState.BasicStateEmployeeCQUP;
-import org.klozevitz.services.implementations.updateProcessors.callbackQueryUpdateProcessors.byState.StudyStateEmployeeCQUP;
-import org.klozevitz.services.interfaces.updateProcessors.UpdateProcessor;
+import org.klozevitz.services.implementations.updateProcessors_LEGACY.callbackQueryUpdateProcessors.CallbackQueryEmployeeUP;
+import org.klozevitz.services.implementations.updateProcessors_LEGACY.callbackQueryUpdateProcessors.byState.BasicStateEmployeeCQUP;
+import org.klozevitz.services.interfaces.updateProcessors.UpdateProcessor_LEGACY;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,18 +22,18 @@ public class CallbackQueryUpdateProcessorsEmployeeConfig {
      * */
 
     @Bean
-    public UpdateProcessor<Update, AppUser> callbackQueryUpdateProcessor() {
+    public UpdateProcessor_LEGACY<Update, AppUser> callbackQueryUpdateProcessor() {
         return new CallbackQueryEmployeeUP(
-                appContext.getBean("nullableStateUpdateProcessor", UpdateProcessor.class),
-                appContext.getBean("previousViewUpdateProcessor", UpdateProcessor.class),
+                appContext.getBean("nullableStateUpdateProcessor", UpdateProcessor_LEGACY.class),
+                appContext.getBean("previousViewUpdateProcessor", UpdateProcessor_LEGACY.class),
                 appContext.getBean("stateCallbackQueryDispatcher", Map.class)
         );
     }
 
     @Bean(name = "basicStateCallbackQueryUpdateProcessor")
-    public UpdateProcessor<Update, EmployeeView> basicStateCallbackQueryUpdateProcessor() {
+    public UpdateProcessor_LEGACY<Update, EmployeeView> basicStateCallbackQueryUpdateProcessor() {
         return new BasicStateEmployeeCQUP(
-                appContext.getBean("previousViewUpdateProcessor", UpdateProcessor.class),
+                appContext.getBean("previousViewUpdateProcessor", UpdateProcessor_LEGACY.class),
                 appContext.getBean("basicStateCallbackQueryCommandDispatcher", Map.class)
         );
     }

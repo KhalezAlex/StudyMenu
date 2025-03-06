@@ -1,4 +1,4 @@
-package org.klozevitz.services.implementations.updateProcessors.viewResolvers;
+package org.klozevitz.services.implementations.updateProcessors_LEGACY.viewResolvers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -6,7 +6,7 @@ import org.klozevitz.EmployeeTelegramView;
 import org.klozevitz.enitites.menu.Item;
 import org.klozevitz.repositories.appUsers.EmployeeRepo;
 import org.klozevitz.repositories.menu.ItemRepo;
-import org.klozevitz.services.interfaces.updateProcessors.UpdateProcessor;
+import org.klozevitz.services.interfaces.updateProcessors.UpdateProcessor_LEGACY;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -17,7 +17,7 @@ import static org.klozevitz.enitites.appUsers.enums.views.EmployeeView.CATEGORY_
 
 @Log4j
 @RequiredArgsConstructor
-public class CategoryInfoViewResolver implements UpdateProcessor<Update, Long> {
+public class CategoryInfoViewResolver implements UpdateProcessor_LEGACY<Update, Long> {
     private final String WRONG_CATEGORY_ID_ERROR_MESSAGE = "<b>Вы перенаправлены на предыдущую страницу. " +
             "Запрашиваемая Вами категория меню не найдена</b>";
     private final String WRONG_COMMAND_ERROR_MESSAGE = "Вы совершили некорректное действие- " +
@@ -26,7 +26,7 @@ public class CategoryInfoViewResolver implements UpdateProcessor<Update, Long> {
     private final EmployeeRepo employeeRepo;
     private final ItemRepo itemRepo;
     private final EmployeeTelegramView telegramView;
-    private final UpdateProcessor<Update, Long> categoryChoiceViewResolver;
+    private final UpdateProcessor_LEGACY<Update, Long> categoryChoiceViewResolver;
 
 
     @Override

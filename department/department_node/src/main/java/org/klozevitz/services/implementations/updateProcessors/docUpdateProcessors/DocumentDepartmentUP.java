@@ -13,7 +13,7 @@ import org.klozevitz.enitites.menu.Category;
 import org.klozevitz.enitites.menu.Item;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.services.implementations.util.ExcelToTestParser;
-import org.klozevitz.services.messageProcessors.UpdateProcessor;
+import org.klozevitz.services.messageProcessors.UpdateProcessor_LEGACY;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
@@ -27,7 +27,7 @@ import java.util.Set;
 
 @Log4j
 @RequiredArgsConstructor
-public class DocumentDepartmentUP implements UpdateProcessor {
+public class DocumentDepartmentUP implements UpdateProcessor_LEGACY {
     @Value("${fileService.service.file_info.url}")
     private String tgFileInfoUrl;
     @Value("${fileService.service.file_storage.url}")
@@ -35,8 +35,8 @@ public class DocumentDepartmentUP implements UpdateProcessor {
     @Value("${fileService.token}")
     private String token;
     private final AppUserRepo appUserRepo;
-    private final UpdateProcessor nullableStateUpdateProcessor;
-    private final UpdateProcessor previousViewUpdateProcessor;
+    private final UpdateProcessor_LEGACY nullableStateUpdateProcessor;
+    private final UpdateProcessor_LEGACY previousViewUpdateProcessor;
     private final ExcelToTestParser parser;
 
 

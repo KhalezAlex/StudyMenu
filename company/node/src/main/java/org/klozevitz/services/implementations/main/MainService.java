@@ -7,7 +7,7 @@ import org.klozevitz.logger.LoggerInfo;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.services.main.AnswerProducer;
 import org.klozevitz.services.interfaces.main.Main;
-import org.klozevitz.services.messageProcessors.UpdateProcessor;
+import org.klozevitz.services.messageProcessors.UpdateProcessor_LEGACY;
 import org.klozevitz.services.messageProcessors.WrongAppUserDataUpdateProcessor;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -22,9 +22,9 @@ public class MainService implements Main {
     private final AppUserRepo appUserRepo;
     private final AnswerProducer answerProducer;
     private final WrongAppUserDataUpdateProcessor wrongAppUserRoleUpdateProcessor;
-    private final UpdateProcessor textUpdateProcessor;
-    private final UpdateProcessor commandUpdateProcessor;
-    private final UpdateProcessor callbackQueryUpdateProcessor;
+    private final UpdateProcessor_LEGACY textUpdateProcessor;
+    private final UpdateProcessor_LEGACY commandUpdateProcessor;
+    private final UpdateProcessor_LEGACY callbackQueryUpdateProcessor;
     private final LoggerInfo loggerInfo;
 
     @Override

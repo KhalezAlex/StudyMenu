@@ -6,7 +6,7 @@ import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.services.interfaces.main.AnswerProducer;
 import org.klozevitz.services.interfaces.main.Main;
-import org.klozevitz.services.interfaces.updateProcessors.UpdateProcessor;
+import org.klozevitz.services.interfaces.updateProcessors.UpdateProcessor_LEGACY;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -18,11 +18,11 @@ import java.util.Optional;
 public class MainService implements Main {
     private final AppUserRepo appUserRepo;
     private final AnswerProducer answerProducer;
-    private final UpdateProcessor<Update, AppUser> wrongAppUserRoleUpdateProcessor;
-    private final UpdateProcessor<Update, AppUser> notRegisteredAppUserUpdateProcessor;
+    private final UpdateProcessor_LEGACY<Update, AppUser> wrongAppUserRoleUpdateProcessor;
+    private final UpdateProcessor_LEGACY<Update, AppUser> notRegisteredAppUserUpdateProcessor;
 
-    private final UpdateProcessor<Update, AppUser> commandUpdateProcessor;
-    private final UpdateProcessor<Update, AppUser> callbackQueryUpdateProcessor;
+    private final UpdateProcessor_LEGACY<Update, AppUser> commandUpdateProcessor;
+    private final UpdateProcessor_LEGACY<Update, AppUser> callbackQueryUpdateProcessor;
 //    private final UpdateProcessor<Update, AppUser> textUpdateProcessor;
 
 

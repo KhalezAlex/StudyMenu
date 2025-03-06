@@ -3,19 +3,19 @@ package org.klozevitz.services.implementations.updateProcessors.commandUpdatePro
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.klozevitz.enitites.appUsers.AppUser;
-import org.klozevitz.services.messageProcessors.UpdateProcessor;
+import org.klozevitz.services.messageProcessors.UpdateProcessor_LEGACY;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Log4j
 @RequiredArgsConstructor
-public class CommandCompanyUP implements UpdateProcessor {
-    private final UpdateProcessor nullableStateUpdateProcessor;
-    private final UpdateProcessor basicStateCUP;
-    private final UpdateProcessor unregisteredStateCUP;
-    private final UpdateProcessor waitForDepartmentTgIdStateCUP;
-    private final UpdateProcessor continuousRegistrationCUP;
-    private final UpdateProcessor previousViewUpdateProcessor;
+public class CommandCompanyUP implements UpdateProcessor_LEGACY {
+    private final UpdateProcessor_LEGACY nullableStateUpdateProcessor;
+    private final UpdateProcessor_LEGACY basicStateCUP;
+    private final UpdateProcessor_LEGACY unregisteredStateCUP;
+    private final UpdateProcessor_LEGACY waitForDepartmentTgIdStateCUP;
+    private final UpdateProcessor_LEGACY continuousRegistrationCUP;
+    private final UpdateProcessor_LEGACY previousViewUpdateProcessor;
 
     @Override
     public SendMessage processUpdate(Update update, AppUser currentAppUser) {

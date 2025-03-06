@@ -1,4 +1,4 @@
-package org.klozevitz.configs.viewResolvers;
+package org.klozevitz.configs.legacy.viewResolvers;
 
 import lombok.RequiredArgsConstructor;
 import org.klozevitz.EmployeeTelegramView;
@@ -6,8 +6,8 @@ import org.klozevitz.MessageUtil;
 import org.klozevitz.repositories.appUsers.EmployeeRepo;
 import org.klozevitz.repositories.menu.CategoryRepo;
 import org.klozevitz.repositories.menu.ItemRepo;
-import org.klozevitz.services.implementations.updateProcessors_LEGACY.viewResolvers.CategoryChoiceViewResolver;
 import org.klozevitz.services.implementations.updateProcessors_LEGACY.viewResolvers.CategoryInfoViewResolver;
+import org.klozevitz.services.implementations.updateProcessors_LEGACY.viewResolvers.CategoryChoiceViewResolver;
 import org.klozevitz.services.implementations.updateProcessors_LEGACY.viewResolvers.CategoryTestChoiceViewResolver;
 import org.klozevitz.services.implementations.updateProcessors_LEGACY.viewResolvers.WelcomeViewResolver;
 import org.klozevitz.services.interfaces.main.AnswerProducer;
@@ -19,7 +19,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Configuration
 @RequiredArgsConstructor
-public class ViewResolversEmployeeConfig {
+public class ViewResolversEmployeeConfig_LEGACY {
     private final ApplicationContext appContext;
     private final AnswerProducer answerProducer;
     private final EmployeeRepo employeeRepo;

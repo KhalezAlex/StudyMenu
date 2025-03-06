@@ -19,12 +19,12 @@ import org.klozevitz.services.implementations.updateProcessors.commandUpdateProc
 import org.klozevitz.services.implementations.updateProcessors.commandUpdateProcessors.byState.BasicStateCompanyCUP;
 import org.klozevitz.services.implementations.updateProcessors.commandUpdateProcessors.byState.UnregisteredStateCompanyCUP;
 import org.klozevitz.services.implementations.updateProcessors.commandUpdateProcessors.byState.WaitForDepartmentTgIdStateCompanyCUP;
-import org.klozevitz.services.implementations.updateProcessors.textUpdateProcessors.TextCompanyUpdateProcessor;
+import org.klozevitz.services.implementations.updateProcessors.textUpdateProcessors.TextCompanyUpdateProcessorLEGACY;
 import org.klozevitz.services.implementations.utils.CompanyRegistrar;
 import org.klozevitz.services.implementations.utils.DepartmentRegistrar;
 import org.klozevitz.services.main.AnswerProducer;
 import org.klozevitz.services.interfaces.main.Main;
-import org.klozevitz.services.messageProcessors.UpdateProcessor;
+import org.klozevitz.services.messageProcessors.UpdateProcessor_LEGACY;
 import org.klozevitz.services.messageProcessors.WrongAppUserDataUpdateProcessor;
 import org.klozevitz.services.util.Registrar;
 import org.klozevitz.utils.CryptoTool;
@@ -59,7 +59,7 @@ public class AppConfig {
      */
 
     @Bean
-    public UpdateProcessor nullableStateUpdateProcessor() {
+    public UpdateProcessor_LEGACY nullableStateUpdateProcessor() {
         return new NullableStateCompanyUP(
                 appUserRepo,
                 telegramView(),
@@ -76,7 +76,7 @@ public class AppConfig {
     }
 
     @Bean
-    public UpdateProcessor previousViewUpdateProcessor() {
+    public UpdateProcessor_LEGACY previousViewUpdateProcessor() {
         return new PreviousViewCompanyUP(
                 telegramView()
         );
@@ -86,8 +86,8 @@ public class AppConfig {
      * TextUpdate-обработчики
      * */
     @Bean
-    public UpdateProcessor textUpdateProcessor() {
-        return new TextCompanyUpdateProcessor(
+    public UpdateProcessor_LEGACY textUpdateProcessor() {
+        return new TextCompanyUpdateProcessorLEGACY(
                 companyRegistrar(),
                 departmentRegistrar(),
                 nullableStateUpdateProcessor(),
@@ -100,7 +100,7 @@ public class AppConfig {
      */
 
     @Bean
-    public UpdateProcessor callbackQueryUpdateProcessor() {
+    public UpdateProcessor_LEGACY callbackQueryUpdateProcessor() {
         return new CallbackQueryCompanyUP(
                 nullableStateUpdateProcessor(),
                 unregisteredStateCallbackQueryUpdateProcessor(),
@@ -112,7 +112,7 @@ public class AppConfig {
     }
 
     @Bean
-    public UpdateProcessor basicStateCallbackQueryUpdateProcessor() {
+    public UpdateProcessor_LEGACY basicStateCallbackQueryUpdateProcessor() {
         return new BasicStateCompanyCQUP(
                 appUserRepo,
                 telegramView(),
@@ -121,7 +121,7 @@ public class AppConfig {
     }
 
     @Bean
-    UpdateProcessor unregisteredStateCallbackQueryUpdateProcessor() {
+    UpdateProcessor_LEGACY unregisteredStateCallbackQueryUpdateProcessor() {
         return new UnregisteredStateCompanyCQUP(
                 appUserRepo,
                 telegramView(),
@@ -130,7 +130,7 @@ public class AppConfig {
     }
 
     @Bean
-    public UpdateProcessor waitingForEmailStateCallbackQueryUpdateProcessor() {
+    public UpdateProcessor_LEGACY waitingForEmailStateCallbackQueryUpdateProcessor() {
         return new WaitingForEmailStateCompanyCQUP(
                 appUserRepo,
                 telegramView(),
@@ -139,7 +139,7 @@ public class AppConfig {
     }
 
     @Bean
-    public UpdateProcessor waitingForDepartmentTgIdStateCallbackQueryUpdateProcessor() {
+    public UpdateProcessor_LEGACY waitingForDepartmentTgIdStateCallbackQueryUpdateProcessor() {
         return new WaitForDepartmentTgIdStateCompanyCQUP(
                 appUserRepo,
                 telegramView()
@@ -150,7 +150,7 @@ public class AppConfig {
      * CommandUpdate-обработчики
      * */
     @Bean
-    public UpdateProcessor commandUpdateProcessor(){
+    public UpdateProcessor_LEGACY commandUpdateProcessor(){
         return new CommandCompanyUP(
                 nullableStateUpdateProcessor(),
                 basicStateCommandUpdateProcessor(),
@@ -162,7 +162,7 @@ public class AppConfig {
     }
 
     @Bean
-    public UpdateProcessor basicStateCommandUpdateProcessor() {
+    public UpdateProcessor_LEGACY basicStateCommandUpdateProcessor() {
         return new BasicStateCompanyCUP(
                 appUserRepo,
                 telegramView()
@@ -170,7 +170,7 @@ public class AppConfig {
     }
 
     @Bean
-    public UpdateProcessor unregisteredStateCommandUpdateProcessor() {
+    public UpdateProcessor_LEGACY unregisteredStateCommandUpdateProcessor() {
         return new UnregisteredStateCompanyCUP(
                 appUserRepo,
                 telegramView(),
@@ -179,7 +179,7 @@ public class AppConfig {
     }
 
     @Bean
-    public UpdateProcessor waitForDepartmentTgIdStateCommandUpdateProcessor() {
+    public UpdateProcessor_LEGACY waitForDepartmentTgIdStateCommandUpdateProcessor() {
         return new WaitForDepartmentTgIdStateCompanyCUP(
                 appUserRepo,
                 telegramView(),
@@ -188,7 +188,7 @@ public class AppConfig {
     }
 
     @Bean
-    public UpdateProcessor continuousRegistrationCommandUpdateProcessor() {
+    public UpdateProcessor_LEGACY continuousRegistrationCommandUpdateProcessor() {
         return new ContinuousRegistrationCompanyCUP(
                 appUserRepo,
                 telegramView(),

@@ -5,7 +5,7 @@ import org.klozevitz.MessageUtil;
 import org.klozevitz.CompanyTelegramView;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
-import org.klozevitz.services.messageProcessors.UpdateProcessor;
+import org.klozevitz.services.messageProcessors.UpdateProcessor_LEGACY;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -15,7 +15,7 @@ import static org.klozevitz.enitites.appUsers.enums.views.CompanyView.EMAIL_REQU
 
 @Service
 @RequiredArgsConstructor
-public class WaitingForEmailStateCompanyCQUP implements UpdateProcessor {
+public class WaitingForEmailStateCompanyCQUP implements UpdateProcessor_LEGACY {
     private final String REGISTRATION_ABORT_NOTIFICATION_MESSAGE = "Регистрация была прервана";
     private final AppUserRepo appUserRepo;
     private final CompanyTelegramView telegramView;

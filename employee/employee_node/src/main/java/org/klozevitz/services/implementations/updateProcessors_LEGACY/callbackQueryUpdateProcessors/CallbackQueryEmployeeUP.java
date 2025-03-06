@@ -1,11 +1,11 @@
-package org.klozevitz.services.implementations.updateProcessors.commandUpdateProcessors;
+package org.klozevitz.services.implementations.updateProcessors_LEGACY.callbackQueryUpdateProcessors;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.enitites.appUsers.enums.states.EmployeeState;
 import org.klozevitz.enitites.appUsers.enums.views.EmployeeView;
-import org.klozevitz.services.interfaces.updateProcessors.UpdateProcessor;
+import org.klozevitz.services.interfaces.updateProcessors.UpdateProcessor_LEGACY;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -13,10 +13,10 @@ import java.util.Map;
 
 @Log4j
 @RequiredArgsConstructor
-public class CommandEmployeeUP implements UpdateProcessor<Update, AppUser> {
-    public final UpdateProcessor<Update, Long> nullableStateUpdateProcessor;
-    public final UpdateProcessor<Update, EmployeeView> previousViewUpdateProcessor;
-    public final Map<EmployeeState, UpdateProcessor<Update, EmployeeView>> stateDispatcher;
+public class CallbackQueryEmployeeUP implements UpdateProcessor_LEGACY<Update, AppUser> {
+    public final UpdateProcessor_LEGACY<Update, Long> nullableStateUpdateProcessor;
+    public final UpdateProcessor_LEGACY<Update, EmployeeView> previousViewUpdateProcessor;
+    public final Map<EmployeeState, UpdateProcessor_LEGACY<Update, EmployeeView>> stateDispatcher;
 
     @Override
     public SendMessage processUpdate(Update update, AppUser currentAppUser) {
@@ -34,6 +34,7 @@ public class CommandEmployeeUP implements UpdateProcessor<Update, AppUser> {
             log.error("Сообщение не попало ни в одну из веток состояний сотрудника");
             return previousViewUpdateProcessor.processUpdate(update, currentView);
         }
+
 
         return stateProcessor.processUpdate(update, currentView);
     }
