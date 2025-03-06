@@ -15,7 +15,7 @@ import java.util.Comparator;
 
 @Log4j
 @RequiredArgsConstructor
-public class PreviousViewEmployeeUP implements UpdateProcessor<Update> {
+public class PreviousViewEmployeeUP implements UpdateProcessor {
     private final String PREVIOUS_VIEW_ERROR_MESSAGE = "<b>Вы совершили действие, которое привело к остановке " +
             "выполнения процесса. Вернемся к предыдущему экрану:</b>";
     private final AppUserRepo appUserRepo;

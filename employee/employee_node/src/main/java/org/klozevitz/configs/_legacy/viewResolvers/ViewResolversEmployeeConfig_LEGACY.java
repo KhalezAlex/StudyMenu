@@ -1,4 +1,4 @@
-package org.klozevitz.configs.legacy.viewResolvers;
+package org.klozevitz.configs._legacy.viewResolvers;
 
 import lombok.RequiredArgsConstructor;
 import org.klozevitz.EmployeeTelegramView;

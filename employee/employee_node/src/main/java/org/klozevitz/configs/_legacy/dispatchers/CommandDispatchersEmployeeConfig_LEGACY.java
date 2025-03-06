@@ -1,4 +1,4 @@
-package org.klozevitz.configs.legacy.dispatchers;
+package org.klozevitz.configs._legacy.dispatchers;
 
 import lombok.RequiredArgsConstructor;
 import org.klozevitz.services.interfaces.updateProcessors.UpdateProcessor_LEGACY;
@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Configuration
 @RequiredArgsConstructor
-public class CommandDispatchersEmployeeConfig {
+public class CommandDispatchersEmployeeConfig_LEGACY {
     private final ApplicationContext appContext;
 
     @Bean(name = "basicStateCallbackQueryCommandDispatcher")

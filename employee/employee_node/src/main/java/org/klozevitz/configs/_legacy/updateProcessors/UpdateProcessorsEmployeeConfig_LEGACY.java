@@ -1,4 +1,4 @@
-package org.klozevitz.configs.legacy.updateProcessors;
+package org.klozevitz.configs._legacy.updateProcessors;
 
 import lombok.RequiredArgsConstructor;
 import org.klozevitz.EmployeeTelegramView;

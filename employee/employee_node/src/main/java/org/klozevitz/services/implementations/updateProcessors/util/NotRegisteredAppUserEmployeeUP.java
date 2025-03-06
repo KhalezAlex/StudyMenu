@@ -9,7 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Log4j
 @RequiredArgsConstructor
-public class NotRegisteredAppUserEmployeeUP implements UpdateProcessor<Update> {
+public class NotRegisteredAppUserEmployeeUP implements UpdateProcessor {
     private final EmployeeTelegramView telegramView;
 
     @Override

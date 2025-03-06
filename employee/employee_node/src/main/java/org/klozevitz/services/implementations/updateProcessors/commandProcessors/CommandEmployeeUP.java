@@ -12,23 +12,31 @@ import java.util.Map;
 
 @Log4j
 @RequiredArgsConstructor
-public class CommandEmployeeUP implements UpdateProcessor<Update> {
+public class CommandEmployeeUP implements UpdateProcessor {
     private final AppUserRepo appUserRepo;
-    private final Map<EmployeeView, UpdateProcessor<Update>> viewDispatcher;
-    private final UpdateProcessor<Update> notRegisteredAppUserUpdateProcessor;
-    private final UpdateProcessor<Update> previousViewUpdateProcessor;
+    private final Map<EmployeeView, UpdateProcessor> viewDispatcher;
+    private final UpdateProcessor notRegisteredAppUserUpdateProcessor;
+    private final UpdateProcessor previousViewUpdateProcessor;
+    private final UpdateProcessor nullLastMessageUpdateProcessor;
 
     @Override
     public SendMessage processUpdate(Update update) {
         var telegramUserId = telegramUserId(update);
-        var currentAppUser = appUserRepo.findByTelegramUserId(telegramUserId);
+        var optionalCurrentAppUser = appUserRepo.findByTelegramUserId(telegramUserId);
 
-        if (currentAppUser.isEmpty()) {
+        if (optionalCurrentAppUser.isEmpty()) {
             log.error("Пользователь не зарегистрирован: " + telegramUserId);
             return notRegisteredAppUserUpdateProcessor.processUpdate(update);
         }
 
-        var currentView = currentAppUser.get().getEmployee().getCurrentView();
+        var currentAppUser = optionalCurrentAppUser.get();
+
+//        if (currentAppUser.getMessages().isEmpty()) {
+//            log.debug("Первое сообщение от пользователя: " + telegramUserId);
+//            return nullLastMessageUpdateProcessor.processUpdate(update);
+//        }
+
+        var currentView = currentAppUser.getEmployee().getCurrentView();
         var viewProcessor = viewDispatcher.get(currentView);
 
         if (viewProcessor == null) {
