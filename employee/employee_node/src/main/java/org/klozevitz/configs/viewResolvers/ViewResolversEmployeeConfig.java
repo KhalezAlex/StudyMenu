@@ -10,16 +10,11 @@ import org.klozevitz.services.implementations.updateProcessors.viewResolvers.Cat
 import org.klozevitz.services.implementations.updateProcessors.viewResolvers.CategoryInfoViewResolver;
 import org.klozevitz.services.implementations.updateProcessors.viewResolvers.CategoryTestChoiceViewResolver;
 import org.klozevitz.services.implementations.updateProcessors.viewResolvers.WelcomeViewResolver;
-import org.klozevitz.services.implementations.updateProcessors_LEGACY.viewResolvers.CategoryChoiceViewResolver_LEGACY;
-import org.klozevitz.services.implementations.updateProcessors_LEGACY.viewResolvers.CategoryInfoViewResolver_LEGACY;
-import org.klozevitz.services.implementations.updateProcessors_LEGACY.viewResolvers.CategoryTestChoiceViewResolver_LEGACY;
 import org.klozevitz.services.interfaces.main.AnswerProducer;
 import org.klozevitz.services.interfaces.updateProcessors.UpdateProcessor;
-import org.klozevitz.services.interfaces.updateProcessors.UpdateProcessor_LEGACY;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Configuration
 @RequiredArgsConstructor

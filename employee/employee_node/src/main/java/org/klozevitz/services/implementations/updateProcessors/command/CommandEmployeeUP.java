@@ -1,4 +1,4 @@
-package org.klozevitz.services.implementations.updateProcessors;
+package org.klozevitz.services.implementations.updateProcessors.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;

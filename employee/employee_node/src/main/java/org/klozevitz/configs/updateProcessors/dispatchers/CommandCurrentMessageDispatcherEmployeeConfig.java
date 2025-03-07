@@ -1,4 +1,4 @@
-package org.klozevitz.configs.dispatchers;
+package org.klozevitz.configs.updateProcessors.dispatchers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
