@@ -1,6 +1,7 @@
 package org.klozevitz.configs.updateProcessors;
 
 import lombok.RequiredArgsConstructor;
+import org.klozevitz.EmployeeTelegramView;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.services.implementations.updateProcessors.command.CommandEmployeeUP;
 import org.klozevitz.services.interfaces.updateProcessors.UpdateProcessor;
@@ -21,9 +22,8 @@ public class CUP_EmployeeConfig {
     public UpdateProcessor commandEmployeeUpdateProcessor() {
         return new CommandEmployeeUP(
                 appUserRepo,
-                appContext.getBean("commandCurrentMessageDispatcher", Map.class),
-                appContext.getBean("notRegisteredAppUserUpdateProcessor", UpdateProcessor.class),
-                appContext.getBean("previousViewUpdateProcessor", UpdateProcessor.class)
+                appContext.getBean("welcomeViewResolver", UpdateProcessor.class),
+                appContext.getBean("notRegisteredAppUserUpdateProcessor", UpdateProcessor.class)
         );
     }
 }

@@ -10,20 +10,32 @@ import javax.transaction.Transactional;
 
 @Repository
 public interface MessageSentRepo extends JpaRepository<MessageSent, Long> {
+    @Modifying
+    @Transactional
     @Query(
             value = "INSERT INTO message_sent_t (app_user_id, message_id)" +
                     "VALUES (?1, ?2)",
             nativeQuery = true
     )
-    @Transactional
-    @Modifying
     void save(long appUserId, int messageId);
 
+    @Modifying
+    @Transactional
     @Query(
-            value = "DELETE FROM message_sent_t WHERE id = ?1",
+            value = "DELETE FROM message_sent_t " +
+                    "WHERE id = ?1",
             nativeQuery = true
     )
-    @Transactional
-    @Modifying
     void deleteMessageById(long messageId);
+
+    @Modifying
+    @Transactional
+    @Query(
+            value = "UPDATE message_sent_t SET for_deletion = true " +
+                    "WHERE message_id = ?1",
+            nativeQuery = true
+    )
+    void setMessageForDeletion(int messageId);
+
+    MessageSent findByMessageId(int messageId);
 }

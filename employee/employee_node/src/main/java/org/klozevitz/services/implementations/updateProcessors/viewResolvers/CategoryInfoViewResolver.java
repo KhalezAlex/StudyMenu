@@ -20,8 +20,6 @@ import static org.klozevitz.enitites.appUsers.enums.views.EmployeeView.CATEGORY_
 public class CategoryInfoViewResolver implements UpdateProcessor {
     private final String WRONG_CATEGORY_ID_ERROR_MESSAGE = "<b>Вы перенаправлены на предыдущую страницу. " +
             "Запрашиваемая Вами категория меню не найдена</b>";
-    private final String WRONG_COMMAND_ERROR_MESSAGE = "Вы совершили некорректное действие- " +
-            "возвращаетесь на предыдущий экран";
 
     private final EmployeeRepo employeeRepo;
     private final ItemRepo itemRepo;

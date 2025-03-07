@@ -2,6 +2,7 @@ package org.klozevitz.services.implementations.updateProcessors.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
+import org.klozevitz.EmployeeTelegramView;
 import org.klozevitz.enitites.appUsers.enums.views.EmployeeView;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.services.interfaces.updateProcessors.UpdateProcessor;
@@ -10,13 +11,16 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Map;
 
+import static org.klozevitz.enitites.appUsers.enums.views.EmployeeView.WELCOME_VIEW;
+
 @Log4j
 @RequiredArgsConstructor
 public class CommandEmployeeUP implements UpdateProcessor {
     private final AppUserRepo appUserRepo;
-    private final Map<EmployeeView, UpdateProcessor> viewDispatcher;
+    private final UpdateProcessor welcomeViewResolver;
+//    private final Map<EmployeeView, UpdateProcessor> viewDispatcher;
     private final UpdateProcessor notRegisteredAppUserUpdateProcessor;
-    private final UpdateProcessor previousViewUpdateProcessor;
+//    private final UpdateProcessor previousViewUpdateProcessor;
 
     @Override
     public SendMessage processUpdate(Update update) {
@@ -29,14 +33,22 @@ public class CommandEmployeeUP implements UpdateProcessor {
         }
 
         var currentAppUser = optionalCurrentAppUser.get();
-        var currentView = currentAppUser.getEmployee().getCurrentView();
-        var viewProcessor = viewDispatcher.get(currentView);
+//        var currentView = currentAppUser.getEmployee().getCurrentView();
+//        var viewProcessor = viewDispatcher.get(currentView);
+//
+//        if (viewProcessor == null) {
+//            log.error("Сообщение не попало ни в один из вью-процессоров");
+//            return previousViewUpdateProcessor.processUpdate(update);
+//        }
+//
+//        return viewProcessor.processUpdate(update);
+        var command = command(update);
 
-        if (viewProcessor == null) {
-            log.error("Сообщение не попало ни в один из вью-процессоров");
-            return previousViewUpdateProcessor.processUpdate(update);
+        if (command.equals("/start")) {
+            return welcomeViewResolver.processUpdate(update);
         }
 
-        return viewProcessor.processUpdate(update);
+        // TODO: это фикция - должны быть и другие команды
+        return welcomeViewResolver.processUpdate(update);
     }
 }

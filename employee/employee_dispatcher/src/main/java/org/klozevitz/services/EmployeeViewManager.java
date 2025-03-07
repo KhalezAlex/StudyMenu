@@ -3,6 +3,7 @@ package org.klozevitz.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.klozevitz.enitites.appUsers.MessageSent;
+import org.klozevitz.enitites.appUsers.enums.views.EmployeeView;
 import org.klozevitz.interfaces.ViewManager;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.repositories.appUsers.MessageSentRepo;
@@ -11,10 +12,13 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+
+import static org.klozevitz.enitites.appUsers.enums.views.EmployeeView.CATEGORY_INFO_VIEW;
 
 @Log4j
 @Component
@@ -39,6 +43,7 @@ public class EmployeeViewManager implements ViewManager {
                         .answer(answer)
                         .messageId(sentMessageId)
                         .appUser(currentAppUser)
+                        .forDeletion(willBeDeleted(answer))
                         .build()
         );
         appUserRepo.save(optionalCurrentAppUser.get());
@@ -66,6 +71,15 @@ public class EmployeeViewManager implements ViewManager {
     }
 
     private void delete(long telegramUserId, int messageId) {
+        var messageSent = messageSentRepo.findByMessageId(messageId);
+
+        if (messageSent != null) { // null- про сообщение от пользователя- оно в базе данных не сохраняется
+            if (!messageSent.isForDeletion()) {
+                messageSentRepo.setMessageForDeletion(messageId);
+                return;
+            }
+        }
+
         var deleteMessage = deleteMessage(telegramUserId, messageId);
         try {
             bot.execute(deleteMessage);
@@ -83,5 +97,16 @@ public class EmployeeViewManager implements ViewManager {
 
     private long telegramUserId(SendMessage sendMessage) {
         return Long.parseLong(sendMessage.getChatId());
+    }
+
+    private boolean willBeDeleted(SendMessage answer) {
+        var telegramUserId = telegramUserId(answer);
+        var currentAppUser = appUserRepo.findByTelegramUserId(telegramUserId);
+
+        return !currentAppUser
+                .get()
+                .getEmployee()
+                .getCurrentView()
+                .equals(CATEGORY_INFO_VIEW);
     }
 }

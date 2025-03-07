@@ -1,13 +1,11 @@
 package org.klozevitz.enitites.appUsers;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.*;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.klozevitz.enitites.BaseEntity;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
 
 import javax.persistence.*;
 
@@ -28,4 +26,5 @@ public class MessageSent extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "app_user_id")
     private AppUser appUser;
+    private boolean forDeletion;
 }

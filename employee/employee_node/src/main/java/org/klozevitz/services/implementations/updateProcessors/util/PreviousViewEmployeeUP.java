@@ -3,8 +3,8 @@ package org.klozevitz.services.implementations.updateProcessors.util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.klozevitz.EmployeeTelegramView;
-import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.enitites.appUsers.MessageSent;
+import org.klozevitz.enitites.appUsers.enums.views.EmployeeView;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.services.interfaces.updateProcessors.UpdateProcessor;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -12,6 +12,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+
+import static org.klozevitz.enitites.appUsers.enums.views.EmployeeView.WELCOME_VIEW;
 
 @Log4j
 @RequiredArgsConstructor
@@ -30,15 +32,27 @@ public class PreviousViewEmployeeUP implements UpdateProcessor {
             return telegramView.notRegisteredErrorView(update);
         }
 
-        var previousView = previousView(currentAppUser.get());
+        var previousView = previousView(update);
 
         return previousView.getText().contains(PREVIOUS_VIEW_ERROR_MESSAGE) ?
                 previousView :
                 telegramView.addServiceMessage(previousView, PREVIOUS_VIEW_ERROR_MESSAGE);
     }
 
-    private SendMessage previousView(AppUser currentAppUser) {
+    // TODO: возможно, придется передавать полный список, чтобы не бесить людей
+
+    private SendMessage previousView(Update update) {
+        var telegramUserId = telegramUserId(update);
+        var currentAppUser = appUserRepo.findByTelegramUserId(telegramUserId).get();
         var messages = new ArrayList<>(currentAppUser.getMessages());
+        var currentView = currentAppUser.getEmployee().getCurrentView();
+
+        if (messages.isEmpty()) {
+            currentAppUser.getEmployee().setCurrentView(WELCOME_VIEW);
+            appUserRepo.save(currentAppUser);
+
+            return telegramView.previousView(update, currentView);
+        }
 
         messages.sort(Comparator.comparingInt(MessageSent::getMessageId));
 
