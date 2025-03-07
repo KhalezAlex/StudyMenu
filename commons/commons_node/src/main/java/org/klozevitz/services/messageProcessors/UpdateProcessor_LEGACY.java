@@ -5,6 +5,6 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @FunctionalInterface
-public interface UpdateProcessor {
+public interface UpdateProcessor_LEGACY {
     SendMessage processUpdate(Update update, AppUser currentAppUser);
 }

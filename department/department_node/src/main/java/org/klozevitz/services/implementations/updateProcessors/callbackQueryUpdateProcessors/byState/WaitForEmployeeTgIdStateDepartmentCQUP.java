@@ -6,7 +6,7 @@ import org.klozevitz.DepartmentTelegramView;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.enitites.appUsers.enums.states.DepartmentState;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
-import org.klozevitz.services.messageProcessors.UpdateProcessor;
+import org.klozevitz.services.messageProcessors.UpdateProcessor_LEGACY;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -14,7 +14,7 @@ import static org.klozevitz.enitites.appUsers.enums.views.DepartmentView.WELCOME
 
 @Log4j
 @RequiredArgsConstructor
-public class WaitForEmployeeTgIdStateDepartmentCQUP implements UpdateProcessor {
+public class WaitForEmployeeTgIdStateDepartmentCQUP implements UpdateProcessor_LEGACY {
     private final AppUserRepo appUserRepo;
     private final DepartmentTelegramView telegramView;
 

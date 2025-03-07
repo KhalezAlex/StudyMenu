@@ -3,7 +3,7 @@ package org.klozevitz.services.implementations.updateProcessors.commandUpdatePro
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.klozevitz.DepartmentTelegramView;
-import org.klozevitz.services.messageProcessors.UpdateProcessor;
+import org.klozevitz.services.messageProcessors.UpdateProcessor_LEGACY;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -13,10 +13,10 @@ import static org.klozevitz.enitites.appUsers.enums.views.DepartmentView.WELCOME
 
 @Log4j
 @RequiredArgsConstructor
-public class BasicStateDepartmentCUP implements UpdateProcessor {
+public class BasicStateDepartmentCUP implements UpdateProcessor_LEGACY {
     private final AppUserRepo appUserRepo;
     private final DepartmentTelegramView telegramView;
-    private final UpdateProcessor previousViewUpdateProcessor;
+    private final UpdateProcessor_LEGACY previousViewUpdateProcessor;
 
 
     @Override

@@ -17,13 +17,14 @@ import static org.klozevitz.enitites.appUsers.enums.views.EmployeeView.CATEGORY_
 
 @Log4j
 @RequiredArgsConstructor
-public class CategoryChoiceViewResolver implements UpdateProcessor<Update, Long> {
+public class CategoryInfoChoiceViewResolver implements UpdateProcessor {
     private final EmployeeRepo employeeRepo;
     private final CategoryRepo categoryRepo;
     private final EmployeeTelegramView telegramView;
 
     @Override
-    public SendMessage processUpdate(Update update, Long telegramUserId) {
+    public SendMessage processUpdate(Update update) {
+        var telegramUserId = telegramUserId(update);
         var resources = resources(telegramUserId);
 
         employeeRepo.setEmployeeCurrentView(CATEGORY_INFO_CHOICE_VIEW.name(), telegramUserId);

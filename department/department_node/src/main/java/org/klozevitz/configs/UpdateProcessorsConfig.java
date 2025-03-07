@@ -14,7 +14,7 @@ import org.klozevitz.services.implementations.util.EmployeeRegistrar;
 import org.klozevitz.services.implementations.util.ExcelToTestParser;
 import org.klozevitz.services.interfaces.main.Main;
 import org.klozevitz.services.main.AnswerProducer;
-import org.klozevitz.services.messageProcessors.UpdateProcessor;
+import org.klozevitz.services.messageProcessors.UpdateProcessor_LEGACY;
 import org.klozevitz.services.messageProcessors.WrongAppUserDataUpdateProcessor;
 import org.klozevitz.services.implementations.updateProcessors.util.NotRegisteredAppUserDepartmentUP;
 import org.klozevitz.services.implementations.updateProcessors.util.NullableStateDepartmentUP;
@@ -66,7 +66,7 @@ public class UpdateProcessorsConfig {
     }
 
     @Bean
-    public UpdateProcessor nullableStateUpdateProcessor() {
+    public UpdateProcessor_LEGACY nullableStateUpdateProcessor() {
         return new NullableStateDepartmentUP(
                 appUserRepo,
                 telegramView()
@@ -74,7 +74,7 @@ public class UpdateProcessorsConfig {
     }
 
     @Bean
-    public UpdateProcessor previousViewUpdateProcessor() {
+    public UpdateProcessor_LEGACY previousViewUpdateProcessor() {
         return new PreviousViewDepartmentUP(
                 telegramView()
         );
@@ -84,7 +84,7 @@ public class UpdateProcessorsConfig {
      * CommandUpdate-обработчики
      */
     @Bean
-    public UpdateProcessor commandUpdateProcessor() {
+    public UpdateProcessor_LEGACY commandUpdateProcessor() {
         return new CommandDepartmentUP(
                 nullableStateUpdateProcessor(),
                 previousViewUpdateProcessor(),
@@ -93,7 +93,7 @@ public class UpdateProcessorsConfig {
     }
 
     @Bean
-    public UpdateProcessor basicStateCommandUpdateProcessor() {
+    public UpdateProcessor_LEGACY basicStateCommandUpdateProcessor() {
         return new BasicStateDepartmentCUP(
                 appUserRepo,
                 telegramView(),
@@ -105,7 +105,7 @@ public class UpdateProcessorsConfig {
      * CallbackQuery-обработчики
      */
     @Bean
-    public UpdateProcessor callbackQueryUpdateProcessor() {
+    public UpdateProcessor_LEGACY callbackQueryUpdateProcessor() {
         return new CallbackQueryDepartmentUP(
                 nullableStateUpdateProcessor(),
                 previousViewUpdateProcessor(),
@@ -116,7 +116,7 @@ public class UpdateProcessorsConfig {
     }
 
     @Bean
-    public UpdateProcessor basicStateCallbackQueryUpdateProcessor() {
+    public UpdateProcessor_LEGACY basicStateCallbackQueryUpdateProcessor() {
         return new BasicStateDepartmentCQUP(
                 appUserRepo,
                 telegramView(),
@@ -125,7 +125,7 @@ public class UpdateProcessorsConfig {
     }
 
     @Bean
-    public UpdateProcessor waitForDocumentStateCallbackQueryUpdateProcessor() {
+    public UpdateProcessor_LEGACY waitForDocumentStateCallbackQueryUpdateProcessor() {
         return new WaitForDocumentStateDepartmentCQUP(
                 appUserRepo,
                 telegramView()
@@ -133,7 +133,7 @@ public class UpdateProcessorsConfig {
     }
 
     @Bean
-    public UpdateProcessor waitForEmployeeTgIdStateCallbackQueryUpdateProcessor() {
+    public UpdateProcessor_LEGACY waitForEmployeeTgIdStateCallbackQueryUpdateProcessor() {
         return new WaitForEmployeeTgIdStateDepartmentCQUP(
                 appUserRepo,
                 telegramView()
@@ -144,7 +144,7 @@ public class UpdateProcessorsConfig {
      * TextUpdate-обработчики
      */
     @Bean
-    public UpdateProcessor textUpdateProcessor() {
+    public UpdateProcessor_LEGACY textUpdateProcessor() {
         return new TextDepartmentUP(
                 nullableStateUpdateProcessor(),
                 previousViewUpdateProcessor(),
@@ -153,7 +153,7 @@ public class UpdateProcessorsConfig {
     }
 
     @Bean
-    public UpdateProcessor waitForEmployeeTgIdStateTextUpdateProcessor() {
+    public UpdateProcessor_LEGACY waitForEmployeeTgIdStateTextUpdateProcessor() {
         return new WaitForEmployeeTgIdStateDepartmentTUP(
                 employeeRegistrar()
         );
@@ -163,7 +163,7 @@ public class UpdateProcessorsConfig {
      * DocumentUpdate-обработчики
      */
     @Bean
-    public UpdateProcessor documentUpdateProcessor() {
+    public UpdateProcessor_LEGACY documentUpdateProcessor() {
         return new DocumentDepartmentUP(
                 appUserRepo,
                 nullableStateUpdateProcessor(),

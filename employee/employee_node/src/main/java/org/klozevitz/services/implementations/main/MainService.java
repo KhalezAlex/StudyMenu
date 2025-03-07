@@ -18,11 +18,11 @@ import java.util.Optional;
 public class MainService implements Main {
     private final AppUserRepo appUserRepo;
     private final AnswerProducer answerProducer;
-    private final UpdateProcessor<Update, AppUser> wrongAppUserRoleUpdateProcessor;
-    private final UpdateProcessor<Update, AppUser> notRegisteredAppUserUpdateProcessor;
+    private final UpdateProcessor wrongAppUserRoleUpdateProcessor;
+    private final UpdateProcessor notRegisteredAppUserUpdateProcessor;
 
-    private final UpdateProcessor<Update, AppUser> commandUpdateProcessor;
-    private final UpdateProcessor<Update, AppUser> callbackQueryUpdateProcessor;
+    private final UpdateProcessor commandUpdateProcessor;
+    private final UpdateProcessor callbackQueryUpdateProcessor;
 //    private final UpdateProcessor<Update, AppUser> textUpdateProcessor;
 
 
@@ -31,7 +31,7 @@ public class MainService implements Main {
     public void processTextUpdate(Update update) {
         var optionalCurrentAppUser = findAppUser(update);
         var answer = optionalCurrentAppUser.isEmpty() ?
-                notRegisteredAppUserUpdateProcessor.processUpdate(update, null) :
+                notRegisteredAppUserUpdateProcessor.processUpdate(update) :
                 registeredTextUpdateAnswer(update, optionalCurrentAppUser.get());
 
         sendAnswer(answer);
@@ -50,7 +50,7 @@ public class MainService implements Main {
     public void processCommandUpdate(Update update) {
         var optionalCurrentAppUser = findAppUser(update);
         var answer = optionalCurrentAppUser.isEmpty() ?
-                notRegisteredAppUserUpdateProcessor.processUpdate(update, null) :
+                notRegisteredAppUserUpdateProcessor.processUpdate(update) :
                 registeredCommandUpdateAnswer(update, optionalCurrentAppUser.get());
 
         sendAnswer(answer);
@@ -60,15 +60,15 @@ public class MainService implements Main {
         var employee = currentAppUser.getEmployee();
 
         return employee == null ?
-                wrongAppUserRoleUpdateProcessor.processUpdate(update, null) :
-                commandUpdateProcessor.processUpdate(update, currentAppUser);
+                wrongAppUserRoleUpdateProcessor.processUpdate(update) :
+                commandUpdateProcessor.processUpdate(update);
     }
 
     @Override
     public void processCallbackQueryUpdate(Update update) {
         var optionalCurrentAppUser = findAppUser(update);
         var answer = optionalCurrentAppUser.isEmpty() ?
-                notRegisteredAppUserUpdateProcessor.processUpdate(update, null) :
+                notRegisteredAppUserUpdateProcessor.processUpdate(update) :
                 registeredCallbackQueryUpdateAnswer(update, optionalCurrentAppUser.get());
 
         sendAnswer(answer);
@@ -78,8 +78,8 @@ public class MainService implements Main {
         var employee = currentAppUser.getEmployee();
 
         return employee == null ?
-                wrongAppUserRoleUpdateProcessor.processUpdate(update, null) :
-                callbackQueryUpdateProcessor.processUpdate(update, currentAppUser);
+                wrongAppUserRoleUpdateProcessor.processUpdate(update) :
+                callbackQueryUpdateProcessor.processUpdate(update);
     }
 
     private Optional<AppUser> findAppUser(Update update) {

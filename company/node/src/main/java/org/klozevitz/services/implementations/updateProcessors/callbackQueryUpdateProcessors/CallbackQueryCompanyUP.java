@@ -3,19 +3,19 @@ package org.klozevitz.services.implementations.updateProcessors.callbackQueryUpd
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.klozevitz.enitites.appUsers.AppUser;
-import org.klozevitz.services.messageProcessors.UpdateProcessor;
+import org.klozevitz.services.messageProcessors.UpdateProcessor_LEGACY;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Log4j
 @RequiredArgsConstructor
-public class CallbackQueryCompanyUP implements UpdateProcessor {
-    private final UpdateProcessor nullableStateUpdateProcessor;
-    private final UpdateProcessor unregisteredStateCQUP;
-    private final UpdateProcessor waitingForEmailStateCQUP;
-    private final UpdateProcessor basicStateCQUP;
-    private final UpdateProcessor waitingForDepartmentTgIdStateCQUP;
-    private final UpdateProcessor previousViewUpdateProcessor;
+public class CallbackQueryCompanyUP implements UpdateProcessor_LEGACY {
+    private final UpdateProcessor_LEGACY nullableStateUpdateProcessor;
+    private final UpdateProcessor_LEGACY unregisteredStateCQUP;
+    private final UpdateProcessor_LEGACY waitingForEmailStateCQUP;
+    private final UpdateProcessor_LEGACY basicStateCQUP;
+    private final UpdateProcessor_LEGACY waitingForDepartmentTgIdStateCQUP;
+    private final UpdateProcessor_LEGACY previousViewUpdateProcessor;
 
     @Override
     public SendMessage processUpdate(Update update, AppUser currentAppUser) {

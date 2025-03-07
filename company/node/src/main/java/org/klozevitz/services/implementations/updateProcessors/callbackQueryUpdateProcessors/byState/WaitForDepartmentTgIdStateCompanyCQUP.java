@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.klozevitz.CompanyTelegramView;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
-import org.klozevitz.services.messageProcessors.UpdateProcessor;
+import org.klozevitz.services.messageProcessors.UpdateProcessor_LEGACY;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -12,7 +12,7 @@ import static org.klozevitz.enitites.appUsers.enums.states.CompanyState.BASIC_ST
 import static org.klozevitz.enitites.appUsers.enums.views.CompanyView.WELCOME_VIEW;
 
 @RequiredArgsConstructor
-public class WaitForDepartmentTgIdStateCompanyCQUP implements UpdateProcessor {
+public class WaitForDepartmentTgIdStateCompanyCQUP implements UpdateProcessor_LEGACY {
     private final AppUserRepo appUserRepo;
     private final CompanyTelegramView telegramView;
 

@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.klozevitz.CompanyTelegramView;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
-import org.klozevitz.services.messageProcessors.UpdateProcessor;
+import org.klozevitz.services.messageProcessors.UpdateProcessor_LEGACY;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -14,10 +14,10 @@ import static org.klozevitz.enitites.appUsers.enums.views.CompanyView.*;
 
 @Service
 @RequiredArgsConstructor
-public class BasicStateCompanyCQUP implements UpdateProcessor {
+public class BasicStateCompanyCQUP implements UpdateProcessor_LEGACY {
     private final AppUserRepo appUserRepo;
     private final CompanyTelegramView telegramView;
-    private final UpdateProcessor previousViewUpdateProcessor;
+    private final UpdateProcessor_LEGACY previousViewUpdateProcessor;
 
 
     @Override

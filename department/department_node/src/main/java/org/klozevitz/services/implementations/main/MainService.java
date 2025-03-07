@@ -3,7 +3,7 @@ package org.klozevitz.services.implementations.main;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.klozevitz.services.main.AnswerProducer;
-import org.klozevitz.services.messageProcessors.UpdateProcessor;
+import org.klozevitz.services.messageProcessors.UpdateProcessor_LEGACY;
 import org.klozevitz.services.messageProcessors.WrongAppUserDataUpdateProcessor;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
@@ -21,10 +21,10 @@ public class MainService implements Main {
     private final AnswerProducer answerProducer;
     private final WrongAppUserDataUpdateProcessor wrongAppUserRoleUpdateProcessor;
     private final WrongAppUserDataUpdateProcessor notRegisteredAppUserUpdateProcessor;
-    private final UpdateProcessor commandUpdateProcessor;
-    private final UpdateProcessor textUpdateProcessor;
-    private final UpdateProcessor callbackQueryUpdateProcessor;
-    private final UpdateProcessor documentUpdateProcessor;
+    private final UpdateProcessor_LEGACY commandUpdateProcessor;
+    private final UpdateProcessor_LEGACY textUpdateProcessor;
+    private final UpdateProcessor_LEGACY callbackQueryUpdateProcessor;
+    private final UpdateProcessor_LEGACY documentUpdateProcessor;
 
 
     @Override

@@ -3,7 +3,7 @@ package org.klozevitz.services.implementations.updateProcessors.callbackQueryUpd
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.klozevitz.DepartmentTelegramView;
-import org.klozevitz.services.messageProcessors.UpdateProcessor;
+import org.klozevitz.services.messageProcessors.UpdateProcessor_LEGACY;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.enitites.appUsers.enums.states.DepartmentState;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
@@ -15,10 +15,10 @@ import static org.klozevitz.enitites.appUsers.enums.views.DepartmentView.*;
 
 @Log4j
 @RequiredArgsConstructor
-public class BasicStateDepartmentCQUP implements UpdateProcessor {
+public class BasicStateDepartmentCQUP implements UpdateProcessor_LEGACY {
     private final AppUserRepo appUserRepo;
     private final DepartmentTelegramView telegramView;
-    private final UpdateProcessor previousViewUpdateProcessor;
+    private final UpdateProcessor_LEGACY previousViewUpdateProcessor;
 
 
     @Override
