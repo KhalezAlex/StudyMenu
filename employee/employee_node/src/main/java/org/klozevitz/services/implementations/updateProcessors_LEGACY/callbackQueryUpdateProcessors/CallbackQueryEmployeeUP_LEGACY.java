@@ -13,7 +13,7 @@ import java.util.Map;
 
 @Log4j
 @RequiredArgsConstructor
-public class CallbackQueryEmployeeUP implements UpdateProcessor_LEGACY<Update, AppUser> {
+public class CallbackQueryEmployeeUP_LEGACY implements UpdateProcessor_LEGACY<Update, AppUser> {
     public final UpdateProcessor_LEGACY<Update, Long> nullableStateUpdateProcessor;
     public final UpdateProcessor_LEGACY<Update, EmployeeView> previousViewUpdateProcessor;
     public final Map<EmployeeState, UpdateProcessor_LEGACY<Update, EmployeeView>> stateDispatcher;

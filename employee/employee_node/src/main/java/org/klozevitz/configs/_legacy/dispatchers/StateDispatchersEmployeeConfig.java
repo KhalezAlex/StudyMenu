@@ -14,7 +14,6 @@ import java.util.Map;
 
 import static org.klozevitz.enitites.appUsers.enums.states.EmployeeState.BASIC_STATE;
 
-@Configuration
 @RequiredArgsConstructor
 public class StateDispatchersEmployeeConfig {
     private final ApplicationContext appContext;

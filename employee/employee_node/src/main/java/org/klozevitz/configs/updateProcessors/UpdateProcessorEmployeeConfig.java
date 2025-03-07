@@ -11,7 +11,9 @@ import org.klozevitz.services.interfaces.main.Main;
 import org.klozevitz.services.interfaces.updateProcessors.UpdateProcessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
+@Configuration
 @RequiredArgsConstructor
 public class UpdateProcessorEmployeeConfig {
     private final ApplicationContext appContext;
@@ -29,7 +31,8 @@ public class UpdateProcessorEmployeeConfig {
                 answerProducer,
                 appContext.getBean("wrongAppUserRoleUpdateProcessor", UpdateProcessor.class),
                 appContext.getBean("notRegisteredAppUserUpdateProcessor", UpdateProcessor.class),
-                appContext.getBean("commandEmployeeUpdateProcessor", UpdateProcessor.class)
+                appContext.getBean("commandEmployeeUpdateProcessor", UpdateProcessor.class),
+                appContext.getBean("callbackQueryEmployeeUpdateProcessor", UpdateProcessor.class)
         );
     }
 

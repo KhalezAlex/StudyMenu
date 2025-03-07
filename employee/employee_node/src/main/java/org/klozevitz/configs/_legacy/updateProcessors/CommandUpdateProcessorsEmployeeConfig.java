@@ -14,7 +14,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.util.HashMap;
 import java.util.Map;
 
-@Configuration
 @RequiredArgsConstructor
 public class CommandUpdateProcessorsEmployeeConfig {
     private final ApplicationContext appContext;
@@ -39,11 +38,11 @@ public class CommandUpdateProcessorsEmployeeConfig {
         return dispatcher;
     }
 
-    @Bean(name = "basicStateCommandUpdateProcessor")
-    public UpdateProcessor_LEGACY<Update, EmployeeView> basicStateCommandUpdateProcessor() {
-        return new BasicStateEmployeeCUP(
-                appContext.getBean("previousViewUpdateProcessor", UpdateProcessor_LEGACY.class),
-                basicStateCommandDispatcher()
-        );
-    }
+//    @Bean(name = "basicStateCommandUpdateProcessor")
+//    public UpdateProcessor_LEGACY<Update, EmployeeView> basicStateCommandUpdateProcessor() {
+//        return new BasicStateEmployeeCUP(
+//                appContext.getBean("previousViewUpdateProcessor", UpdateProcessor_LEGACY.class),
+//                basicStateCommandDispatcher()
+//        );
+//    }
 }

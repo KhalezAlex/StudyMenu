@@ -24,10 +24,4 @@ public class NullableStateEmployeeUP implements UpdateProcessor {
 
         return telegramView.nullStateErrorView(update);
     }
-
-    private long telegramUserId(Update update) {
-        return update.hasMessage() ?
-                update.getMessage().getFrom().getId() :
-                update.getCallbackQuery().getFrom().getId();
-    }
 }

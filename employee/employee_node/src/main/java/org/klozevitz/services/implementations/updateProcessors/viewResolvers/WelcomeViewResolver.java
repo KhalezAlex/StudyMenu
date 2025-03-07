@@ -27,10 +27,4 @@ public class WelcomeViewResolver implements UpdateProcessor {
 
         return telegramView.welcomeView(update);
     }
-
-    private long telegramUserId(Update update) {
-        return update.hasMessage() ?
-                update.getMessage().getFrom().getId() :
-                update.getCallbackQuery().getFrom().getId();
-    }
 }

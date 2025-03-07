@@ -1,4 +1,4 @@
-package org.klozevitz.services.implementations.updateProcessors.viewResolvers;
+package org.klozevitz.services.implementations.updateProcessors_LEGACY.viewResolvers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -17,7 +17,7 @@ import static org.klozevitz.enitites.appUsers.enums.views.EmployeeView.CATEGORY_
 
 @Log4j
 @RequiredArgsConstructor
-public class CategoryChoiceViewResolver implements UpdateProcessor_LEGACY<Update, Long> {
+public class CategoryChoiceViewResolver_LEGACY implements UpdateProcessor_LEGACY<Update, Long> {
     private final EmployeeRepo employeeRepo;
     private final CategoryRepo categoryRepo;
     private final EmployeeTelegramView telegramView;

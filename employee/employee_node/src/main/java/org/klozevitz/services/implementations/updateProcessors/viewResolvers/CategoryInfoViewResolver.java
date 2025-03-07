@@ -6,7 +6,7 @@ import org.klozevitz.EmployeeTelegramView;
 import org.klozevitz.enitites.menu.Item;
 import org.klozevitz.repositories.appUsers.EmployeeRepo;
 import org.klozevitz.repositories.menu.ItemRepo;
-import org.klozevitz.services.interfaces.updateProcessors.UpdateProcessor_LEGACY;
+import org.klozevitz.services.interfaces.updateProcessors.UpdateProcessor;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -17,7 +17,7 @@ import static org.klozevitz.enitites.appUsers.enums.views.EmployeeView.CATEGORY_
 
 @Log4j
 @RequiredArgsConstructor
-public class CategoryInfoViewResolver implements UpdateProcessor_LEGACY<Update, Long> {
+public class CategoryInfoViewResolver implements UpdateProcessor {
     private final String WRONG_CATEGORY_ID_ERROR_MESSAGE = "<b>Вы перенаправлены на предыдущую страницу. " +
             "Запрашиваемая Вами категория меню не найдена</b>";
     private final String WRONG_COMMAND_ERROR_MESSAGE = "Вы совершили некорректное действие- " +
@@ -26,11 +26,12 @@ public class CategoryInfoViewResolver implements UpdateProcessor_LEGACY<Update, 
     private final EmployeeRepo employeeRepo;
     private final ItemRepo itemRepo;
     private final EmployeeTelegramView telegramView;
-    private final UpdateProcessor_LEGACY<Update, Long> categoryChoiceViewResolver;
+    private final UpdateProcessor categoryInfoChoiceViewResolver;
 
 
     @Override
-    public SendMessage processUpdate(Update update, Long telegramUserId) {
+    public SendMessage processUpdate(Update update) {
+        var telegramUserId = telegramUserId(update);
         var data = update.getCallbackQuery().getData();
         var categoryId = categoryIdFromUpdate(data);
 
@@ -90,7 +91,7 @@ public class CategoryInfoViewResolver implements UpdateProcessor_LEGACY<Update, 
                 data)
         );
 
-        var answer = categoryChoiceViewResolver.processUpdate(update, telegramUserId);
+        var answer = categoryInfoChoiceViewResolver.processUpdate(update);
 
         return telegramView.addServiceMessage(answer, WRONG_CATEGORY_ID_ERROR_MESSAGE);
     }

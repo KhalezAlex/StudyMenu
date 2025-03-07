@@ -22,7 +22,7 @@ public class MainService implements Main {
     private final UpdateProcessor notRegisteredAppUserUpdateProcessor;
 
     private final UpdateProcessor commandUpdateProcessor;
-//    private final UpdateProcessor callbackQueryUpdateProcessor;
+    private final UpdateProcessor callbackQueryUpdateProcessor;
 //    private final UpdateProcessor<Update, AppUser> textUpdateProcessor;
 
 
@@ -77,10 +77,9 @@ public class MainService implements Main {
     private SendMessage registeredCallbackQueryUpdateAnswer(Update update, AppUser currentAppUser) {
         var employee = currentAppUser.getEmployee();
 
-//        return employee == null ?
-//                wrongAppUserRoleUpdateProcessor.processUpdate(update) :
-//                callbackQueryUpdateProcessor.processUpdate(update);
-        return null;
+        return employee == null ?
+                wrongAppUserRoleUpdateProcessor.processUpdate(update) :
+                callbackQueryUpdateProcessor.processUpdate(update);
     }
 
     private Optional<AppUser> findAppUser(Update update) {

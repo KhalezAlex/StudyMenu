@@ -1,4 +1,4 @@
-package org.klozevitz.services.implementations.updateProcessors.commandProcessors;
+package org.klozevitz.services.implementations.updateProcessors;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -17,7 +17,6 @@ public class CommandEmployeeUP implements UpdateProcessor {
     private final Map<EmployeeView, UpdateProcessor> viewDispatcher;
     private final UpdateProcessor notRegisteredAppUserUpdateProcessor;
     private final UpdateProcessor previousViewUpdateProcessor;
-    private final UpdateProcessor nullLastMessageUpdateProcessor;
 
     @Override
     public SendMessage processUpdate(Update update) {
@@ -30,27 +29,14 @@ public class CommandEmployeeUP implements UpdateProcessor {
         }
 
         var currentAppUser = optionalCurrentAppUser.get();
-
-//        if (currentAppUser.getMessages().isEmpty()) {
-//            log.debug("Первое сообщение от пользователя: " + telegramUserId);
-//            return nullLastMessageUpdateProcessor.processUpdate(update);
-//        }
-
         var currentView = currentAppUser.getEmployee().getCurrentView();
         var viewProcessor = viewDispatcher.get(currentView);
 
         if (viewProcessor == null) {
             log.error("Сообщение не попало ни в один из вью-процессоров");
-
             return previousViewUpdateProcessor.processUpdate(update);
         }
 
         return viewProcessor.processUpdate(update);
-    }
-
-    private long telegramUserId(Update update) {
-        return update.hasMessage() ?
-                update.getMessage().getFrom().getId() :
-                update.getCallbackQuery().getFrom().getId();
     }
 }

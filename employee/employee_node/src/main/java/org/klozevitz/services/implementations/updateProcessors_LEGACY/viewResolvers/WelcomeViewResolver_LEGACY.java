@@ -13,7 +13,7 @@ import static org.klozevitz.enitites.appUsers.enums.views.EmployeeView.WELCOME_V
 
 @Log4j
 @RequiredArgsConstructor
-public class WelcomeViewResolver implements UpdateProcessor_LEGACY<Update, Long> {
+public class WelcomeViewResolver_LEGACY implements UpdateProcessor_LEGACY<Update, Long> {
     private final EmployeeRepo employeeRepo;
     private final EmployeeTelegramView telegramView;
 

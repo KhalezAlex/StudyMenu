@@ -10,7 +10,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.util.HashMap;
 import java.util.Map;
 
-@Configuration
 @RequiredArgsConstructor
 public class CommandDispatchersEmployeeConfig_LEGACY {
     private final ApplicationContext appContext;

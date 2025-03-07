@@ -3,17 +3,15 @@ package org.klozevitz.configs._legacy.updateProcessors;
 import lombok.RequiredArgsConstructor;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.enitites.appUsers.enums.views.EmployeeView;
-import org.klozevitz.services.implementations.updateProcessors_LEGACY.callbackQueryUpdateProcessors.CallbackQueryEmployeeUP;
+import org.klozevitz.services.implementations.updateProcessors_LEGACY.callbackQueryUpdateProcessors.CallbackQueryEmployeeUP_LEGACY;
 import org.klozevitz.services.implementations.updateProcessors_LEGACY.callbackQueryUpdateProcessors.byState.BasicStateEmployeeCQUP;
 import org.klozevitz.services.interfaces.updateProcessors.UpdateProcessor_LEGACY;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Map;
 
-@Configuration
 @RequiredArgsConstructor
 public class CallbackQueryUpdateProcessorsEmployeeConfig {
     private final ApplicationContext appContext;
@@ -23,7 +21,7 @@ public class CallbackQueryUpdateProcessorsEmployeeConfig {
 
     @Bean
     public UpdateProcessor_LEGACY<Update, AppUser> callbackQueryUpdateProcessor() {
-        return new CallbackQueryEmployeeUP(
+        return new CallbackQueryEmployeeUP_LEGACY(
                 appContext.getBean("nullableStateUpdateProcessor", UpdateProcessor_LEGACY.class),
                 appContext.getBean("previousViewUpdateProcessor", UpdateProcessor_LEGACY.class),
                 appContext.getBean("stateCallbackQueryDispatcher", Map.class)

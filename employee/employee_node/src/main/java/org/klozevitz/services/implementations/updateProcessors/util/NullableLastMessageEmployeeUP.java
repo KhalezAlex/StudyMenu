@@ -19,10 +19,4 @@ public class NullableLastMessageEmployeeUP implements UpdateProcessor {
         var telegramUserId = telegramUserId(update);
         return null;
     }
-
-    private long telegramUserId(Update update) {
-        return update.hasMessage() ?
-                update.getMessage().getFrom().getId() :
-                update.getCallbackQuery().getFrom().getId();
-    }
 }

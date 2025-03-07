@@ -37,12 +37,6 @@ public class PreviousViewEmployeeUP implements UpdateProcessor {
                 telegramView.addServiceMessage(previousView, PREVIOUS_VIEW_ERROR_MESSAGE);
     }
 
-    private long telegramUserId(Update update) {
-        return update.hasMessage() ?
-                update.getMessage().getFrom().getId() :
-                update.getCallbackQuery().getFrom().getId();
-    }
-
     private SendMessage previousView(AppUser currentAppUser) {
         var messages = new ArrayList<>(currentAppUser.getMessages());
 

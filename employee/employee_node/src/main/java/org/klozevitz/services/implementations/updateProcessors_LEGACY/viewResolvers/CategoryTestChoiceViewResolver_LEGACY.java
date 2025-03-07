@@ -13,11 +13,11 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.klozevitz.enitites.appUsers.enums.views.EmployeeView.CATEGORY_INFO_CHOICE_VIEW;
+import static org.klozevitz.enitites.appUsers.enums.views.EmployeeView.CATEGORY_TEST_CHOICE_VIEW;
 
 @Log4j
 @RequiredArgsConstructor
-public class CategoryChoiceViewResolver implements UpdateProcessor_LEGACY<Update, Long> {
+public class CategoryTestChoiceViewResolver_LEGACY implements UpdateProcessor_LEGACY<Update, Long> {
     private final EmployeeRepo employeeRepo;
     private final CategoryRepo categoryRepo;
     private final EmployeeTelegramView telegramView;
@@ -26,9 +26,9 @@ public class CategoryChoiceViewResolver implements UpdateProcessor_LEGACY<Update
     public SendMessage processUpdate(Update update, Long telegramUserId) {
         var resources = resources(telegramUserId);
 
-        employeeRepo.setEmployeeCurrentView(CATEGORY_INFO_CHOICE_VIEW.name(), telegramUserId);
+        employeeRepo.setEmployeeCurrentView(CATEGORY_TEST_CHOICE_VIEW.name(), telegramUserId);
 
-        return telegramView.categoryInfoChoiceView(update, resources);
+        return telegramView.categoryTestChoiceView(update, resources);
     }
 
     private Map<Long, String> resources(long telegramUserId) {

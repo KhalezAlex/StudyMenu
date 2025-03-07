@@ -6,7 +6,7 @@ import org.klozevitz.EmployeeTelegramView;
 import org.klozevitz.enitites.menu.Category;
 import org.klozevitz.repositories.appUsers.EmployeeRepo;
 import org.klozevitz.repositories.menu.CategoryRepo;
-import org.klozevitz.services.interfaces.updateProcessors.UpdateProcessor_LEGACY;
+import org.klozevitz.services.interfaces.updateProcessors.UpdateProcessor;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -17,13 +17,14 @@ import static org.klozevitz.enitites.appUsers.enums.views.EmployeeView.CATEGORY_
 
 @Log4j
 @RequiredArgsConstructor
-public class CategoryTestChoiceViewResolver implements UpdateProcessor_LEGACY<Update, Long> {
+public class CategoryTestChoiceViewResolver implements UpdateProcessor {
     private final EmployeeRepo employeeRepo;
     private final CategoryRepo categoryRepo;
     private final EmployeeTelegramView telegramView;
 
     @Override
-    public SendMessage processUpdate(Update update, Long telegramUserId) {
+    public SendMessage processUpdate(Update update) {
+        var telegramUserId = telegramUserId(update);
         var resources = resources(telegramUserId);
 
         employeeRepo.setEmployeeCurrentView(CATEGORY_TEST_CHOICE_VIEW.name(), telegramUserId);

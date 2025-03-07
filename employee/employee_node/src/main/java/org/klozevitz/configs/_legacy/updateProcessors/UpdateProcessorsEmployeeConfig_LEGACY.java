@@ -19,7 +19,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-@Configuration
 @RequiredArgsConstructor
 public class UpdateProcessorsEmployeeConfig_LEGACY {
     private final ApplicationContext appContext;
@@ -27,17 +26,17 @@ public class UpdateProcessorsEmployeeConfig_LEGACY {
     private final EmployeeRepo employeeRepo;
     private final AnswerProducer answerProducer;
 
-    @Bean
-    public Main main() {
-        return new MainService(
-                appUserRepo,
-                answerProducer,
-                wrongAppUserRoleUpdateProcessor(),
-                notRegisteredAppUserUpdateProcessor(),
-                appContext.getBean("commandUpdateProcessor", UpdateProcessor_LEGACY.class),
-                appContext.getBean("callbackQueryUpdateProcessor", UpdateProcessor_LEGACY.class)
-        );
-    }
+//    @Bean
+//    public Main main() {
+//        return new MainService(
+//                appUserRepo,
+//                answerProducer,
+//                wrongAppUserRoleUpdateProcessor(),
+//                notRegisteredAppUserUpdateProcessor(),
+//                appContext.getBean("commandUpdateProcessor", UpdateProcessor_LEGACY.class)
+//                appContext.getBean("callbackQueryUpdateProcessor", UpdateProcessor_LEGACY.class)
+//        );
+//    }
 
     /**
      * UtilUpdateProcessors
