@@ -57,7 +57,7 @@ public class CQUP_EmployeeConfig {
                 appUserRepo,
                 appContext.getBean("previousViewUpdateProcessor", UpdateProcessor.class),
                 appContext.getBean("welcomeViewResolver", UpdateProcessor.class),
-                appContext.getBean("categoryInfoChoiceViewCallbackQueryUpdateProcessor", UpdateProcessor.class)
+                appContext.getBean("categoryInfoChoiceViewResolver", UpdateProcessor.class)
         );
     }
 
