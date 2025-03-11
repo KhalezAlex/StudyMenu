@@ -3,7 +3,6 @@ package org.klozevitz.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.klozevitz.enitites.appUsers.MessageSent;
-import org.klozevitz.enitites.appUsers.enums.views.EmployeeView;
 import org.klozevitz.interfaces.ViewManager;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.repositories.appUsers.MessageSentRepo;
@@ -11,10 +10,7 @@ import org.klozevitz.telegram_component.EmployeeTelegramBot;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
@@ -45,7 +41,6 @@ public class EmployeeViewManager implements ViewManager {
                         .answer(answer)
                         .messageId(sentMessageId)
                         .appUser(currentAppUser)
-//                        .forDeletion(willBeDeleted(answer))
                         .build()
         );
         appUserRepo.save(optionalCurrentAppUser.get());
@@ -66,21 +61,13 @@ public class EmployeeViewManager implements ViewManager {
 
         if (persistentAppUser.get().getEmployee().getCurrentView().equals(CATEGORY_INFO_VIEW)) {
             var messageId = messages.get(0).getMessageId() - 1;
-            delete(telegramUserId, messageId);
 
-            // логика удаления ПЕРВОГО сообщения, если есть кнопка "назад" в ПОСЛЕДНЕМ СООБЩЕНИИ
-            var lastMessage = messages.get(messages.size() - 1);
-            var keyboardMarkup = (InlineKeyboardMarkup) lastMessage.getAnswer().getReplyMarkup();
-            if (keyboardMarkup != null) {
-                if (keyboardMarkup.getKeyboard().get(0).get(0).getText().equals("НАЗАД")) {
-                    messageId = messages.get(0).getMessageId();
-                    delete(telegramUserId, messageId);
-                }
-            }
+            delete(telegramUserId, messageId);
+            deleteTriggeredMessageIfLastMessageSent(telegramUserId, messages);
             return;
         }
 
-        int persistentMessageTgMessageId = -1;
+        int persistentMessageTgMessageId;
 
         MessageSent persistentMessage;
         while (!(messages.size() == 1)) {
@@ -93,6 +80,18 @@ public class EmployeeViewManager implements ViewManager {
 
         persistentMessage = messages.get(0);
         delete(telegramUserId, persistentMessage.getMessageId() - 1);
+    }
+
+    private void deleteTriggeredMessageIfLastMessageSent(long telegramUserId, ArrayList<MessageSent> messages) {
+        int messageId;
+        var lastMessage = messages.get(messages.size() - 1);
+        var keyboardMarkup = (InlineKeyboardMarkup) lastMessage.getAnswer().getReplyMarkup();
+        if (keyboardMarkup != null) {
+            if (keyboardMarkup.getKeyboard().get(0).get(0).getText().equals("НАЗАД")) {
+                messageId = messages.get(0).getMessageId();
+                delete(telegramUserId, messageId);
+            }
+        }
     }
 
     private void delete(long telegramUserId, int messageId) {
@@ -114,15 +113,4 @@ public class EmployeeViewManager implements ViewManager {
     private long telegramUserId(SendMessage sendMessage) {
         return Long.parseLong(sendMessage.getChatId());
     }
-
-//    private boolean willBeDeleted(SendMessage answer) {
-//        var telegramUserId = telegramUserId(answer);
-//        var currentAppUser = appUserRepo.findByTelegramUserId(telegramUserId);
-//
-//        return !currentAppUser
-//                .get()
-//                .getEmployee()
-//                .getCurrentView()
-//                .equals(CATEGORY_INFO_VIEW);
-//    }
 }
