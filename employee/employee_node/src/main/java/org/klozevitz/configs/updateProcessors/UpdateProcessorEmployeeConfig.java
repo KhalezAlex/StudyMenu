@@ -32,7 +32,8 @@ public class UpdateProcessorEmployeeConfig {
                 appContext.getBean("wrongAppUserRoleUpdateProcessor", UpdateProcessor.class),
                 appContext.getBean("notRegisteredAppUserUpdateProcessor", UpdateProcessor.class),
                 appContext.getBean("commandEmployeeUpdateProcessor", UpdateProcessor.class),
-                appContext.getBean("callbackQueryEmployeeUpdateProcessor", UpdateProcessor.class)
+                appContext.getBean("callbackQueryEmployeeUpdateProcessor", UpdateProcessor.class),
+                appContext.getBean("textEmployeeUpdateProcessor", UpdateProcessor.class)
         );
     }
 
