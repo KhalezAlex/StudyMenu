@@ -28,14 +28,5 @@ public interface MessageSentRepo extends JpaRepository<MessageSent, Long> {
     )
     void deleteMessageById(long messageId);
 
-    @Modifying
-    @Transactional
-    @Query(
-            value = "UPDATE message_sent_t SET for_deletion = true " +
-                    "WHERE message_id = ?1",
-            nativeQuery = true
-    )
-    void setMessageForDeletion(int messageId);
-
     MessageSent findByMessageId(int messageId);
 }
