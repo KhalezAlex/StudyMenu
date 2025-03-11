@@ -26,5 +26,4 @@ public class MessageSent extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "app_user_id")
     private AppUser appUser;
-    private boolean forDeletion;
 }
