@@ -21,10 +21,9 @@ public class MainService implements Main {
     private final AnswerProducer answerProducer;
     private final UpdateProcessor wrongAppUserRoleUpdateProcessor;
     private final UpdateProcessor notRegisteredAppUserUpdateProcessor;
-
     private final UpdateProcessor commandUpdateProcessor;
     private final UpdateProcessor callbackQueryUpdateProcessor;
-//    private final UpdateProcessor<Update, AppUser> textUpdateProcessor;
+    private final UpdateProcessor textUpdateProcessor;
 
 
 
@@ -39,12 +38,11 @@ public class MainService implements Main {
     }
 
     private ArrayList<SendMessage> registeredTextUpdateAnswer(Update update, AppUser currentAppUser) {
-//        var employee = currentAppUser.getEmployee();
-//
-//        return employee == null ?
-//                wrongAppUserRoleUpdateProcessor.processUpdate(update, null) :
-//                textUpdateProcessor.processUpdate(update, currentAppUser);
-        return null;
+        var employee = currentAppUser.getEmployee();
+
+        return employee == null ?
+                wrongAppUserRoleUpdateProcessor.processUpdate(update) :
+                textUpdateProcessor.processUpdate(update);
     }
 
     @Override
