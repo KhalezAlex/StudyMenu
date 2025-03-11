@@ -1,15 +1,12 @@
 package org.klozevitz.configs.updateProcessors;
 
 import lombok.RequiredArgsConstructor;
-import org.klozevitz.EmployeeTelegramView;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.services.implementations.updateProcessors.command.CommandEmployeeUP;
 import org.klozevitz.services.interfaces.updateProcessors.UpdateProcessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.Map;
 
 @Configuration
 @RequiredArgsConstructor

@@ -8,6 +8,7 @@ import org.klozevitz.services.interfaces.updateProcessors.UpdateProcessor;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 @Log4j
@@ -19,7 +20,7 @@ public class CallbackQueryEmployeeUP implements UpdateProcessor {
     private final UpdateProcessor previousViewUpdateProcessor;
 
     @Override
-    public SendMessage processUpdate(Update update) {
+    public ArrayList<SendMessage> processUpdate(Update update) {
         var telegramUserId = telegramUserId(update);
         var optionalCurrentAppUser = appUserRepo.findByTelegramUserId(telegramUserId);
 

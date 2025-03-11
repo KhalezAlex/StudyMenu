@@ -24,19 +24,28 @@ public class PreviousViewEmployeeUP implements UpdateProcessor {
     private final EmployeeTelegramView telegramView;
 
     @Override
-    public SendMessage processUpdate(Update update) {
+    public ArrayList<SendMessage> processUpdate(Update update) {
         var tgUserId = telegramUserId(update);
         var currentAppUser = appUserRepo.findByTelegramUserId(tgUserId);
+        ArrayList<SendMessage> answer = new ArrayList<>();
 
         if (currentAppUser.isEmpty()) {
-            return telegramView.notRegisteredErrorView(update);
+            answer.add(
+                    telegramView.notRegisteredErrorView(update)
+            );
+
+            return answer;
         }
 
         var previousView = previousView(update);
 
-        return previousView.getText().contains(PREVIOUS_VIEW_ERROR_MESSAGE) ?
+        previousView = previousView.getText().contains(PREVIOUS_VIEW_ERROR_MESSAGE) ?
                 previousView :
                 telegramView.addServiceMessage(previousView, PREVIOUS_VIEW_ERROR_MESSAGE);
+
+        answer.add(previousView);
+
+        return answer;
     }
 
     // TODO: возможно, придется передавать полный список, чтобы не бесить людей
@@ -50,14 +59,12 @@ public class PreviousViewEmployeeUP implements UpdateProcessor {
         if (messages.isEmpty()) {
             currentAppUser.getEmployee().setCurrentView(WELCOME_VIEW);
             appUserRepo.save(currentAppUser);
-
             return telegramView.previousView(update, currentView);
         }
 
         messages.sort(Comparator.comparingInt(MessageSent::getMessageId));
 
         var message = messages.get(messages.size() - 1);
-
         return message.getAnswer();
     }
 }

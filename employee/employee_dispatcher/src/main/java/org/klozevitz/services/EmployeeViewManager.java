@@ -13,6 +13,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
@@ -43,7 +45,7 @@ public class EmployeeViewManager implements ViewManager {
                         .answer(answer)
                         .messageId(sentMessageId)
                         .appUser(currentAppUser)
-                        .forDeletion(willBeDeleted(answer))
+//                        .forDeletion(willBeDeleted(answer))
                         .build()
         );
         appUserRepo.save(optionalCurrentAppUser.get());
@@ -51,35 +53,49 @@ public class EmployeeViewManager implements ViewManager {
 
     @Override
     public void flushHistory(long telegramUserId) {
+        var persistentAppUser = appUserRepo.findByTelegramUserId(telegramUserId);
+
         var persistentMessages = appUserRepo
                 .findByTelegramUserId(telegramUserId)
                 .get()
                 .getMessages();
+
         ArrayList<MessageSent> messages = new ArrayList<>(persistentMessages);
 
         messages.sort(Comparator.comparingInt(MessageSent::getMessageId));
 
+        if (persistentAppUser.get().getEmployee().getCurrentView().equals(CATEGORY_INFO_VIEW)) {
+            var messageId = messages.get(0).getMessageId() - 1;
+            delete(telegramUserId, messageId);
+
+            // логика удаления ПЕРВОГО сообщения, если есть кнопка "назад" в ПОСЛЕДНЕМ СООБЩЕНИИ
+            var lastMessage = messages.get(messages.size() - 1);
+            var keyboardMarkup = (InlineKeyboardMarkup) lastMessage.getAnswer().getReplyMarkup();
+            if (keyboardMarkup != null) {
+                if (keyboardMarkup.getKeyboard().get(0).get(0).getText().equals("НАЗАД")) {
+                    messageId = messages.get(0).getMessageId();
+                    delete(telegramUserId, messageId);
+                }
+            }
+            return;
+        }
+
         int persistentMessageTgMessageId = -1;
+
+        MessageSent persistentMessage;
         while (!(messages.size() == 1)) {
-            var persistentMessage = messages.get(0);
+            persistentMessage = messages.get(0);
             persistentMessageTgMessageId = persistentMessage.getMessageId();
             delete(telegramUserId, persistentMessageTgMessageId);
             messageSentRepo.deleteMessageById(persistentMessage.getId());
             messages.remove(0);
         }
-        delete(telegramUserId, persistentMessageTgMessageId - 1);
+
+        persistentMessage = messages.get(0);
+        delete(telegramUserId, persistentMessage.getMessageId() - 1);
     }
 
     private void delete(long telegramUserId, int messageId) {
-        var messageSent = messageSentRepo.findByMessageId(messageId);
-
-        if (messageSent != null) { // null- про сообщение от пользователя- оно в базе данных не сохраняется
-            if (!messageSent.isForDeletion()) {
-                messageSentRepo.setMessageForDeletion(messageId);
-                return;
-            }
-        }
-
         var deleteMessage = deleteMessage(telegramUserId, messageId);
         try {
             bot.execute(deleteMessage);
@@ -99,14 +115,14 @@ public class EmployeeViewManager implements ViewManager {
         return Long.parseLong(sendMessage.getChatId());
     }
 
-    private boolean willBeDeleted(SendMessage answer) {
-        var telegramUserId = telegramUserId(answer);
-        var currentAppUser = appUserRepo.findByTelegramUserId(telegramUserId);
-
-        return !currentAppUser
-                .get()
-                .getEmployee()
-                .getCurrentView()
-                .equals(CATEGORY_INFO_VIEW);
-    }
+//    private boolean willBeDeleted(SendMessage answer) {
+//        var telegramUserId = telegramUserId(answer);
+//        var currentAppUser = appUserRepo.findByTelegramUserId(telegramUserId);
+//
+//        return !currentAppUser
+//                .get()
+//                .getEmployee()
+//                .getCurrentView()
+//                .equals(CATEGORY_INFO_VIEW);
+//    }
 }

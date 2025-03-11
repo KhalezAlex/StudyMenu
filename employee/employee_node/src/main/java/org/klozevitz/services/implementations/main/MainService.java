@@ -11,6 +11,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Log4j
@@ -37,7 +38,7 @@ public class MainService implements Main {
         sendAnswer(answer);
     }
 
-    private SendMessage registeredTextUpdateAnswer(Update update, AppUser currentAppUser) {
+    private ArrayList<SendMessage> registeredTextUpdateAnswer(Update update, AppUser currentAppUser) {
 //        var employee = currentAppUser.getEmployee();
 //
 //        return employee == null ?
@@ -56,7 +57,7 @@ public class MainService implements Main {
         sendAnswer(answer);
     }
 
-    private SendMessage registeredCommandUpdateAnswer(Update update, AppUser currentAppUser) {
+    private ArrayList<SendMessage> registeredCommandUpdateAnswer(Update update, AppUser currentAppUser) {
         var employee = currentAppUser.getEmployee();
 
         return employee == null ?
@@ -74,7 +75,7 @@ public class MainService implements Main {
         sendAnswer(answer);
     }
 
-    private SendMessage registeredCallbackQueryUpdateAnswer(Update update, AppUser currentAppUser) {
+    private ArrayList<SendMessage> registeredCallbackQueryUpdateAnswer(Update update, AppUser currentAppUser) {
         var employee = currentAppUser.getEmployee();
 
         return employee == null ?
@@ -103,7 +104,7 @@ public class MainService implements Main {
                 update.getCallbackQuery().getFrom();
     }
 
-    private void sendAnswer(SendMessage answer) {
-        answerProducer.produceAnswer(answer);
+    private void sendAnswer(ArrayList<SendMessage> answer) {
+        answer.forEach(answerProducer::produceAnswer);
     }
 }

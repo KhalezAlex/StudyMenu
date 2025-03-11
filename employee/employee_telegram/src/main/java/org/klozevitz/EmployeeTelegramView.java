@@ -228,13 +228,16 @@ public class EmployeeTelegramView {
      * EmployeeView.CATEGORY_INFO_VIEW
      */
 
-    public SendMessage categoryInfoView(Update update, String message) {
+    public SendMessage categoryInfoView(Update update, String message, boolean isLastMessage) {
         var answer = messageUtil.blankAnswer(update);
-        var categoryInfoViewKeyboardMarkup = categoryInfoViewKeyboardMarkup();
 
         answer.setText(message);
-        answer.setReplyMarkup(categoryInfoViewKeyboardMarkup);
         answer.enableHtml(true);
+
+        if (isLastMessage) {
+            var categoryInfoViewKeyboardMarkup = categoryInfoViewKeyboardMarkup();
+            answer.setReplyMarkup(categoryInfoViewKeyboardMarkup);
+        }
 
         return answer;
     }

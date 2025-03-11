@@ -8,6 +8,8 @@ import org.klozevitz.services.interfaces.updateProcessors.UpdateProcessor;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.util.ArrayList;
+
 import static org.klozevitz.enitites.appUsers.enums.views.EmployeeView.NULL_STATE_ERROR_VIEW;
 
 @Log4j
@@ -17,11 +19,16 @@ public class NullableStateEmployeeUP implements UpdateProcessor {
     private final EmployeeTelegramView telegramView;
 
     @Override
-    public SendMessage processUpdate(Update update) {
+    public ArrayList<SendMessage> processUpdate(Update update) {
         var telegramUserId = telegramUserId(update);
+        ArrayList<SendMessage> answer = new ArrayList<>();
 
         employeeRepo.setEmployeeCurrentView(NULL_STATE_ERROR_VIEW.name(), telegramUserId);
 
-        return telegramView.nullStateErrorView(update);
+        answer.add(
+                telegramView.nullStateErrorView(update)
+        );
+
+        return answer;
     }
 }

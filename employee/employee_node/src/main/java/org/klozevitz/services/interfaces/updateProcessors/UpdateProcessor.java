@@ -3,8 +3,11 @@ package org.klozevitz.services.interfaces.updateProcessors;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public interface UpdateProcessor {
-    SendMessage processUpdate(Update update);
+    ArrayList<SendMessage> processUpdate(Update update);
 
     default long telegramUserId(Update update) {
         return update.hasMessage() ?

@@ -27,13 +27,18 @@ public class CategoryIngoViewResolver_ALT implements UpdateProcessor {
     private final UpdateProcessor categoryInfoChoiceViewResolver;
 
     @Override
-    public SendMessage processUpdate(Update update) {
+    public ArrayList<SendMessage> processUpdate(Update update) {
         var telegramUserId = telegramUserId(update);
         var callBackData = command(update);
         var categoryId = categoryIdFromUpdate(callBackData);
+        ArrayList<SendMessage> answer = new ArrayList<>();
 
         if (categoryId == -1) {
-            return wrongCategoryIdView(update);
+            answer.add(
+                    wrongCategoryIdView(update)
+            );
+
+            return answer;
         }
 
         employeeRepo.setEmployeeCurrentView(CATEGORY_INFO_VIEW.name(), telegramUserId);
@@ -79,6 +84,6 @@ public class CategoryIngoViewResolver_ALT implements UpdateProcessor {
 
         var answer = categoryInfoChoiceViewResolver.processUpdate(update);
 
-        return telegramView.addServiceMessage(answer, WRONG_CATEGORY_ID_ERROR_MESSAGE);
+        return telegramView.addServiceMessage(answer.get(0), WRONG_CATEGORY_ID_ERROR_MESSAGE);
     }
 }

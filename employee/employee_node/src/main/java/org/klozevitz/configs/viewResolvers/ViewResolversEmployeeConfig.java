@@ -24,7 +24,9 @@ public class ViewResolversEmployeeConfig {
     private final EmployeeRepo employeeRepo;
     private final CategoryRepo categoryRepo;
     private final ItemRepo itemRepo;
-    private MessageUtil messageUtil() {
+
+    @Bean(name = "messageUtil")
+    public MessageUtil messageUtil() {
         return new MessageUtil();
     }
 

@@ -10,6 +10,7 @@ import org.klozevitz.services.interfaces.updateProcessors.UpdateProcessor;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -23,13 +24,17 @@ public class CategoryTestChoiceViewResolver implements UpdateProcessor {
     private final EmployeeTelegramView telegramView;
 
     @Override
-    public SendMessage processUpdate(Update update) {
+    public ArrayList<SendMessage> processUpdate(Update update) {
         var telegramUserId = telegramUserId(update);
         var resources = resources(telegramUserId);
+        ArrayList<SendMessage> answer = new ArrayList<>();
 
         employeeRepo.setEmployeeCurrentView(CATEGORY_TEST_CHOICE_VIEW.name(), telegramUserId);
+        answer.add(
+                telegramView.categoryTestChoiceView(update, resources)
+        );
 
-        return telegramView.categoryTestChoiceView(update, resources);
+        return answer;
     }
 
     private Map<Long, String> resources(long telegramUserId) {
