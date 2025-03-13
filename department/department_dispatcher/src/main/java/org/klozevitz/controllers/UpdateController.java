@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.klozevitz.DepartmentDispatcherApp;
 import org.klozevitz.interfaces.UpdateProducer;
+import org.klozevitz.interfaces.ViewManager;
 import org.klozevitz.telegram.TelegramBotComponent;
 import org.klozevitz.telegram_component.DepartmentTelegramBot;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,7 @@ import static org.klozevitz.RabbitQueue.*;
 @RequiredArgsConstructor
 public class UpdateController {
     private final UpdateProducer updateProducer;
+    private final ViewManager viewManager;
     private DepartmentTelegramBot bot;
 
     public void registerBot(DepartmentTelegramBot bot) {
@@ -69,6 +71,11 @@ public class UpdateController {
     }
 
     public void setView(SendMessage sendMessage) {
-        bot.sendAnswerMessage(sendMessage);
+        var message = bot.sendAnswerMessage(sendMessage);
+
+        viewManager.saveMessageId(sendMessage, message.getMessageId());
+
+        var telegramUserId = Long.parseLong(sendMessage.getChatId());
+        viewManager.flushHistory(telegramUserId);
     }
 }
