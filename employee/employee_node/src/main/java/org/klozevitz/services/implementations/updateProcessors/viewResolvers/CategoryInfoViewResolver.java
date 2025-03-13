@@ -27,6 +27,7 @@ public class CategoryInfoViewResolver implements UpdateProcessor {
     private final EmployeeTelegramView telegramView;
     private final UpdateProcessor categoryInfoChoiceViewResolver;
 
+
     @Override
     public ArrayList<SendMessage> processUpdate(Update update) {
         String recipe;
@@ -115,40 +116,4 @@ public class CategoryInfoViewResolver implements UpdateProcessor {
             return -1L;
         }
     }
-
-    /**
-     * На удаление
-     * */
-
-//    private String categoryInfoMessage(List<Item> items) {
-//        var sb = new StringBuilder();
-//
-//        items.forEach(item -> {
-//            var recipe = recipeFromBaseEntity(item);
-//
-//            sb
-//                    .append(recipe)
-//                    .append("\n\n");
-//        });
-//
-//        var maxCharCount = new AtomicInteger(0);
-//        var strings = List.of(sb.toString().split("\n"));
-//
-//        strings.forEach(string -> {
-//            if (string.length() > maxCharCount.get()) {
-//                maxCharCount.set(string.length());
-//            }
-//        });
-//
-//        var line = "\n\n" + String
-//                .valueOf('=')
-//                .repeat((int) (maxCharCount.get() * 0.7)) + "\n\n";
-//        var result = sb
-//                .toString()
-//                .replace("\n\n", line)
-//                .replace("</b>", "</b>\n");
-//
-//        return line + result;
-//    }
-
 }

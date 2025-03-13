@@ -43,7 +43,7 @@ public class EmployeeViewManager implements ViewManager {
                         .appUser(currentAppUser)
                         .build()
         );
-        appUserRepo.save(optionalCurrentAppUser.get());
+        appUserRepo.save(currentAppUser);
     }
 
     @Override
