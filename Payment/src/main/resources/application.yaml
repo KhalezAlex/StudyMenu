@@ -1,0 +1,8 @@
+server:
+  port:
+
+bot:
+  token: "7909172386:AAH5ScE_yKJzvFA_9NiqiNdgWmnVmB8oPsA"
+
+provider:
+  token: "381764678:TEST:111585"

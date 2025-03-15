@@ -18,6 +18,7 @@
         <module>commons_rabbitMQ</module>
         <module>commons_node</module>
         <module>commons_telegram</module>
+        <module>commons_payment</module>
     </modules>
 
     <properties>

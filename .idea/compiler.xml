@@ -20,11 +20,13 @@
         <module name="node" />
         <module name="mail_service" />
         <module name="commons_JPA" />
+        <module name="Payment" />
         <module name="commons_rabbitMQ" />
         <module name="util" />
         <module name="activation_rest_service" />
         <module name="commons_node" />
         <module name="department" />
+        <module name="commons_payment" />
         <module name="dispatcher" />
       </profile>
     </annotationProcessing>
@@ -34,12 +36,14 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Payment" options="-parameters" />
       <module name="activation_rest_service" options="-parameters" />
       <module name="common_utils" options="-parameters" />
       <module name="commons" options="-parameters" />
       <module name="commons_JPA" options="-parameters" />
       <module name="commons_dispatcher" options="-parameters" />
       <module name="commons_node" options="-parameters" />
+      <module name="commons_payment" options="-parameters" />
       <module name="commons_rabbitMQ" options="-parameters" />
       <module name="commons_telegram" options="-parameters" />
       <module name="company" options="-parameters" />
