@@ -10,7 +10,6 @@ import org.klozevitz.services.implementations.updateProcessors.viewResolvers.Cat
 import org.klozevitz.services.implementations.updateProcessors.viewResolvers.CategoryInfoViewResolver;
 import org.klozevitz.services.implementations.updateProcessors.viewResolvers.CategoryTestChoiceViewResolver;
 import org.klozevitz.services.implementations.updateProcessors.viewResolvers.WelcomeViewResolver;
-import org.klozevitz.services.interfaces.main.AnswerProducer;
 import org.klozevitz.services.interfaces.updateProcessors.UpdateProcessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +19,6 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class ViewResolversEmployeeConfig {
     private final ApplicationContext appContext;
-    private final AnswerProducer answerProducer;
     private final EmployeeRepo employeeRepo;
     private final CategoryRepo categoryRepo;
     private final ItemRepo itemRepo;

@@ -16,8 +16,8 @@
         <module name="department_dispatcher" />
         <module name="commons_utils" />
         <module name="department_telegram" />
-        <module name="department_node" />
         <module name="employee_dispatcher" />
+        <module name="department_node" />
         <module name="node" />
         <module name="mail_service" />
         <module name="commons_JPA" />

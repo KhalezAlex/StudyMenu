@@ -36,13 +36,6 @@ public class DepartmentTelegramView {
             "(требуется запросить у пользователя числовой идентификатор telegram user id - " +
             "он это может сделать в официальном боте @getmyid_bot) \n\n" +
             "В последствии, если будет введен неправильный id, пользователя можно будет легко удалить.";
-    private final String EMPLOYEE_REGISTRATION_NOTIFICATION_MESSAGE = "<b>Телеграм-id \"%s\", " +
-            "нового сотрудника зарегистрирован. " +
-            "Вы можете отредактировать/удалить его в меню менеджмента персонала.</b>";
-    private final String INVALID_DEPARTMENT_TG_ID_ERROR_MESSAGE = "Введенная строка не является " +
-            "корректным telegramUserId";
-    private final String ALREADY_REGISTERED_TG_ID_ERROR_MESSAGE = "<b>Введенный Телеграм-id уже " +
-            "зарегистрирован в системе</b>";
     private final String RESOURCES_MANAGEMENT_VIEW_MESSAGE = "На этой странице Вы можете управлять " +
             "Вашими методическими материалами. Как только Вы добавите первый, он появится в списке.";
     private final String RESOURCE_REQUEST_VIEW_MESSAGE = "Ожидание excel-документа формата, представленного ниже \n\n" +
@@ -142,13 +135,13 @@ public class DepartmentTelegramView {
         var keyboard = new InlineKeyboardMarkup();
         var keyboardRows = List.of(
                 List.of(
-                    button("УПРАВЛЕНИЕ ПЕРСОНАЛОМ", "/employee_management")
+                    button("УПРАВЛЕНИЕ ПЕРСОНАЛОМ", "/employee_management_view")
                 ),
                 List.of(
-                    button("УПРАВЛЕНИЕ МАТЕРИАЛАМИ", "/resources_management")
+                    button("УПРАВЛЕНИЕ МАТЕРИАЛАМИ", "/resources_management_view")
                 ),
                 List.of(
-                    button("УПРАВЛЕНИЕ ПРОФИЛЕМ", "/profile_management")
+                    button("УПРАВЛЕНИЕ ПРОФИЛЕМ", "/profile_management_view")
                 )
         );
 
@@ -186,7 +179,7 @@ public class DepartmentTelegramView {
     private InlineKeyboardMarkup employeesManagementViewKeyboardMarkUp(Set<Employee> employees) {
         var keyboardMarkUp = new InlineKeyboardMarkup();
         var addEmployeeRow = List.of(
-                button("ДОБАВИТЬ СОТРУДНИКА", "/add_employee"),
+                button("ДОБАВИТЬ СОТРУДНИКА", "/employee_tg_id_request_view"),
                 button("Выход", "/start")
         );
 
@@ -241,45 +234,27 @@ public class DepartmentTelegramView {
         return answer;
     }
 
-    /**
-     * Вью уведомляет об успешной регистрации сотрудника
-     * СВОЕГО ВЬЮ в DepartmentView нет
-     * Возвращает меню управления департаментами
-     * DepartmentView.EMPLOYEES_MANAGEMENT_VIEW
-     * */
-    public SendMessage newEmployeeRegistrationNotificationView(Update update, AppUser currentAppUser) {
-        var answer = employeesManagementView(update, currentAppUser);
-        var serviceMessage = String.format(
-                EMPLOYEE_REGISTRATION_NOTIFICATION_MESSAGE,
-                update.getMessage().getText()
-        );
 
-        return messageUtil.addServiceMessage(answer, serviceMessage);
+    public SendMessage employeeRegistrationResultView(Update update, String message) {
+        var answer = messageUtil.blankAnswer(update);
+        var keyboardMarkup = new InlineKeyboardMarkup();
+        var keyboard = employeeTgIdResultViewKeyboardMarkup();
+
+        answer.setText(message);
+        keyboardMarkup.setKeyboard(keyboard);
+        answer.setReplyMarkup(keyboardMarkup);
+        answer.enableHtml(true);
+
+        return answer;
     }
 
-    /**
-     * Вью уведомляет о неверно введенном telegramUserId при регистрации сотрудника
-     * СВОЕГО ВЬЮ в DepartmentView нет
-     * Возвращает меню запроса telegramUserId
-     * DepartmentView.EMPLOYEE_TELEGRAM_USER_ID_REQUEST_VIEW
-     * */
-    public SendMessage invalidEmployeeTgIdErrorView(Update update) {
-        var answer = employeeTgIdRequestView(update);
-
-        return messageUtil.addServiceMessage(answer, INVALID_DEPARTMENT_TG_ID_ERROR_MESSAGE);
+    private List<List<InlineKeyboardButton>> employeeTgIdResultViewKeyboardMarkup() {
+        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
+        var homepageRow = homepageKeyboardRow();
+        keyboard.add(homepageRow);
+        return keyboard;
     }
 
-    /**
-     * Вью уведомляет о том, что введенный при регистрации сотрудника telegramUserId уже есть в системе
-     * СВОЕГО ВЬЮ в DepartmentView нет
-     * Возвращает меню управления персоналом
-     * DepartmentView.EMPLOYEES_MANAGEMENT_VIEW
-     * */
-    public SendMessage alreadyRegisteredTelegramUserIdErrorView(Update update, AppUser currentAppUser) {
-        var answer = employeesManagementView(update, currentAppUser);
-
-        return messageUtil.addServiceMessage(answer, ALREADY_REGISTERED_TG_ID_ERROR_MESSAGE);
-    }
 
     /**
      * Вью управления меню
@@ -392,5 +367,9 @@ public class DepartmentTelegramView {
         return List.of(
                 button("Главная страница", "/start")
         );
+    }
+
+    public SendMessage addServiceMessage(SendMessage sendMessage, String serviceMessage) {
+        return messageUtil.addServiceMessage(sendMessage, serviceMessage);
     }
 }
