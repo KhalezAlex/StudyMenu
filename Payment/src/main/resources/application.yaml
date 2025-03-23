@@ -1,5 +1,4 @@
-server:
-  port:
+debug: true
 
 bot:
   token: "7909172386:AAH5ScE_yKJzvFA_9NiqiNdgWmnVmB8oPsA"

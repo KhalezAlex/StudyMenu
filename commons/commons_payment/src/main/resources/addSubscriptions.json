@@ -2,21 +2,21 @@
   "addSubscriptions": [
     {
       "id": "id_1",
-      "name": "IPhone 12",
-      "price": 0,
-      "description": "128GB Black"
+      "name": "+10",
+      "price": 2000,
+      "description": "Расширяет количество сотрудников на 10 пользователей"
     },
     {
       "id": "id_2",
-      "name": "IPhone 11",
-      "price": 0,
-      "description": "64GB Black"
+      "name": "+20",
+      "price": 3000,
+      "description": "Расширяет количество сотрудников на 20 пользователей"
     },
     {
       "id": "id_3",
-      "name": "IPhone 13",
-      "price": 1299.99,
-      "description": "256GB Blue"
+      "name": "+30",
+      "price": 4000,
+      "description": "Расширяет количество сотрудников на 30 пользователей"
     }
   ]
 }

@@ -11,6 +11,7 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.LabeledPrice;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.request.*;
+import lombok.Builder;
 import lombok.extern.log4j.Log4j;
 import org.klozevitz.service.OrderService;
 import org.klozevitz.service.SubscriptionService;
@@ -53,7 +54,7 @@ public class TelegramBotApplication extends TelegramBot {
             if (message.successfulPayment() != null) {
                 Optional.ofNullable(message.successfulPayment())
                         .ifPresent(payment -> servePayment(payment, message.chat().id()));
-                log.info("SuccessfulPayment: " + update.message().successfulPayment() + " | id: " + update.chatMember().from().id());
+                log.info("SuccessfulPayment: " + update.message().successfulPayment() + " | id: " + update.message().from().id());
             }
         }
         else if (update.preCheckoutQuery() != null) {
@@ -84,7 +85,7 @@ public class TelegramBotApplication extends TelegramBot {
                 subscriptionService.baseSubscription()
                         .forEach(subscription -> {
                             SendInvoice sendInvoice = new SendInvoice(chatId, subscription.getName(), subscription.getDescription(),
-                                    "my_payload", providerToken, "my_start_param", "RUB",
+                                    subscription.getId(), providerToken, "my_start_param", "RUB",
                                     new LabeledPrice("Price", subscription.getPrice().multiply(BigDecimal.valueOf(100L)).intValue()))
                                     .replyMarkup(new InlineKeyboardMarkup(new InlineKeyboardButton("Оплатить").pay()));
                             execute(sendInvoice);
@@ -95,7 +96,7 @@ public class TelegramBotApplication extends TelegramBot {
                 subscriptionService.additionalSubscription()
                         .forEach(subscription -> {
                             SendInvoice sendInvoice = new SendInvoice(chatId, subscription.getName(), subscription.getDescription(),
-                                    "my_payload", providerToken, "my_start_param", "RUB",
+                                    subscription.getId(), providerToken, "my_start_param", "RUB",
                                     new LabeledPrice("Price", subscription.getPrice().multiply(BigDecimal.valueOf(100L)).intValue()))
                                     .replyMarkup(new InlineKeyboardMarkup(new InlineKeyboardButton("Оплатить").pay()));
                             execute(sendInvoice);

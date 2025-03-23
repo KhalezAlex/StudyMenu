@@ -50,7 +50,7 @@ public class OrderService {
                         .purchaseDate(Instant.now())
                         .build())
                 .ifPresent(purchase -> {
-                    String orderPath = String.format("orders/%s.json", purchase.getId());
+                    String orderPath = String.format("orders_additional/%s.json", purchase.getId());
                     createPurchaseFile(orderPath, purchase);
                 });
     }
