@@ -19,6 +19,7 @@ public class ResourcesManagementViewDepartmentCQUP extends CommandParserUpdatePr
     private final UpdateProcessor previousViewUpdateProcessor;
     private final UpdateProcessor welcomeViewResolver;
     private final UpdateProcessor notRegisteredAppUserUpdateProcessor;
+    private final UpdateProcessor resourceRequestViewResolver;
 
     @Override
     public ArrayList<SendMessage> processUpdate(Update update) {
@@ -40,6 +41,8 @@ public class ResourcesManagementViewDepartmentCQUP extends CommandParserUpdatePr
         switch (command) {
             case "/start":
                 return welcomeViewResolver.processUpdate(update);
+            case "/resource_request_view":
+                return resourceRequestViewResolver.processUpdate(update);
             default:
                 return previousViewUpdateProcessor.processUpdate(update);
         }

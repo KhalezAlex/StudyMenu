@@ -62,7 +62,6 @@ public class ViewResolversDepartmentConfig {
                 departmentRepo,
                 telegramView(),
                 appContext.getBean("notRegisteredAppUserUpdateProcessor", UpdateProcessor.class)
-//                appContext.getBean("previousViewUpdateProcessor", UpdateProcessor.class)
         );
     }
 
@@ -73,6 +72,22 @@ public class ViewResolversDepartmentConfig {
                 departmentRepo,
                 telegramView(),
                 appContext.getBean("previousViewUpdateProcessor", UpdateProcessor.class)
+        );
+    }
+
+    @Bean(name = "resourceRequestViewResolver")
+    public UpdateProcessor resourceRequestViewResolver() {
+        return new ResourceRequestViewResolver(
+                departmentRepo,
+                telegramView()
+        );
+    }
+
+    @Bean(name = "resourceUploadResultViewResolver")
+    public ResourceUploadResultViewResolver resourceUploadResultViewResolver() {
+        return new ResourceUploadResultViewResolver(
+                departmentRepo,
+                telegramView()
         );
     }
 }

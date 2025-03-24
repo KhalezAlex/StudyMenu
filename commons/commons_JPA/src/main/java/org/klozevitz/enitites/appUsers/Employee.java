@@ -19,22 +19,19 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+//@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 @Entity
 @Table(name = "employee_t")
 public class Employee extends BaseEntity {
+    private String name;
     @Enumerated(EnumType.STRING)
     private EmployeeState state;
     @Enumerated(EnumType.STRING)
     private EmployeeView currentView;
-
-//    @OneToOne(mappedBy = "employee")
-//    @JoinColumn(name = "app_user_id")
-//    private AppUser appUser;
     @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department;
-    @Type(type = "jsonb")
-    @Column(columnDefinition = "jsonb")
-    private WorkBook workbook;
+//    @Type(type = "jsonb")
+//    @Column(columnDefinition = "jsonb")
+//    private WorkBook workbook;
 }

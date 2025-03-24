@@ -10,20 +10,20 @@ import org.springframework.context.annotation.Configuration;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.klozevitz.enitites.appUsers.enums.views.DepartmentView.EMPLOYEE_TG_ID_REQUEST_VIEW;
+import static org.klozevitz.enitites.appUsers.enums.views.DepartmentView.RESOURCE_REQUEST_VIEW;
 
 @Configuration
 @RequiredArgsConstructor
-public class TextViewDispatcherDepartmentConfig {
+public class DocumentViewDispatcherDepartmentConfig {
     private final ApplicationContext appContext;
 
-    @Bean(name = "textUpdateViewDispatcher")
-    public Map<DepartmentView, UpdateProcessor> textViewDispatcher() {
+    @Bean(name = "documentUpdateViewDispatcher")
+    public Map<DepartmentView, UpdateProcessor> documentViewDispatcher() {
         final Map<DepartmentView, UpdateProcessor> dispatcher = new HashMap<>();
 
         dispatcher.put(
-                EMPLOYEE_TG_ID_REQUEST_VIEW,
-                appContext.getBean("employeeTgIdRequestViewTextUpdateProcessor", UpdateProcessor.class)
+                RESOURCE_REQUEST_VIEW,
+                appContext.getBean("resourceRequestViewDocumentUpdateProcessor", UpdateProcessor.class)
         );
 
         return dispatcher;

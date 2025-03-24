@@ -40,6 +40,7 @@ public class DepartmentTelegramView {
             "Вашими методическими материалами. Как только Вы добавите первый, он появится в списке.";
     private final String RESOURCE_REQUEST_VIEW_MESSAGE = "Ожидание excel-документа формата, представленного ниже \n\n" +
             "В последствии, его можно будет легко удалить.";
+
     private final MessageUtil messageUtil;
 
 
@@ -202,11 +203,12 @@ public class DepartmentTelegramView {
         return keyboardMarkUp;
     }
 
+    // TODO сделать нормальную вьюху с кнопками и ссылкой на вью управления каждым конкретным работником
     private List<List<InlineKeyboardButton>> employeesManagementViewKeyboardMarkUpEmployeeManagementTable(Set<Employee> employees) {
         final List<List<InlineKeyboardButton>> rows = new ArrayList<>();
 
-        employees.forEach(e -> {
-            var text = String.format("СОТРУДНИК %d", e.getId());
+        employees.forEach(employee -> {
+            var text = String.format("telegram id: %d", employee.getId());
             List<InlineKeyboardButton> row = List.of(
                     button(text, "/asd"),
                     button("X", "/asdasd")
@@ -234,11 +236,14 @@ public class DepartmentTelegramView {
         return answer;
     }
 
-
+    /**
+     * Вью просмотре результатов регистрации пользователя-работника
+     * DepartmentView.EMPLOYEE_REGISTRATION_RESULT_VIEW
+     * */
     public SendMessage employeeRegistrationResultView(Update update, String message) {
         var answer = messageUtil.blankAnswer(update);
         var keyboardMarkup = new InlineKeyboardMarkup();
-        var keyboard = employeeTgIdResultViewKeyboardMarkup();
+        var keyboard = basicResultViewKeyboardMarkup();
 
         answer.setText(message);
         keyboardMarkup.setKeyboard(keyboard);
@@ -248,16 +253,8 @@ public class DepartmentTelegramView {
         return answer;
     }
 
-    private List<List<InlineKeyboardButton>> employeeTgIdResultViewKeyboardMarkup() {
-        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
-        var homepageRow = homepageKeyboardRow();
-        keyboard.add(homepageRow);
-        return keyboard;
-    }
-
-
     /**
-     * Вью управления меню
+     * Вью управления ресурсами для изучения
      * DepartmentView.RESOURCES_MANAGEMENT_VIEW
      * */
     public SendMessage resourcesManagementView(Update update, AppUser currentAppUser) {
@@ -272,10 +269,27 @@ public class DepartmentTelegramView {
         return answer;
     }
 
+    /**
+     * Вью просмотра результатов загрузки ресурсов для изучения
+     * DepartmentView.EMPLOYEE_REGISTRATION_RESULT_VIEW
+     * */
+    public SendMessage resourceUploadResultView(Update update, String message) {
+        var answer = messageUtil.blankAnswer(update);
+        var keyboardMarkup = new InlineKeyboardMarkup();
+        var keyboard = basicResultViewKeyboardMarkup();
+
+        answer.setText(message);
+        keyboardMarkup.setKeyboard(keyboard);
+        answer.setReplyMarkup(keyboardMarkup);
+        answer.enableHtml(true);
+
+        return answer;
+    }
+
     private InlineKeyboardMarkup resourcesManagementViewKeyboardMarkUp(Set<Category> resources) {
         var keyboardMarkUp = new InlineKeyboardMarkup();
         var addResourceRow = List.of(
-                button("ДОБАВИТЬ КАТЕГОРИЮ МЕНЮ", "/add_resource"),
+                button("ДОБАВИТЬ КАТЕГОРИЮ МЕНЮ", "/resource_request_view"),
                 button("Выход", "/start")
         );
 
@@ -283,7 +297,7 @@ public class DepartmentTelegramView {
 
         if (!resources.isEmpty()) {
             resourcesManagementTable =
-                    resourcesManagementViewKeyboardMarkUpResourcesManagementTable(resources);
+                    resourcesManagementViewKeyboardMarkUpResourcesManagementList(resources);
             resourcesManagementTable.add(addResourceRow);
         } else {
             resourcesManagementTable =
@@ -298,14 +312,13 @@ public class DepartmentTelegramView {
         return keyboardMarkUp;
     }
 
-    private List<List<InlineKeyboardButton>> resourcesManagementViewKeyboardMarkUpResourcesManagementTable(Set<Category> resources) {
+    private List<List<InlineKeyboardButton>> resourcesManagementViewKeyboardMarkUpResourcesManagementList(Set<Category> resources) {
         final List<List<InlineKeyboardButton>> rows = new ArrayList<>();
 
-        resources.forEach(e -> {
-            var text = String.format("Меню %d", e.getId());
+        resources.forEach(category -> {
+            var text = category.getName();
             List<InlineKeyboardButton> row = List.of(
-                    button(text, "/asd"),
-                    button("X", "/asdasd")
+                    button(text, "/category_" + category.getId())
             );
             rows.add(row);
         });
@@ -314,8 +327,8 @@ public class DepartmentTelegramView {
     }
 
     /**
-     * Вью запроса телеграм-id для регистрации нового рабоника
-     * DepartmentView.EMPLOYEE_TG_USER_ID_REQUEST_VIEW
+     * Вью запроса документа
+     * DepartmentView.RESOURCE_REQUEST_VIEW
      * */
     public SendMessage resourceRequestView(Update update) {
         var answer = textMessage(RESOURCE_REQUEST_VIEW_MESSAGE, update);
@@ -371,5 +384,12 @@ public class DepartmentTelegramView {
 
     public SendMessage addServiceMessage(SendMessage sendMessage, String serviceMessage) {
         return messageUtil.addServiceMessage(sendMessage, serviceMessage);
+    }
+
+    private List<List<InlineKeyboardButton>> basicResultViewKeyboardMarkup() {
+        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
+        var homepageRow = homepageKeyboardRow();
+        keyboard.add(homepageRow);
+        return keyboard;
     }
 }

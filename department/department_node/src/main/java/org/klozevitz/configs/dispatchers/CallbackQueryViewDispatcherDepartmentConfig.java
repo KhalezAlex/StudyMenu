@@ -17,7 +17,7 @@ import static org.klozevitz.enitites.appUsers.enums.views.DepartmentView.*;
 public class CallbackQueryViewDispatcherDepartmentConfig {
     private final ApplicationContext appContext;
 
-    @Bean(name = "callbackQueryViewDispatcher")
+    @Bean(name = "callbackQueryUpdateViewDispatcher")
     public Map<DepartmentView, UpdateProcessor> callbackQueryViewDispatcher() {
         final Map<DepartmentView, UpdateProcessor> dispatcher = new HashMap<>();
 
@@ -44,6 +44,16 @@ public class CallbackQueryViewDispatcherDepartmentConfig {
         dispatcher.put(
                 EMPLOYEE_REGISTRATION_RESULT_VIEW,
                 appContext.getBean("employeeRegistrationResultViewCallbackQueryUpdateProcessor", UpdateProcessor.class)
+        );
+
+        dispatcher.put(
+                RESOURCE_REQUEST_VIEW,
+                appContext.getBean("resourceRequestViewCallbackQueryUpdateProcessor", UpdateProcessor.class)
+        );
+
+        dispatcher.put(
+                RESOURCE_UPLOAD_RESULT_VIEW,
+                appContext.getBean("resourceUploadResultViewCallbackQueryUpdateProcessor", UpdateProcessor.class)
         );
 
         return dispatcher;

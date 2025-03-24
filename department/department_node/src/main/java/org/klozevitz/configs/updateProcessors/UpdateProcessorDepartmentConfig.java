@@ -30,8 +30,8 @@ public class UpdateProcessorDepartmentConfig {
                 appContext.getBean("notRegisteredAppUserUpdateProcessor", UpdateProcessor.class),
                 appContext.getBean("commandUpdateProcessor", UpdateProcessor.class),
                 appContext.getBean("textUpdateProcessor", UpdateProcessor.class),
-                appContext.getBean("callbackQueryUpdateProcessor", UpdateProcessor.class)
-//                appContext.getBean("documentUpdateProcessor", UpdateProcessor.class)
+                appContext.getBean("callbackQueryUpdateProcessor", UpdateProcessor.class),
+                appContext.getBean("documentUpdateProcessor", UpdateProcessor.class)
         );
     }
 

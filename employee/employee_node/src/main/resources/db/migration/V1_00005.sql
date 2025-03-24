@@ -1,27 +1,36 @@
-INSERT INTO company_t (email, current_view, state)
--- VALUES ('svytkireev@icloud.com', 'WELCOME_VIEW', 'BASIC_STATE');
-VALUES ('klozevitz@yandex.ru', 'WELCOME_VIEW', 'BASIC_STATE');
---     ('ksenpts@mail.ru', 'WELCOME_VIEW', 'BASIC_STATE');
+CREATE OR REPLACE FUNCTION delete_category_by_name_and_department_id_cascade(categoryName VARCHAR, departmentId BIGINT)
+RETURNS BOOLEAN AS
+$$
+BEGIN
 
-INSERT INTO department_t (company_id, current_view, state)
-VALUES (1, 'WELCOME_VIEW', 'BASIC_STATE');
---     (2, 'WELCOME_VIEW', 'BASIC_STATE'),
---     (3, 'WELCOME_VIEW', 'BASIC_STATE');
+-- Удаление вопросов, связанных с элементами категории
+DELETE FROM test_question_t
+WHERE item_id IN (
+    SELECT id FROM item_t WHERE category_id IN (
+        SELECT id FROM category_t WHERE name = categoryName AND department_id = departmentId
+    )
+);
 
-INSERT INTO employee_t (current_view, state, department_id)
-VALUES ('WELCOME_VIEW', 'BASIC_STATE', 1);
+-- Удаление ингредиентов, связанных с элементами категории
+DELETE FROM ingredient_t
+WHERE item_id IN (
+    SELECT id FROM item_t WHERE category_id IN (
+        SELECT id FROM category_t WHERE name = categoryName AND department_id = departmentId
+    )
+);
 
-INSERT INTO app_user_t (telegram_user_id, username, company_id, department_id, employee_id)
-    -- VALUES (315944589, 'Svyatkireev', 1, null, null),
---        (1871866801, 'Kseneks', null, 1, null),
-VALUES (292005725, 'Proxodimiec', 1, 1, 1);
+-- Удаление элементов, связанных с категорией
+DELETE FROM item_t
+WHERE category_id IN (
+    SELECT id FROM category_t WHERE name = categoryName AND department_id = departmentId
+);
 
--- UPDATE company_t
--- SET app_user_id = 1
--- WHERE id = 1;
--- UPDATE department_t
--- SET app_user_id = 1
--- WHERE id = 1;
--- UPDATE employee_t
--- SET app_user_id = 1
--- WHERE id = 1;
+-- Удаление самой категории
+DELETE FROM category_t
+WHERE name = categoryName AND department_id = departmentId;
+
+-- Возвращаем TRUE, тк с void еще не разобрался
+RETURN TRUE;
+END;
+$$
+LANGUAGE plpgsql;

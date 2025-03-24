@@ -17,7 +17,7 @@ import static org.klozevitz.enitites.appUsers.enums.views.EmployeeView.CATEGORY_
 
 @Log4j
 @RequiredArgsConstructor
-public class CategoryIngoViewResolver_ALT implements UpdateProcessor {
+public class CategoryInfoViewResolver_ALT implements UpdateProcessor {
     private final String WRONG_CATEGORY_ID_ERROR_MESSAGE = "<b>Вы перенаправлены на предыдущую страницу. " +
             "Запрашиваемая Вами категория меню не найдена</b>";
 

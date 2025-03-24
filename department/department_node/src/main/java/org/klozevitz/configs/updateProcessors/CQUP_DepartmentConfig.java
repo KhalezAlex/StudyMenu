@@ -23,7 +23,7 @@ public class CQUP_DepartmentConfig {
     public UpdateProcessor callbackQueryUpdateProcessor() {
         return new CallbackQueryDepartmentUP(
                 appUserRepo,
-                appContext.getBean("callbackQueryViewDispatcher", Map.class),
+                appContext.getBean("callbackQueryUpdateViewDispatcher", Map.class),
                 appContext.getBean("notRegisteredAppUserUpdateProcessor", UpdateProcessor.class),
                 appContext.getBean("previousViewUpdateProcessor", UpdateProcessor.class)
         );
@@ -66,13 +66,30 @@ public class CQUP_DepartmentConfig {
                 appUserRepo,
                 appContext.getBean("previousViewUpdateProcessor", UpdateProcessor.class),
                 appContext.getBean("welcomeViewResolver", UpdateProcessor.class),
-                appContext.getBean("notRegisteredAppUserUpdateProcessor", UpdateProcessor.class)
+                appContext.getBean("notRegisteredAppUserUpdateProcessor", UpdateProcessor.class),
+                appContext.getBean("resourceRequestViewResolver", UpdateProcessor.class)
         );
     }
 
     @Bean(name = "employeeRegistrationResultViewCallbackQueryUpdateProcessor")
     public UpdateProcessor employeeRegistrationResultViewCallbackQueryUpdateProcessor() {
         return new EmployeeRegistrationResultViewCQUP(
+                appContext.getBean("previousViewUpdateProcessor", UpdateProcessor.class),
+                appContext.getBean("welcomeViewResolver", UpdateProcessor.class)
+        );
+    }
+
+    @Bean(name = "resourceRequestViewCallbackQueryUpdateProcessor")
+    public UpdateProcessor resourceRequestViewCallbackQueryUpdateProcessor() {
+        return new ResourceRequestViewDepartmentCQUP(
+                appContext.getBean("previousViewUpdateProcessor", UpdateProcessor.class),
+                appContext.getBean("welcomeViewResolver", UpdateProcessor.class)
+        );
+    }
+
+    @Bean(name = "resourceUploadResultViewCallbackQueryUpdateProcessor")
+    public UpdateProcessor resourceUploadResultViewCallbackQueryUpdateProcessor() {
+        return new ResourceUploadResultViewCQUP(
                 appContext.getBean("previousViewUpdateProcessor", UpdateProcessor.class),
                 appContext.getBean("welcomeViewResolver", UpdateProcessor.class)
         );

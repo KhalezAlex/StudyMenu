@@ -24,7 +24,7 @@ public class MainService implements Main {
     private final UpdateProcessor commandUpdateProcessor;
     private final UpdateProcessor textUpdateProcessor;
     private final UpdateProcessor callbackQueryUpdateProcessor;
-//    private final UpdateProcessor documentUpdateProcessor;
+    private final UpdateProcessor documentUpdateProcessor;
 
 
     @Override
@@ -95,10 +95,9 @@ public class MainService implements Main {
     private ArrayList<SendMessage> registeredUserDocUpdateAnswer(Update update, AppUser currentAppUser) {
         var department = currentAppUser.getDepartment();
 
-//        return department == null ?
-//                wrongAppUserRoleUpdateProcessor.processUpdate(update) :
-//                documentUpdateProcessor.processUpdate(update);
-        return null;
+        return department == null ?
+                wrongAppUserRoleUpdateProcessor.processUpdate(update) :
+                documentUpdateProcessor.processUpdate(update);
     }
 
     private Optional<AppUser> findAppUser(Update update) {

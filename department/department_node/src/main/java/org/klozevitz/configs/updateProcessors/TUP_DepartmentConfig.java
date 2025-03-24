@@ -24,7 +24,7 @@ public class TUP_DepartmentConfig {
     public UpdateProcessor textUpdateProcessor() {
         return new TextDepartmentUP(
                 appUserRepo,
-                appContext.getBean("textViewDispatcher", Map.class),
+                appContext.getBean("textUpdateViewDispatcher", Map.class),
                 appContext.getBean("notRegisteredAppUserUpdateProcessor", UpdateProcessor.class),
                 appContext.getBean("wrongAppUserRoleUpdateProcessor", UpdateProcessor.class),
                 appContext.getBean("previousViewUpdateProcessor", UpdateProcessor.class)

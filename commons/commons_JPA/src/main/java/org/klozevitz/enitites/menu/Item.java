@@ -20,9 +20,9 @@ public class Item extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "item", fetch = FetchType.EAGER)
+    @OneToMany( mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<Ingredient> ingredients;
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "test_question_id")
+//    @JoinColumn(name = "test_question_id")
     private TestQuestion question;
 }
