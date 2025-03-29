@@ -46,16 +46,17 @@ public class ExcelToTestParser {
     public Set<Item> parseCategoryItems(Sheet sheet) {
         try {
             final Iterator<Row> wbIterator = sheet.iterator();
-            final Set<Item> menu = new HashSet<>();
+            final Set<Item> category = new HashSet<>();
 
             wbIterator.next();
             while (wbIterator.hasNext()) {
                 var currentItem = parseItem(wbIterator);
-                menu.add(currentItem);
+                category.add(currentItem);
             }
 
-            return menu;
+            return category;
         } catch (Exception e) {
+            System.out.println("ОШИБКА!!!");
             throw new RuntimeException();
         }
     }
@@ -63,11 +64,18 @@ public class ExcelToTestParser {
     private Item parseItem(Iterator<Row> wbIterator) {
         var currentRow = wbIterator.next();
         var currentItem = itemFromRow(currentRow);
+
         while ((currentRow = wbIterator.next()) != null && !endOfItemBlock(currentRow)) {
             var ingredient = parseIngredient(currentRow);
             ingredient.setItem(currentItem);
             currentItem.getIngredients().add(ingredient);
         }
+
+        // вставить тест
+        var currentTest = new TestQuestion(currentItem);
+
+        currentItem.setQuestion(currentTest);
+
         return currentItem;
     }
 

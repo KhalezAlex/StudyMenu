@@ -17,7 +17,6 @@ public class CategoryTestChoiceViewEmployeeCQUP implements UpdateProcessor {
     private final AppUserRepo appUserRepo;
     private final UpdateProcessor previousViewUpdateProcessor;
     private final UpdateProcessor welcomeViewResolver;
-//    private final UpdateProcessor categoryInfoViewResolver;
 
     @Override
     public ArrayList<SendMessage> processUpdate(Update update) {

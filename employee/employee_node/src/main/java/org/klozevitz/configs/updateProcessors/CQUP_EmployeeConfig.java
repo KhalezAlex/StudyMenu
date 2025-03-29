@@ -24,7 +24,7 @@ public class CQUP_EmployeeConfig {
     public UpdateProcessor callbackQueryEmployeeUpdateProcessor() {
         return new CallbackQueryEmployeeUP(
                 appUserRepo,
-                appContext.getBean("callbackQueryCurrentMessageDispatcher", Map.class),
+                appContext.getBean("callbackQueryViewDispatcher", Map.class),
                 appContext.getBean("notRegisteredAppUserUpdateProcessor", UpdateProcessor.class),
                 appContext.getBean("previousViewUpdateProcessor", UpdateProcessor.class)
         );

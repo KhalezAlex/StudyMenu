@@ -36,17 +36,11 @@ public class DepartmentTelegramView {
             "(требуется запросить у пользователя числовой идентификатор telegram user id - " +
             "он это может сделать в официальном боте @getmyid_bot) \n\n" +
             "В последствии, если будет введен неправильный id, пользователя можно будет легко удалить.";
-    private final String EMPLOYEE_REGISTRATION_NOTIFICATION_MESSAGE = "<b>Телеграм-id \"%s\", " +
-            "нового сотрудника зарегистрирован. " +
-            "Вы можете отредактировать/удалить его в меню менеджмента персонала.</b>";
-    private final String INVALID_DEPARTMENT_TG_ID_ERROR_MESSAGE = "Введенная строка не является " +
-            "корректным telegramUserId";
-    private final String ALREADY_REGISTERED_TG_ID_ERROR_MESSAGE = "<b>Введенный Телеграм-id уже " +
-            "зарегистрирован в системе</b>";
     private final String RESOURCES_MANAGEMENT_VIEW_MESSAGE = "На этой странице Вы можете управлять " +
             "Вашими методическими материалами. Как только Вы добавите первый, он появится в списке.";
     private final String RESOURCE_REQUEST_VIEW_MESSAGE = "Ожидание excel-документа формата, представленного ниже \n\n" +
             "В последствии, его можно будет легко удалить.";
+
     private final MessageUtil messageUtil;
 
 
@@ -142,13 +136,13 @@ public class DepartmentTelegramView {
         var keyboard = new InlineKeyboardMarkup();
         var keyboardRows = List.of(
                 List.of(
-                    button("УПРАВЛЕНИЕ ПЕРСОНАЛОМ", "/employee_management")
+                    button("УПРАВЛЕНИЕ ПЕРСОНАЛОМ", "/employee_management_view")
                 ),
                 List.of(
-                    button("УПРАВЛЕНИЕ МАТЕРИАЛАМИ", "/resources_management")
+                    button("УПРАВЛЕНИЕ МАТЕРИАЛАМИ", "/resources_management_view")
                 ),
                 List.of(
-                    button("УПРАВЛЕНИЕ ПРОФИЛЕМ", "/profile_management")
+                    button("УПРАВЛЕНИЕ ПРОФИЛЕМ", "/profile_management_view")
                 )
         );
 
@@ -186,7 +180,7 @@ public class DepartmentTelegramView {
     private InlineKeyboardMarkup employeesManagementViewKeyboardMarkUp(Set<Employee> employees) {
         var keyboardMarkUp = new InlineKeyboardMarkup();
         var addEmployeeRow = List.of(
-                button("ДОБАВИТЬ СОТРУДНИКА", "/add_employee"),
+                button("ДОБАВИТЬ СОТРУДНИКА", "/employee_tg_id_request_view"),
                 button("Выход", "/start")
         );
 
@@ -209,11 +203,12 @@ public class DepartmentTelegramView {
         return keyboardMarkUp;
     }
 
+    // TODO сделать нормальную вьюху с кнопками и ссылкой на вью управления каждым конкретным работником
     private List<List<InlineKeyboardButton>> employeesManagementViewKeyboardMarkUpEmployeeManagementTable(Set<Employee> employees) {
         final List<List<InlineKeyboardButton>> rows = new ArrayList<>();
 
-        employees.forEach(e -> {
-            var text = String.format("СОТРУДНИК %d", e.getId());
+        employees.forEach(employee -> {
+            var text = String.format("telegram id: %d", employee.getId());
             List<InlineKeyboardButton> row = List.of(
                     button(text, "/asd"),
                     button("X", "/asdasd")
@@ -242,47 +237,24 @@ public class DepartmentTelegramView {
     }
 
     /**
-     * Вью уведомляет об успешной регистрации сотрудника
-     * СВОЕГО ВЬЮ в DepartmentView нет
-     * Возвращает меню управления департаментами
-     * DepartmentView.EMPLOYEES_MANAGEMENT_VIEW
+     * Вью просмотре результатов регистрации пользователя-работника
+     * DepartmentView.EMPLOYEE_REGISTRATION_RESULT_VIEW
      * */
-    public SendMessage newEmployeeRegistrationNotificationView(Update update, AppUser currentAppUser) {
-        var answer = employeesManagementView(update, currentAppUser);
-        var serviceMessage = String.format(
-                EMPLOYEE_REGISTRATION_NOTIFICATION_MESSAGE,
-                update.getMessage().getText()
-        );
+    public SendMessage employeeRegistrationResultView(Update update, String message) {
+        var answer = messageUtil.blankAnswer(update);
+        var keyboardMarkup = new InlineKeyboardMarkup();
+        var keyboard = basicResultViewKeyboardMarkup();
 
-        return messageUtil.addServiceMessage(answer, serviceMessage);
+        answer.setText(message);
+        keyboardMarkup.setKeyboard(keyboard);
+        answer.setReplyMarkup(keyboardMarkup);
+        answer.enableHtml(true);
+
+        return answer;
     }
 
     /**
-     * Вью уведомляет о неверно введенном telegramUserId при регистрации сотрудника
-     * СВОЕГО ВЬЮ в DepartmentView нет
-     * Возвращает меню запроса telegramUserId
-     * DepartmentView.EMPLOYEE_TELEGRAM_USER_ID_REQUEST_VIEW
-     * */
-    public SendMessage invalidEmployeeTgIdErrorView(Update update) {
-        var answer = employeeTgIdRequestView(update);
-
-        return messageUtil.addServiceMessage(answer, INVALID_DEPARTMENT_TG_ID_ERROR_MESSAGE);
-    }
-
-    /**
-     * Вью уведомляет о том, что введенный при регистрации сотрудника telegramUserId уже есть в системе
-     * СВОЕГО ВЬЮ в DepartmentView нет
-     * Возвращает меню управления персоналом
-     * DepartmentView.EMPLOYEES_MANAGEMENT_VIEW
-     * */
-    public SendMessage alreadyRegisteredTelegramUserIdErrorView(Update update, AppUser currentAppUser) {
-        var answer = employeesManagementView(update, currentAppUser);
-
-        return messageUtil.addServiceMessage(answer, ALREADY_REGISTERED_TG_ID_ERROR_MESSAGE);
-    }
-
-    /**
-     * Вью управления меню
+     * Вью управления ресурсами для изучения
      * DepartmentView.RESOURCES_MANAGEMENT_VIEW
      * */
     public SendMessage resourcesManagementView(Update update, AppUser currentAppUser) {
@@ -297,10 +269,27 @@ public class DepartmentTelegramView {
         return answer;
     }
 
+    /**
+     * Вью просмотра результатов загрузки ресурсов для изучения
+     * DepartmentView.EMPLOYEE_REGISTRATION_RESULT_VIEW
+     * */
+    public SendMessage resourceUploadResultView(Update update, String message) {
+        var answer = messageUtil.blankAnswer(update);
+        var keyboardMarkup = new InlineKeyboardMarkup();
+        var keyboard = basicResultViewKeyboardMarkup();
+
+        answer.setText(message);
+        keyboardMarkup.setKeyboard(keyboard);
+        answer.setReplyMarkup(keyboardMarkup);
+        answer.enableHtml(true);
+
+        return answer;
+    }
+
     private InlineKeyboardMarkup resourcesManagementViewKeyboardMarkUp(Set<Category> resources) {
         var keyboardMarkUp = new InlineKeyboardMarkup();
         var addResourceRow = List.of(
-                button("ДОБАВИТЬ КАТЕГОРИЮ МЕНЮ", "/add_resource"),
+                button("ДОБАВИТЬ КАТЕГОРИЮ МЕНЮ", "/resource_request_view"),
                 button("Выход", "/start")
         );
 
@@ -308,7 +297,7 @@ public class DepartmentTelegramView {
 
         if (!resources.isEmpty()) {
             resourcesManagementTable =
-                    resourcesManagementViewKeyboardMarkUpResourcesManagementTable(resources);
+                    resourcesManagementViewKeyboardMarkUpResourcesManagementList(resources);
             resourcesManagementTable.add(addResourceRow);
         } else {
             resourcesManagementTable =
@@ -323,14 +312,13 @@ public class DepartmentTelegramView {
         return keyboardMarkUp;
     }
 
-    private List<List<InlineKeyboardButton>> resourcesManagementViewKeyboardMarkUpResourcesManagementTable(Set<Category> resources) {
+    private List<List<InlineKeyboardButton>> resourcesManagementViewKeyboardMarkUpResourcesManagementList(Set<Category> resources) {
         final List<List<InlineKeyboardButton>> rows = new ArrayList<>();
 
-        resources.forEach(e -> {
-            var text = String.format("Меню %d", e.getId());
+        resources.forEach(category -> {
+            var text = category.getName();
             List<InlineKeyboardButton> row = List.of(
-                    button(text, "/asd"),
-                    button("X", "/asdasd")
+                    button(text, "/category_" + category.getId())
             );
             rows.add(row);
         });
@@ -339,8 +327,8 @@ public class DepartmentTelegramView {
     }
 
     /**
-     * Вью запроса телеграм-id для регистрации нового рабоника
-     * DepartmentView.EMPLOYEE_TG_USER_ID_REQUEST_VIEW
+     * Вью запроса документа
+     * DepartmentView.RESOURCE_REQUEST_VIEW
      * */
     public SendMessage resourceRequestView(Update update) {
         var answer = textMessage(RESOURCE_REQUEST_VIEW_MESSAGE, update);
@@ -392,5 +380,16 @@ public class DepartmentTelegramView {
         return List.of(
                 button("Главная страница", "/start")
         );
+    }
+
+    public SendMessage addServiceMessage(SendMessage sendMessage, String serviceMessage) {
+        return messageUtil.addServiceMessage(sendMessage, serviceMessage);
+    }
+
+    private List<List<InlineKeyboardButton>> basicResultViewKeyboardMarkup() {
+        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
+        var homepageRow = homepageKeyboardRow();
+        keyboard.add(homepageRow);
+        return keyboard;
     }
 }

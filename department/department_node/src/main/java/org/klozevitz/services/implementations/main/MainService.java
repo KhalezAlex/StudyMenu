@@ -2,16 +2,16 @@ package org.klozevitz.services.implementations.main;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
-import org.klozevitz.services.main.AnswerProducer;
-import org.klozevitz.services.messageProcessors.UpdateProcessor_LEGACY;
-import org.klozevitz.services.messageProcessors.WrongAppUserDataUpdateProcessor;
 import org.klozevitz.enitites.appUsers.AppUser;
 import org.klozevitz.repositories.appUsers.AppUserRepo;
 import org.klozevitz.services.interfaces.main.Main;
+import org.klozevitz.services.interfaces.updateProcessors.UpdateProcessor;
+import org.klozevitz.services.main.AnswerProducer;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Log4j
@@ -19,12 +19,12 @@ import java.util.Optional;
 public class MainService implements Main {
     private final AppUserRepo appUserRepo;
     private final AnswerProducer answerProducer;
-    private final WrongAppUserDataUpdateProcessor wrongAppUserRoleUpdateProcessor;
-    private final WrongAppUserDataUpdateProcessor notRegisteredAppUserUpdateProcessor;
-    private final UpdateProcessor_LEGACY commandUpdateProcessor;
-    private final UpdateProcessor_LEGACY textUpdateProcessor;
-    private final UpdateProcessor_LEGACY callbackQueryUpdateProcessor;
-    private final UpdateProcessor_LEGACY documentUpdateProcessor;
+    private final UpdateProcessor wrongAppUserRoleUpdateProcessor;
+    private final UpdateProcessor notRegisteredAppUserUpdateProcessor;
+    private final UpdateProcessor commandUpdateProcessor;
+    private final UpdateProcessor textUpdateProcessor;
+    private final UpdateProcessor callbackQueryUpdateProcessor;
+    private final UpdateProcessor documentUpdateProcessor;
 
 
     @Override
@@ -37,12 +37,12 @@ public class MainService implements Main {
         sendAnswer(answer);
     }
 
-    private SendMessage registeredUserTextUpdateAnswer(Update update, AppUser currentAppUser) {
+    private ArrayList<SendMessage> registeredUserTextUpdateAnswer(Update update, AppUser currentAppUser) {
         var department = currentAppUser.getDepartment();
 
         return department == null ?
                 wrongAppUserRoleUpdateProcessor.processUpdate(update) :
-                textUpdateProcessor.processUpdate(update, currentAppUser);
+                textUpdateProcessor.processUpdate(update);
     }
 
 
@@ -56,12 +56,12 @@ public class MainService implements Main {
         sendAnswer(answer);
     }
 
-    private SendMessage registeredUserCommandUpdateAnswer(Update update, AppUser currentAppUser) {
+    private ArrayList<SendMessage> registeredUserCommandUpdateAnswer(Update update, AppUser currentAppUser) {
         var department = currentAppUser.getDepartment();
 
         return department == null ?
                 wrongAppUserRoleUpdateProcessor.processUpdate(update) :
-                commandUpdateProcessor.processUpdate(update, currentAppUser);
+                commandUpdateProcessor.processUpdate(update);
     }
 
     @Override
@@ -74,12 +74,12 @@ public class MainService implements Main {
         sendAnswer(answer);
     }
 
-    private SendMessage registeredUserCallbackQueryUpdateAnswer(Update update, AppUser currentAppUser) {
+    private ArrayList<SendMessage> registeredUserCallbackQueryUpdateAnswer(Update update, AppUser currentAppUser) {
         var department = currentAppUser.getDepartment();
 
         return department == null ?
                 wrongAppUserRoleUpdateProcessor.processUpdate(update) :
-                callbackQueryUpdateProcessor.processUpdate(update, currentAppUser);
+                callbackQueryUpdateProcessor.processUpdate(update);
     }
 
     @Override
@@ -92,12 +92,12 @@ public class MainService implements Main {
         sendAnswer(answer);
     }
 
-    private SendMessage registeredUserDocUpdateAnswer(Update update, AppUser currentAppUser) {
+    private ArrayList<SendMessage> registeredUserDocUpdateAnswer(Update update, AppUser currentAppUser) {
         var department = currentAppUser.getDepartment();
 
         return department == null ?
                 wrongAppUserRoleUpdateProcessor.processUpdate(update) :
-                documentUpdateProcessor.processUpdate(update, currentAppUser);
+                documentUpdateProcessor.processUpdate(update);
     }
 
     private Optional<AppUser> findAppUser(Update update) {
@@ -121,7 +121,7 @@ public class MainService implements Main {
                 update.getCallbackQuery().getFrom();
     }
 
-    private void sendAnswer(SendMessage answer) {
-        answerProducer.produceAnswer(answer);
+    private void sendAnswer(ArrayList<SendMessage> answer) {
+        answer.forEach(answerProducer::produceAnswer);
     }
 }

@@ -5,11 +5,11 @@ import lombok.*;
 import org.klozevitz.enitites.BaseEntity;
 import org.klozevitz.enitites.appUsers.Department;
 
+import java.util.Objects;
 import java.util.Set;
 
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = false)
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,7 +17,7 @@ import java.util.Set;
 @Table(name = "category_t")
 public class Category extends BaseEntity {
     private String name;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "category")
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<Item> menu;
     @ManyToOne
     @JoinColumn(name = "department_id")
@@ -27,4 +27,16 @@ public class Category extends BaseEntity {
     @JoinColumn(name = "excel_doc_id")
     private ExcelDocument excelDoc;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Category category = (Category) o;
+        return name.equals(category.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
 }

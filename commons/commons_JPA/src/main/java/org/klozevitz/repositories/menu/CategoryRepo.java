@@ -2,10 +2,14 @@ package org.klozevitz.repositories.menu;
 
 import org.klozevitz.enitites.menu.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CategoryRepo extends JpaRepository<Category, Long> {
@@ -19,4 +23,14 @@ public interface CategoryRepo extends JpaRepository<Category, Long> {
             nativeQuery = true
     )
     List<Category> categoriesByEmployeeTelegramUserId(long telegramUserId);
+
+    @Query(
+            value = "SELECT delete_category_by_name_and_department_id_cascade(:categoryName, :departmentId)",
+            nativeQuery = true
+    )
+    void deleteByNameAndDepartmentIdCascade
+            (
+                    @Param("categoryName") String categoryName,
+                    @Param("departmentId") Long departmentId
+            );
 }

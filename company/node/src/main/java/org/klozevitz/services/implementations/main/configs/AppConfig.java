@@ -20,13 +20,13 @@ import org.klozevitz.services.implementations.updateProcessors.commandUpdateProc
 import org.klozevitz.services.implementations.updateProcessors.commandUpdateProcessors.byState.UnregisteredStateCompanyCUP;
 import org.klozevitz.services.implementations.updateProcessors.commandUpdateProcessors.byState.WaitForDepartmentTgIdStateCompanyCUP;
 import org.klozevitz.services.implementations.updateProcessors.textUpdateProcessors.TextCompanyUpdateProcessorLEGACY;
-import org.klozevitz.services.implementations.utils.CompanyRegistrar;
-import org.klozevitz.services.implementations.utils.DepartmentRegistrar;
+import org.klozevitz.services.implementations.utils.CompanyRegistrarLEGACY;
+import org.klozevitz.services.implementations.utils.DepartmentRegistrarLEGACY;
 import org.klozevitz.services.main.AnswerProducer;
 import org.klozevitz.services.interfaces.main.Main;
 import org.klozevitz.services.messageProcessors.UpdateProcessor_LEGACY;
 import org.klozevitz.services.messageProcessors.WrongAppUserDataUpdateProcessor;
-import org.klozevitz.services.util.Registrar;
+import org.klozevitz.services.util.Registrar_LEGACY;
 import org.klozevitz.utils.CryptoTool;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -215,8 +215,8 @@ public class AppConfig {
     }
 
     @Bean
-    public Registrar companyRegistrar() {
-        return new CompanyRegistrar(
+    public Registrar_LEGACY companyRegistrar() {
+        return new CompanyRegistrarLEGACY(
                 appUserRepo,
                 cryptoTool(),
                 telegramView(),
@@ -225,8 +225,8 @@ public class AppConfig {
     }
 
     @Bean
-    public Registrar departmentRegistrar() {
-        return new DepartmentRegistrar(
+    public Registrar_LEGACY departmentRegistrar() {
+        return new DepartmentRegistrarLEGACY(
                 appUserRepo,
                 telegramView(),
                 loggerInfo
