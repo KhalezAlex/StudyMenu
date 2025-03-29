@@ -286,6 +286,14 @@ public class EmployeeTelegramView {
         return keyboard;
     }
 
+    /**
+     * Вью тестирования в процессе
+     * EmployeeView.TEST_VIEW
+     * */
+    public SendMessage TestView() {
+        return null;
+    }
+
 
     /**
      * UTILS

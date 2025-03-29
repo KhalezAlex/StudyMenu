@@ -9,7 +9,8 @@ import org.hibernate.annotations.TypeDef;
 import org.klozevitz.enitites.BaseEntity;
 import org.klozevitz.enitites.appUsers.enums.states.EmployeeState;
 import org.klozevitz.enitites.appUsers.enums.views.EmployeeView;
-import org.klozevitz.enitites.menu.resources.WorkBook;
+import org.klozevitz.enitites.menu.resources.CurrentTest;
+import org.klozevitz.enitites.menu.resources.TestResult;
 
 import java.util.Set;
 
@@ -19,7 +20,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-//@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 @Entity
 @Table(name = "employee_t")
 public class Employee extends BaseEntity {
@@ -31,7 +32,9 @@ public class Employee extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department;
-//    @Type(type = "jsonb")
-//    @Column(columnDefinition = "jsonb")
-//    private WorkBook workbook;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee", orphanRemoval = true)
+    private Set<TestResult> testResult;
+    @Type(type = "jsonb")
+    @Column(columnDefinition = "jsonb")
+    private CurrentTest currentTest;
 }

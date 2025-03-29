@@ -9,3 +9,5 @@ drop table if exists ingredient_t cascade;
 drop table if exists item_t cascade;
 drop table if exists message_sent_t cascade;
 drop table if exists test_question_t cascade;
+drop table if exists test_result_t cascade;
+drop table if exists test_t cascade;

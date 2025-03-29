@@ -1,11 +1,16 @@
 package org.klozevitz.enitites.menu.resources;
 
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.*;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 import org.klozevitz.enitites.BaseEntity;
 import org.klozevitz.enitites.menu.Item;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -13,12 +18,19 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Setter
 @EqualsAndHashCode(callSuper = false)
 @Builder
+@Entity
+@Table(name = "test_t")
+@NoArgsConstructor
 @AllArgsConstructor
-public class WorkBook extends BaseEntity {
-    private List<String> menu;
+@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+public class Test extends BaseEntity {
+    private Integer correctAnswersNumber;
     private int currentItemId;
+    @Type(type = "jsonb")
+    @Column(columnDefinition = "jsonb")
+    private ArrayList<String> menu;
 
-    public WorkBook(Set<Item> menu) {
+    public Test(Set<Item> menu) {
         this.menu = new ArrayList<>();
         this.currentItemId = 0;
 
